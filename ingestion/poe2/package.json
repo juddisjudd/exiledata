@@ -1,0 +1,28 @@
+{
+  "name": "@exiledata/ingestion-poe2",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PoE 2 ingestion — architecture/interfaces only, no complete ingestion implementation yet",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@exiledata/ingestion-common": "workspace:*",
+    "@exiledata/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2"
+  }
+}

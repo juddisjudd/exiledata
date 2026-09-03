@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "ingestion/*"
+allowBuilds:
+  esbuild: true
+  workerd: true

@@ -1,0 +1,16 @@
+{
+  "id": "poe1-skill-gem-fireball",
+  "version": {
+    "schemaVersion": "0.0.0",
+    "game": "poe1",
+    "gameVersion": "3.25.0"
+  },
+  "source": [
+    {
+      "name": "repoe",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    }
+  ],
+  "name": "Fireball",
+  "grantedSkillIds": []
+}
