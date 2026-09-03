@@ -2,38 +2,102 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>ExileData</title>
+    <title>ExileData — Path of Exile data platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Versioned, normalized Path of Exile 1 & 2 data behind a gated API and SDKs."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:title" content="ExileData" />
+    <meta
+      property="og:description"
+      content="Versioned, normalized Path of Exile 1 & 2 data behind a gated API and SDKs."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0a0a'/%3E%3Ctext x='50' y='69' font-size='58' text-anchor='middle' fill='%23ededed' font-family='sans-serif' font-weight='900'%3EE%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@900,400&display=swap"
+    />
     <style>
-      body {
-        font-family: system-ui, sans-serif;
-        max-width: 640px;
-        margin: 4rem auto;
-        padding: 0 1rem;
-        color: #1a1a1a;
-        line-height: 1.6;
+      :root {
+        color-scheme: dark;
+        --bg: #0a0a0a;
+        --fg: #ededed;
+        --muted: #666;
       }
-      code {
-        background: #f2f2f2;
-        padding: 0.15em 0.4em;
-        border-radius: 4px;
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--fg);
+        font-family:
+          "Satoshi",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: -0.045em;
+        line-height: 0.9;
+        font-size: clamp(3rem, 12vw, 8rem);
+      }
+
+      .tagline {
+        margin: 1rem 0 0;
+        max-width: 30ch;
+        font-weight: 400;
+        font-size: clamp(0.9rem, 1.4vw, 1rem);
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      footer {
+        position: fixed;
+        right: 1.25rem;
+        bottom: 1.25rem;
+        left: 1.25rem;
+        font-size: 0.7rem;
+        line-height: 1.4;
+        color: #3a3a3a;
+        text-align: right;
+      }
+
+      @media (max-width: 480px) {
+        footer {
+          text-align: center;
+        }
       }
     </style>
   </head>
   <body>
     <h1>ExileData</h1>
-    <p>
-      ExileData is a developer data platform for
-      <strong>Path of Exile 1 and Path of Exile 2</strong>
-      tooling: a versioned, normalized dataset with a gated API and SDKs, so PoE tool developers
-      don't need to embed large JSON datasets or reimplement data extraction and normalization.
-    </p>
-    <p>This site and the platform are under early development.</p>
-    <p>
-      <em
-        >ExileData is an independent community project and is not affiliated with or endorsed by
-        Grinding Gear Games.</em
-      >
-    </p>
+    <p class="tagline">Versioned data for Path of Exile 1 &amp; 2. API and SDKs, in development.</p>
+    <footer>Independent project — not affiliated with or endorsed by Grinding Gear Games.</footer>
   </body>
 </html>
