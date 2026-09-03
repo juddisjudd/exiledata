@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Versioned, normalized Path of Exile 1 & 2 data behind a gated API and SDKs."
+      content="Normalized Path of Exile 1 & 2 data for developers. In development."
     />
     <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:title" content="ExileData" />
     <meta
       property="og:description"
-      content="Versioned, normalized Path of Exile 1 & 2 data behind a gated API and SDKs."
+      content="Normalized Path of Exile 1 & 2 data for developers. In development."
     />
     <link
       rel="icon"
@@ -83,21 +83,28 @@
         bottom: 1.25rem;
         left: 1.25rem;
         font-size: 0.7rem;
-        line-height: 1.4;
+        line-height: 1.6;
         color: #3a3a3a;
-        text-align: right;
+        text-align: center;
       }
 
-      @media (max-width: 480px) {
-        footer {
-          text-align: center;
-        }
+      footer a {
+        color: #6b6b6b;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      footer a:hover {
+        color: var(--fg);
       }
     </style>
   </head>
   <body>
     <h1>ExileData</h1>
-    <p class="tagline">Versioned data for Path of Exile 1 &amp; 2. API and SDKs, in development.</p>
-    <footer>Independent project — not affiliated with or endorsed by Grinding Gear Games.</footer>
+    <p class="tagline">Normalized Path of Exile 1 &amp; 2 data for developers. In development.</p>
+    <footer>
+      MIT &middot; <a href="https://github.com/juddisjudd">@juddisjudd</a><br />
+      Not affiliated with or endorsed by Grinding Gear Games.
+    </footer>
   </body>
 </html>
