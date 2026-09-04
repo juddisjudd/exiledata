@@ -31,12 +31,20 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
 }
 
 /**
- * Mirrors the CLI's driver selection (see `.env.example`). Defaults to the local driver so a
- * misconfigured deployment reads an empty directory rather than reaching for R2 with no
- * credentials.
+ * Mirrors the CLI's driver selection (see `.env.example`). An unrecognized driver throws at
+ * startup rather than silently falling back to local — a deployment that means to read R2 but
+ * quietly serves an empty local directory is worse than one that refuses to boot.
  */
 function loadDatasetStorageConfig(env: NodeJS.ProcessEnv): DatasetStorageConfig {
-  if (env.DATASET_STORAGE_DRIVER === "r2") {
+  const driver = (env.DATASET_STORAGE_DRIVER ?? "local").trim().toLowerCase();
+
+  if (driver !== "local" && driver !== "r2") {
+    throw new Error(
+      `DATASET_STORAGE_DRIVER must be "local" or "r2" (got "${env.DATASET_STORAGE_DRIVER}")`
+    );
+  }
+
+  if (driver === "r2") {
     const missing = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME"]
       .filter((key) => !env[key])
       .join(", ");

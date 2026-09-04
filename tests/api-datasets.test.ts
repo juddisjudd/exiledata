@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import type { FastifyInstance } from "fastify";
 import { buildApp } from "../apps/api/src/app.js";
+import { loadConfig } from "../apps/api/src/config.js";
 import { DatasetReader } from "../apps/api/src/datasets.js";
 import { LocalDatasetStorage } from "../packages/storage/src/local.js";
 import { SCHEMA_VERSION } from "../packages/schema/src/common/version.js";
@@ -123,5 +124,36 @@ describe("dataset-backed endpoints", () => {
     const res = await app.inject({ method: "GET", url: "/v1/versions" });
 
     expect(res.json().datasets).toEqual([METADATA]);
+  });
+});
+
+describe("dataset storage configuration", () => {
+  it("reports the active driver on /status", async () => {
+    const app = buildApp({ reader: new DatasetReader(new LocalDatasetStorage("/tmp/none")) });
+    await app.ready();
+
+    const res = await app.inject({ method: "GET", url: "/status" });
+    expect(res.json().datasetStorage).toEqual({ driver: "local", path: "./data/datasets" });
+
+    await app.close();
+  });
+
+  it("rejects an unrecognized driver instead of falling back to local", () => {
+    expect(() => loadConfig({ DATASET_STORAGE_DRIVER: "s3" } as NodeJS.ProcessEnv)).toThrow(
+      /must be "local" or "r2"/
+    );
+  });
+
+  it("normalizes case and surrounding whitespace in the driver name", () => {
+    // Reaches the credential check, so "R2 " resolved to the r2 driver rather than being rejected.
+    expect(() => loadConfig({ DATASET_STORAGE_DRIVER: "R2 " } as NodeJS.ProcessEnv)).toThrow(
+      /missing: R2_ACCOUNT_ID/
+    );
+  });
+
+  it("requires R2 credentials when the driver is r2", () => {
+    expect(() => loadConfig({ DATASET_STORAGE_DRIVER: "r2" } as NodeJS.ProcessEnv)).toThrow(
+      /missing: R2_ACCOUNT_ID/
+    );
   });
 });
