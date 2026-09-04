@@ -30,3 +30,12 @@ export interface DatasetDiff<T = unknown> {
   removed: T[];
   changed: Array<{ before: T; after: T }>;
 }
+
+/**
+ * The full payload written to dataset storage: metadata plus the entities it describes. This is
+ * what `DatasetStorage.put` serializes and what the API reads back for a given dataset version.
+ */
+export interface Dataset<T = unknown> {
+  metadata: DatasetMetadata;
+  entities: T[];
+}

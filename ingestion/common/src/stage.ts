@@ -12,11 +12,18 @@ export interface IngestionStage<TRaw, TParsed, TEntity> {
   parser: Parser<TRaw, TParsed>;
   normalizer: Normalizer<TParsed, TEntity>;
   validator: Validator<TEntity>;
+  /**
+   * Optional hook for non-fatal notes about the parsed data — most usefully, upstream records
+   * the stage chose to exclude. Without this, a stage that drops input does so silently.
+   */
+  warn?(parsed: TParsed): string[];
 }
 
 export interface IngestionRunResult<TEntity> {
   entities: TEntity[];
   errors: IngestionError[];
+  /** Non-fatal notes from the stage, e.g. upstream records excluded before normalization. */
+  warnings: string[];
   metadata: Pick<DatasetMetadata, "sources" | "generatedAt">;
 }
 

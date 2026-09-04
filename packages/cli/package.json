@@ -15,6 +15,9 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@exiledata/ingestion-common": "workspace:*",
+    "@exiledata/ingestion-poe2": "workspace:*",
+    "@exiledata/schema": "workspace:*",
     "commander": "^12.1.0"
   },
   "devDependencies": {

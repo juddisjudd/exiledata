@@ -12,6 +12,7 @@ desktop.ini
 .turbo/
 .next/
 data/fixtures/generated/
+data/datasets/
 *.tsbuildinfo
 pnpm-lock.yaml.bak
 .wrangler/
