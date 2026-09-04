@@ -145,6 +145,9 @@ To deploy manually from either app directory: `pnpm deploy` (runs `wrangler depl
 automatically on push to `main` when files under `apps/web/` or `apps/docs/` change — this
 requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` to be set as GitHub Actions secrets.
 
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for the current status and remaining setup steps (custom
+domains, R2 bucket, dedicated server).
+
 ## Development setup
 
 Requires [pnpm](https://pnpm.io/) (do not use npm or yarn) and Docker.

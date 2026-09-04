@@ -18,3 +18,7 @@ pnpm-lock.yaml.bak
 .dev.vars
 .dev.vars.*
 secrets.json
+DEPLOYMENT.md
+CLAUDE.md
+.claude
+.remember
