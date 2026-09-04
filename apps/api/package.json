@@ -13,6 +13,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@exiledata/schema": "workspace:*",
+    "@exiledata/storage": "workspace:*",
     "@exiledata/types": "workspace:*",
     "fastify": "^5.2.0"
   },

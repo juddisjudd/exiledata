@@ -1,15 +1,38 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/schema" },
-    { "path": "packages/types" },
-    { "path": "packages/client" },
-    { "path": "packages/cli" },
-    { "path": "ingestion/common" },
-    { "path": "ingestion/poe1" },
-    { "path": "ingestion/poe2" },
-    { "path": "apps/api" },
-    { "path": "apps/web" },
-    { "path": "apps/docs" }
+    {
+      "path": "packages/schema"
+    },
+    {
+      "path": "packages/storage"
+    },
+    {
+      "path": "packages/types"
+    },
+    {
+      "path": "packages/client"
+    },
+    {
+      "path": "packages/cli"
+    },
+    {
+      "path": "ingestion/common"
+    },
+    {
+      "path": "ingestion/poe1"
+    },
+    {
+      "path": "ingestion/poe2"
+    },
+    {
+      "path": "apps/api"
+    },
+    {
+      "path": "apps/web"
+    },
+    {
+      "path": "apps/docs"
+    }
   ]
 }

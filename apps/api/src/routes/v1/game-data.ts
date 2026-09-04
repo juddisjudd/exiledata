@@ -1,24 +1,94 @@
 import type { FastifyPluginAsync } from "fastify";
+import type { BaseItem, Game, ListResponse } from "@exiledata/types";
+import type { DatasetReader } from "../../datasets.js";
 
-type GameParam = { game: string };
+const GAMES: Game[] = ["poe1", "poe2"];
+
+/** Resources the dataset pipeline does not produce yet. */
+const UNIMPLEMENTED = ["items", "mods", "gems", "skills"] as const;
+
+const MAX_LIMIT = 1000;
+const DEFAULT_LIMIT = 100;
+
+interface GameParam {
+  game: string;
+}
+
+interface BasesQuery {
+  version?: string;
+  itemClass?: string;
+  limit?: string;
+  offset?: string;
+}
+
+function isGame(value: string): value is Game {
+  return (GAMES as string[]).includes(value);
+}
 
 /**
- * Placeholder routes for the eventual per-game data endpoints:
- *   GET /v1/{game}/items | /bases | /mods | /gems | /skills
+ * Per-game data endpoints. Only `bases` is served today — it is backed by the base-item dataset
+ * produced by `exiledata ingest`. The rest stay 501 rather than returning fabricated data.
  *
- * Not implemented yet — no dataset exists to serve. Returns 501 rather than fabricated data.
+ * Requests are answered from a specific dataset version. `?version=` selects one explicitly;
+ * without it the most recent published version is used and echoed back in `meta.datasetVersion`,
+ * so a client can pin to what it just read.
  */
-const gameDataRoutes: FastifyPluginAsync = async (app) => {
-  const resources = ["items", "bases", "mods", "gems", "skills"] as const;
+export function createGameDataRoutes(reader: DatasetReader): FastifyPluginAsync {
+  return async (app) => {
+    app.get<{ Params: GameParam; Querystring: BasesQuery; Reply: ListResponse<BaseItem> | object }>(
+      "/v1/:game/bases",
+      async (request, reply) => {
+        const { game } = request.params;
+        if (!isGame(game)) {
+          return reply.code(404).send({ error: "unknown_game", message: `Unknown game "${game}"` });
+        }
 
-  for (const resource of resources) {
-    app.get<{ Params: GameParam }>(`/v1/:game/${resource}`, async (request, reply) => {
-      return reply.code(501).send({
-        error: "not_implemented",
-        message: `GET /v1/${request.params.game}/${resource} is not implemented yet`
+        const version = request.query.version ?? (await reader.latestVersion(game));
+        if (!version) {
+          return reply.code(404).send({
+            error: "no_dataset",
+            message: `No dataset has been published for "${game}"`
+          });
+        }
+
+        const dataset = await reader.get(game, version);
+        if (!dataset) {
+          return reply.code(404).send({
+            error: "unknown_dataset_version",
+            message: `No dataset "${version}" for "${game}"`
+          });
+        }
+
+        const limit = clamp(request.query.limit, DEFAULT_LIMIT, MAX_LIMIT);
+        const offset = Math.max(0, Number(request.query.offset ?? 0) || 0);
+
+        let entities = dataset.entities as BaseItem[];
+        if (request.query.itemClass) {
+          entities = entities.filter((entity) => entity.itemClass === request.query.itemClass);
+        }
+
+        return reply.send({
+          data: entities.slice(offset, offset + limit),
+          meta: { game, datasetVersion: version, total: entities.length }
+        });
+      }
+    );
+
+    for (const resource of UNIMPLEMENTED) {
+      app.get<{ Params: GameParam }>(`/v1/:game/${resource}`, async (request, reply) => {
+        return reply.code(501).send({
+          error: "not_implemented",
+          message:
+            `GET /v1/${request.params.game}/${resource} is not implemented yet — ` +
+            `only "bases" is produced by the ingestion pipeline so far`
+        });
       });
-    });
-  }
-};
+    }
+  };
+}
 
-export default gameDataRoutes;
+function clamp(raw: string | undefined, fallback: number, max: number): number {
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  return Math.min(Math.floor(parsed), max);
+}

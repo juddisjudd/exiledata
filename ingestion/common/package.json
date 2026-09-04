@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@exiledata/schema": "workspace:*",
-    "aws4fetch": "^1.0.20"
+    "@exiledata/storage": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

@@ -1,15 +1,27 @@
 import type { FastifyPluginAsync } from "fastify";
-import type { VersionsResponse } from "@exiledata/types";
+import type { DatasetMetadata, Game, VersionsResponse } from "@exiledata/types";
+import type { DatasetReader } from "../../datasets.js";
+
+const GAMES: Game[] = ["poe1", "poe2"];
 
 /**
- * Placeholder — real implementation reads dataset metadata from storage/PostgreSQL
- * (see /migrations and the root README's dataset architecture section). No dataset has been
- * generated yet, so this returns an empty list rather than inventing data.
+ * Lists every published dataset with its metadata, so a client can pin to a version instead of
+ * assuming "latest" is stable. Metadata is read out of each dataset payload; datasets are
+ * immutable and cached after first read, so repeat calls do not re-fetch.
  */
-const versionsRoutes: FastifyPluginAsync = async (app) => {
-  app.get<{ Reply: VersionsResponse }>("/v1/versions", async () => ({
-    datasets: []
-  }));
-};
+export function createVersionsRoutes(reader: DatasetReader): FastifyPluginAsync {
+  return async (app) => {
+    app.get<{ Reply: VersionsResponse }>("/v1/versions", async () => {
+      const datasets: DatasetMetadata[] = [];
 
-export default versionsRoutes;
+      for (const game of GAMES) {
+        for (const version of await reader.listVersions(game)) {
+          const dataset = await reader.get(game, version);
+          if (dataset) datasets.push(dataset.metadata);
+        }
+      }
+
+      return { datasets };
+    });
+  };
+}

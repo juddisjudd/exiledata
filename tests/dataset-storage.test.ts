@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { LocalDatasetStorage } from "../ingestion/common/src/storage/local.js";
+import { LocalDatasetStorage } from "../packages/storage/src/local.js";
 
 describe("LocalDatasetStorage", () => {
   let dir: string | undefined;
