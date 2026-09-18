@@ -22,30 +22,48 @@
     url("/assets/fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
 }
 
+/* Themes. With no data-theme attribute the page follows the OS ("System"); the switch sets
+   data-theme="light" or "dark". Each color is light-dark(light, dark). The light theme is its own
+   design rather than the dark palette flipped: surfaces are white and sit above a tinted page,
+   lifted by a soft shadow, the same "raised is lighter" rule the dark theme follows. */
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
 
-  --bg-0: #0b0b0c;
-  --bg-1: #101012;
-  --bg-2: #151518;
-  --bg-3: #1b1b1f;
-  --bg-hover: #202025;
-  --bg-active: #26262c;
+  /* Page, raised surfaces (cards, code, footer, inputs), controls and inline code. */
+  --bg-0: light-dark(#f6f6f4, #0b0b0c);
+  --bg-1: light-dark(#ffffff, #101012);
+  --bg-2: light-dark(#efefec, #151518);
+  --bg-3: light-dark(#e7e7e3, #1b1b1f);
+  --bg-hover: light-dark(#e9e9e5, #202025);
+  --bg-active: light-dark(#dfdfda, #26262c);
 
-  --line-0: #1c1c21;
-  --line-1: #27272d;
-  --line-2: #35353d;
+  /* Bars sitting on a surface: code block and frame title bars. */
+  --chrome: light-dark(#fafaf8, #0b0b0c);
+  --table-bg: light-dark(#ffffff, transparent);
+  --table-head: light-dark(#fafaf8, #101012);
 
-  --fg-0: #f2f2f4;
-  --fg-1: #b9b9c1;
-  --fg-2: #80808a;
-  --fg-3: #56565f;
+  --line-0: light-dark(#e6e5e0, #1c1c21);
+  --line-1: light-dark(#dad9d3, #27272d);
+  --line-2: light-dark(#c4c2bb, #35353d);
 
-  --focus: #7f9dff;
-  --ok: #67d38a;
+  --fg-0: light-dark(#141416, #f2f2f4);
+  --fg-1: light-dark(#3c3c43, #b9b9c1);
+  --fg-2: light-dark(#62626a, #80808a);
+  --fg-3: light-dark(#8f8f97, #56565f);
 
-  --primary-hover: #ffffff;
-  --shadow-pop: 0 8px 30px rgba(0, 0, 0, 0.55);
+  --focus: light-dark(#3558d6, #7f9dff);
+  --ok: light-dark(#1a7f47, #67d38a);
+  --err: light-dark(#c2362c, #ef6a62);
+
+  --primary: light-dark(#141416, #f2f2f4);
+  --primary-fg: light-dark(#ffffff, #0b0b0c);
+  --primary-hover: light-dark(#2c2c31, #ffffff);
+
+  --selection: light-dark(rgba(53, 88, 214, 0.16), rgba(127, 157, 255, 0.28));
+  --shadow-soft: light-dark(rgba(20, 20, 30, 0.05), transparent);
+  --shadow-pop:
+    0 1px 2px var(--shadow-soft),
+    0 12px 32px light-dark(rgba(20, 20, 30, 0.08), rgba(0, 0, 0, 0.55));
 
   --font-ui: "Geist Variable", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "Cascadia Mono", Consolas, monospace;
@@ -63,32 +81,12 @@
   --gutter: 20px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
+:root[data-theme="light"] {
+  color-scheme: light;
+}
 
-    --bg-0: #fbfaf7;
-    --bg-1: #f3f1ec;
-    --bg-2: #ebe8e1;
-    --bg-3: #e2dfd6;
-    --bg-hover: #e4e1d9;
-    --bg-active: #d9d5cb;
-
-    --line-0: #e4e0d8;
-    --line-1: #d6d1c7;
-    --line-2: #c2bcb0;
-
-    --fg-0: #1b1b1f;
-    --fg-1: #3f3f47;
-    --fg-2: #6d6d78;
-    --fg-3: #9c9ca6;
-
-    --focus: #3b5bdb;
-    --ok: #1f8f4a;
-
-    --primary-hover: #000000;
-    --shadow-pop: 0 8px 30px rgba(30, 30, 40, 0.16);
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 *,
@@ -115,7 +113,7 @@ body {
 }
 
 ::selection {
-  background: rgba(127, 157, 255, 0.28);
+  background: var(--selection);
 }
 
 a {
@@ -217,6 +215,69 @@ a:focus-visible {
   background: var(--line-1);
 }
 
+/* Theme switch: System, Light, Dark. The active button is styled from the root attribute, so it
+   is right before theme.js runs; the script keeps aria-pressed in step for assistive tech. */
+.theme {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 8px;
+  padding: 2px;
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-2);
+}
+
+.theme button {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-1);
+  background: none;
+  color: var(--fg-2);
+  cursor: pointer;
+  transition:
+    background 80ms linear,
+    color 80ms linear;
+}
+
+.theme button:hover {
+  color: var(--fg-0);
+}
+
+.theme button:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: 1px;
+}
+
+:root:not([data-theme]) .theme [data-theme-choice="system"],
+:root[data-theme="light"] .theme [data-theme-choice="light"],
+:root[data-theme="dark"] .theme [data-theme-choice="dark"] {
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
+
+.theme svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Buttons */
 .btn {
   appearance: none;
@@ -249,16 +310,16 @@ a:focus-visible {
 }
 
 .btn.primary {
-  background: var(--fg-0);
-  color: var(--bg-0);
-  border-color: var(--fg-0);
+  background: var(--primary);
+  color: var(--primary-fg);
+  border-color: var(--primary);
   font-weight: 500;
 }
 
 .btn.primary:hover {
   background: var(--primary-hover);
   border-color: var(--primary-hover);
-  color: var(--bg-0);
+  color: var(--primary-fg);
 }
 
 .btn.sm {

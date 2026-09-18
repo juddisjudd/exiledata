@@ -16,6 +16,7 @@ export const PATHS = {
   docsCss: path.join(docsDir, "public", "docs.css"),
   landing: path.join(docsDir, "..", "web", "public", "index.html"),
   baseCss: path.join(docsDir, "..", "web", "public", "base.css"),
+  themeJs: path.join(docsDir, "..", "web", "public", "theme.js"),
   fonts: path.join(docsDir, "..", "web", "public", "assets", "fonts"),
   openapi: path.join(docsDir, "..", "api", "openapi.json"),
   out: path.join(docsDir, "dist", "site")
@@ -48,6 +49,11 @@ function markSection(header: string, slug: string | undefined): string {
   const href = slug === "api" || slug === "changelog" ? `/${slug}` : "/";
   return header.replace(`href="${href}">`, `href="${href}" aria-current="true">`);
 }
+
+/** Applies a saved theme before first paint; theme.js (from the landing page) handles the switch. */
+const THEME_BOOT =
+  "(function(){var m=/(?:^|; )exiledata_theme=(light|dark)/.exec(document.cookie);" +
+  'if(m)document.documentElement.setAttribute("data-theme",m[1])})()';
 
 const FAVICON =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0b0c'/%3E%3Cpath d='M4.5 3.5h7v1.75H6.25v1.9h4.5v1.7h-4.5v1.9h5.25v1.75h-7z' fill='%23f2f2f4'/%3E%3C/svg%3E";
@@ -135,12 +141,15 @@ function layout(options: {
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
     ${options.noindex ? `<meta name="robots" content="noindex" />` : ""}
-    <meta name="theme-color" content="#0b0b0c" />
+    <meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
+    <script>${THEME_BOOT}</script>
     <link rel="icon" href="${FAVICON}" />
     <link rel="preload" href="https://exiledata.dev/assets/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="https://exiledata.dev/assets/fonts/geist-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/base.css" />
     <link rel="stylesheet" href="/docs.css" />
+    <script src="/theme.js" defer></script>
   </head>
   <body>
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
@@ -221,6 +230,7 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
 
   await writeFile(path.join(outDir, "openapi.json"), openapiSource);
   await copyFile(PATHS.baseCss, path.join(outDir, "base.css"));
+  await copyFile(PATHS.themeJs, path.join(outDir, "theme.js"));
   await copyFile(PATHS.docsCss, path.join(outDir, "docs.css"));
   for (const font of await readdir(PATHS.fonts)) {
     await copyFile(path.join(PATHS.fonts, font), path.join(outDir, "assets", "fonts", font));

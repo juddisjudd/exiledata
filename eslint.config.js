@@ -24,5 +24,12 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-explicit-any": "warn"
     }
+  },
+  {
+    files: ["apps/web/public/**/*.js"],
+    languageOptions: {
+      sourceType: "script",
+      globals: { document: "readonly", location: "readonly" }
+    }
   }
 );

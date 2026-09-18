@@ -24,4 +24,21 @@ The landing page and docs.exiledata.dev look like one site, and three things kee
   `public/_headers` adds the CORS header that cross-origin font loading needs, and a year of
   caching; give a changed font file a new name. Each site's own copy is the fallback.
 
+## Themes
+
+System (the default), Light and Dark, chosen from the switch in the shared header.
+
+- Every color token in `public/base.css` is `light-dark(light, dark)`. With no `data-theme` on
+  `<html>` the page follows the OS; `data-theme="light"` or `"dark"` forces one.
+- The light theme is designed on its own terms, not the dark one flipped: white surfaces raised
+  above a tinted page with a soft shadow, white table bodies, an ink primary button. The admin
+  usage grid is blue in light and white in dark (`--heat`).
+- The choice is stored in the `exiledata_theme` cookie on `.exiledata.dev`, so it carries between
+  the landing page, the docs and the admin panel. System means no cookie. An inline script in each
+  page's `<head>` applies it before first paint; `public/theme.js` handles the switch and is
+  copied into the docs. The admin page (`apps/api/public/admin.html`) keeps its own copy of the
+  tokens and script because it is served by the API under its own CSP.
+- `tests/theme.test.ts` fails if the dark palette changes, if light surfaces stop sitting above
+  the page, or if light text contrast drops below its floors.
+
 Run locally: `pnpm --filter @exiledata/web dev` (http://localhost:4000).
