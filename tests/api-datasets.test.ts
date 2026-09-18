@@ -32,6 +32,28 @@ function baseItem(id: string, name: string, itemClass: string) {
   };
 }
 
+/** Every field a record can carry, including nested free-form `ext` values. */
+const FULL_RECORD = {
+  ...baseItem("Metadata/Items/Rings/FourRing1", "Iron Ring", "Ring"),
+  source: [
+    {
+      name: "poe2-ggpk-extract",
+      version: "4.5.10.0",
+      retrievedAt: "2026-09-18T12:00:00.000Z",
+      locator: "base_items.json#Metadata/Items/Rings/FourRing1"
+    }
+  ],
+  ext: {
+    domain: "item",
+    drop_level: 3,
+    implicits: ["RingImplicitPhysicalDamage1"],
+    properties: { nested: { deeper: [1, "two", null, { three: true }] } },
+    grants_buff: null,
+    visual_identity: { id: "FourRing1", dds_file: "Art/2DItems/Rings/IronRing.dds" }
+  },
+  derived: { note: "kept" }
+};
+
 async function publish(storage: LocalDatasetStorage, gameVersion: string, entities: unknown[]) {
   await storage.put(
     metadata(gameVersion),
@@ -53,9 +75,7 @@ describe("dataset-backed endpoints", () => {
       baseItem("Metadata/Items/Amulets/FourAmulet2", "Azure Amulet", "Amulet"),
       baseItem("Metadata/Items/Rings/FourRing1", "Iron Ring", "Ring")
     ]);
-    await publish(storage, "4.5.10.0", [
-      baseItem("Metadata/Items/Rings/FourRing1", "Iron Ring", "Ring")
-    ]);
+    await publish(storage, "4.5.10.0", [FULL_RECORD]);
 
     db = await createTestDb();
     headers = { "x-api-key": (await issueKey(db)).secret };
@@ -76,6 +96,20 @@ describe("dataset-backed endpoints", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.json().meta).toEqual({ game: "poe2", gameVersion: "4.5.10.0", total: 1 });
+  });
+
+  it("returns records exactly as stored, including free-form ext and derived", async () => {
+    const res = await get("/v1/poe2/bases");
+
+    expect(res.json().data).toEqual([FULL_RECORD]);
+  });
+
+  it("rejects out-of-range paging with invalid_request", async () => {
+    for (const query of ["limit=0", "limit=1001", "limit=abc", "offset=-1"]) {
+      const res = await get(`/v1/poe2/bases?${query}`);
+      expect(res.statusCode, query).toBe(400);
+      expect(res.json().error).toBe("invalid_request");
+    }
   });
 
   it("serves an explicitly requested patch", async () => {

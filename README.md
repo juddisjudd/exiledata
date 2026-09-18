@@ -52,7 +52,9 @@ flowchart LR
 - **`packages/client`** — the TypeScript SDK consuming the API.
 - **`packages/cli`** — operations CLI: `ingest`, `datasets list|delete`, `db migrate`,
   `keys list|create|limit|revoke`.
-- **`apps/web`**, **`apps/docs`** — placeholder marketing site and documentation app.
+- **`apps/web`** — the landing page at exiledata.dev. **`apps/docs`** — the documentation at
+  docs.exiledata.dev, rendered from markdown plus an API reference generated from
+  `apps/api/openapi.json`.
 - **PostgreSQL** — holds application/service state (API clients, keys, usage), _not_ game data
   itself. Large immutable datasets are served from versioned storage, not rows in Postgres — see
   "Database" below.
@@ -73,8 +75,8 @@ Early stage, but live at `https://api.exiledata.dev`:
 ```
 apps/
   api/     — HTTP API (Fastify)
-  web/     — placeholder marketing site
-  docs/    — placeholder documentation app
+  web/     — landing page (static)
+  docs/    — documentation site (markdown + OpenAPI, built to static HTML)
 packages/
   schema/  — canonical ExileData schema
   types/   — shared types (re-exports schema + API and admin wire types)
@@ -159,13 +161,13 @@ Deployment targets are chosen per workload rather than one platform for everythi
 | Generated datasets      | Cloudflare R2                      | See "Dataset architecture" above                                                |
 | `apps/api` + PostgreSQL | Existing dedicated server          | Long-running Fastify process + stateful DB; not a natural fit for Workers today |
 
-`apps/web` is a pure static-assets Worker (no server-side code). `apps/docs` has a small Worker
-(`apps/docs/worker.ts`) that maps a URL path to `content/{slug}.md` via the assets binding — it
-mirrors `src/server.ts`, which remains the local-dev entrypoint (`pnpm dev`).
+`apps/web` and `apps/docs` are both static-assets Workers with no server-side code. `apps/docs` is
+built first (`pnpm --filter @exiledata/docs build` writes `dist/site`); the deploy workflow runs
+that step. See `apps/docs/README.md`.
 
 To deploy manually from either app directory: `pnpm deploy` (runs `wrangler deploy`; requires
 `wrangler login` or `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` env vars locally). CI deploys
-automatically on push to `main` when files under `apps/web/` or `apps/docs/` change — this
+automatically on push to `main` when files under `apps/web/`, `apps/docs/` or `apps/api/openapi.json` change — this
 requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` to be set as GitHub Actions secrets.
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for the current status and remaining setup steps (custom
@@ -198,6 +200,17 @@ pnpm dev:api
 # -> http://localhost:3000/health, dashboard at http://localhost:3000/admin
 ```
 
+### Update the OpenAPI document
+
+Route schemas in `apps/api` are the source of the OpenAPI document. After changing a public
+route, regenerate the committed copy, which the docs site renders:
+
+```sh
+pnpm openapi   # writes apps/api/openapi.json
+```
+
+A test fails while the committed file is stale.
+
 ### Ingest a dataset
 
 ```sh
@@ -208,7 +221,7 @@ pnpm exiledata datasets list
 Writes to the storage `DATASET_STORAGE_DRIVER` selects. Set it to `r2` for one command to
 publish to production, e.g. `DATASET_STORAGE_DRIVER=r2 pnpm exiledata ingest ...`.
 
-### Run the web/docs placeholders
+### Run the landing page and docs
 
 ```sh
 pnpm --filter @exiledata/web dev    # http://localhost:4000

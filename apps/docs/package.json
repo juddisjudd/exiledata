@@ -2,19 +2,18 @@
   "name": "@exiledata/docs",
   "version": "0.0.0",
   "private": true,
-  "description": "ExileData documentation application (API, SDK, schema, datasets, auth, versioning, changelogs, ingestion sources)",
+  "description": "ExileData documentation site: markdown pages plus an API reference generated from the OpenAPI document",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsx src/server.ts",
-    "start": "node dist/server.js",
+    "build": "tsx src/cli.ts build",
+    "dev": "tsx watch src/cli.ts dev",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rimraf dist",
     "cf:dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4",
+    "marked": "^18.0.13",
     "rimraf": "^6.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
