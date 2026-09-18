@@ -52,12 +52,12 @@ Reading the latest patch is convenient, but the data changes as soon as a new pa
 
 ## Rebuilds
 
-A patch can be rebuilt, for example to fix how a field is read from the game files. A rebuild replaces the dataset for that patch and changes its `generatedAt`. Records can change in a rebuild even though the patch number stays the same. Rebuilds are listed in the changelog.
+A patch can be rebuilt, for example to fix how a field is read from the game files. A rebuild replaces the dataset for that patch and changes its `generatedAt`, and records can change even though the patch number stays the same.
 
-During the preview, older patches can also be removed. Removals are listed in the changelog too.
+During the preview, older patches can also be removed. The changelog lists every rebuild and removal.
 
 ## Schema version
 
 `schemaVersion` says which version of the [record format](./schema.md) a dataset follows. It changes when the shape of records changes, not when game data changes. Every record carries it in `version.schemaVersion` as well.
 
-During the preview, schema changes can break clients. Each one is described in the changelog with what to update.
+Schema changes can break clients while ExileData is in preview, and each one gets a changelog entry that says what to update.

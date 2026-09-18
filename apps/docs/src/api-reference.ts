@@ -211,7 +211,7 @@ export function renderApiReference(doc: OpenApiDocument): { html: string; headin
   const headings: Heading[] = [];
   let html =
     `<h1>API reference</h1>\n` +
-    `<p>Every public endpoint, generated from the OpenAPI document the API itself serves. ` +
+    `<p>This page lists every public endpoint and is generated from the OpenAPI document the API serves. ` +
     `Base URL: <code>${escapeHtml(baseUrl)}</code>. Schema version ` +
     `<code>${escapeHtml(doc.info.version)}</code>.</p>\n` +
     `<p>Download the document as <a href="/openapi.json">openapi.json</a>, or read it live at ` +

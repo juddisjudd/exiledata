@@ -76,7 +76,7 @@ const SCHEMAS = [
         type: "object",
         additionalProperties: true,
         description:
-          "Every other field from the game files, under its original name. Not a stable contract."
+          "Every other field from the game files, under its original name. It is not a stable contract."
       },
       derived: {
         type: "object",

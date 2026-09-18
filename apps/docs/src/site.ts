@@ -214,7 +214,6 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
       noindex: true,
       body:
         `<article class="prose lost"><p class="label mono">404</p><h1>Page not found.</h1>` +
-        `<p>Nothing lives at this address in the docs.</p>` +
         `<p><a class="btn primary lg" href="/">Go to the overview</a></p></article>`
     })
   );
