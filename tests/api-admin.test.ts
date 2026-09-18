@@ -175,7 +175,19 @@ describe("admin api", () => {
     expect(res.statusCode).toBe(200);
     expect(res.headers["content-type"]).toContain("text/html");
     expect(res.headers["content-security-policy"]).toContain("connect-src 'self'");
+    expect(res.headers["content-security-policy"]).toContain("font-src 'self'");
     expect(res.headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+  });
+
+  it("serves the dashboard fonts and nothing else from the font path", async () => {
+    const font = await app.inject({ url: "/admin/fonts/geist-latin-wght-normal.woff2" });
+
+    expect(font.statusCode).toBe(200);
+    expect(font.headers["content-type"]).toBe("font/woff2");
+    expect(font.rawPayload.subarray(0, 4).toString("latin1")).toBe("wOF2");
+    for (const name of ["OFL-Geist.txt", "..%2Fadmin.html", "nope.woff2"]) {
+      expect((await app.inject({ url: `/admin/fonts/${name}` })).statusCode).toBe(404);
+    }
   });
 });
 

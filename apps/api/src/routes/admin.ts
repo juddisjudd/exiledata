@@ -30,6 +30,7 @@ const DASHBOARD_CSP = [
   "default-src 'none'",
   "script-src 'unsafe-inline'",
   "style-src 'unsafe-inline'",
+  "font-src 'self'",
   "connect-src 'self'",
   "img-src data:",
   "base-uri 'none'",
@@ -37,13 +38,19 @@ const DASHBOARD_CSP = [
   "frame-ancestors 'none'"
 ].join("; ");
 
+const FONTS = ["geist-latin-wght-normal.woff2", "geist-mono-latin-wght-normal.woff2"];
+
 /**
  * `GET /admin` serves the dashboard page, which holds no data until the operator enters the
  * admin token. `/admin/api/*` is the JSON API behind it and the CLI's `keys` commands, guarded
  * by `ADMIN_TOKEN` as a bearer token.
  */
 export function createAdminRoutes(deps: AdminRoutesDeps): FastifyPluginAsync {
-  const page = readFileSync(new URL("../../public/admin.html", import.meta.url), "utf8");
+  const publicDir = new URL("../../public/", import.meta.url);
+  const page = readFileSync(new URL("admin.html", publicDir), "utf8");
+  const fonts = new Map(
+    FONTS.map((name) => [name, readFileSync(new URL(`fonts/${name}`, publicDir))])
+  );
 
   return async (app) => {
     app.get("/admin", async (_request, reply) =>
@@ -55,6 +62,15 @@ export function createAdminRoutes(deps: AdminRoutesDeps): FastifyPluginAsync {
         .header("referrer-policy", "no-referrer")
         .send(page)
     );
+
+    app.get<{ Params: { name: string } }>("/admin/fonts/:name", async (request, reply) => {
+      const font = fonts.get(request.params.name);
+      if (!font) return reply.code(404).send({ error: "not_found", message: "No such font." });
+      return reply
+        .type("font/woff2")
+        .header("cache-control", "public, max-age=31536000, immutable")
+        .send(font);
+    });
 
     app.register(async (api) => registerAdminApi(api, deps), { prefix: "/admin/api" });
   };
