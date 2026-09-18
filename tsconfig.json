@@ -33,6 +33,9 @@
     },
     {
       "path": "apps/docs"
+    },
+    {
+      "path": "apps/data"
     }
   ]
 }

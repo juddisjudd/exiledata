@@ -15,6 +15,10 @@ HTML in `dist/site`, which Cloudflare serves as static assets. There is no Worke
 - `apps/web/public/base.css` and `apps/web/public/assets/fonts/`: shared with the landing page,
   so both sites keep the same tokens and fonts. `public/docs.css` adds the docs layout, which uses
   the same 960px column as the landing page.
+- `src/downloads.ts`: the file browser on `/downloads`, which replaces the
+  `<!-- downloads-browser -->` marker in `content/downloads.md`. It runs in the browser and reads
+  `https://data.exiledata.dev/index.json` and each patch's manifest, so a newly published patch
+  shows up without a docs deploy.
 
 ## Commands
 

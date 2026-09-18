@@ -34,6 +34,7 @@ flowchart LR
     Extract --> Source
     Dataset --> Storage[(Dataset storage: R2)]
     Storage --> API[apps/api]
+    Storage --> Downloads[apps/data]
     API --> SDK[packages/client]
     Postgres[(PostgreSQL: keys, usage)] --- API
 ```
@@ -50,8 +51,10 @@ flowchart LR
 - **`apps/api`** — the versioned HTTP API (`/v1/...`), designed around dataset versions rather
   than an assumed-immutable "latest", plus the admin API and dashboard (`/admin`).
 - **`packages/client`** — the TypeScript SDK consuming the API.
-- **`packages/cli`** — operations CLI: `ingest`, `datasets list|delete`, `db migrate`,
-  `keys list|create|limit|revoke`.
+- **`packages/cli`** — operations CLI: `ingest`, `datasets list|delete`, `downloads publish|list`,
+  `db migrate`, `keys list|create|limit|revoke`.
+- **`apps/data`** — the download server at data.exiledata.dev: a Worker serving published
+  patches as JSON files from R2, with no key and no rate limit.
 - **`apps/web`** — the landing page at exiledata.dev. **`apps/docs`** — the documentation at
   docs.exiledata.dev, rendered from markdown plus an API reference generated from
   `apps/api/openapi.json`.
@@ -69,6 +72,8 @@ Early stage, but live at `https://api.exiledata.dev`:
   still return `501 Not Implemented`.
 - Every `/v1` route requires an API key, with a per-key rate limit and hourly usage counts.
   Keys are managed through the admin dashboard at `/admin` or the CLI's `keys` commands.
+- Every exported game file of each patch, plus the normalized records, can be downloaded without
+  a key from `https://data.exiledata.dev`, browsed at `https://docs.exiledata.dev/downloads`.
 
 ## Repository structure
 
@@ -77,6 +82,7 @@ apps/
   api/     — HTTP API (Fastify)
   web/     — landing page (static)
   docs/    — documentation site (markdown + OpenAPI, built to static HTML)
+  data/    — download server for data.exiledata.dev (Worker over R2)
 packages/
   schema/  — canonical ExileData schema
   types/   — shared types (re-exports schema + API and admin wire types)
@@ -112,6 +118,20 @@ information (see `DatasetMetadata` in `packages/schema`).
 Re-ingesting a patch replaces its dataset (`exiledata ingest --overwrite`), and `generatedAt`
 tells the builds apart. The API notices a replaced dataset through the storage ETag within a
 minute, without a restart. "Latest" means the highest patch, compared numerically.
+
+### Downloads
+
+Published patches also live in the same bucket, under their own prefix:
+
+```
+downloads/index.json
+downloads/{game}/{gameVersion}/manifest.json
+downloads/{game}/{gameVersion}/{game}-{gameVersion}.zip
+downloads/{game}/{gameVersion}/...   every exported file, and normalized/
+```
+
+`exiledata downloads publish` writes them and `apps/data` serves them publicly; see their READMEs.
+The API's datasets stay private: the download server reads nothing outside `downloads/`.
 
 Storage is pluggable (`packages/storage`): a filesystem driver for local development, and a
 [Cloudflare R2](https://developers.cloudflare.com/r2/) driver (S3-compatible, no egress fees) for
@@ -158,6 +178,7 @@ Deployment targets are chosen per workload rather than one platform for everythi
 | Workload                | Target                             | Notes                                                                           |
 | ----------------------- | ---------------------------------- | ------------------------------------------------------------------------------- |
 | `apps/web`, `apps/docs` | Cloudflare Workers (static assets) | See each app's `wrangler.jsonc`; deployed via `.github/workflows/deploy.yml`    |
+| `apps/data`             | Cloudflare Worker + R2 binding     | Public downloads; deployed by the same workflow                                 |
 | Generated datasets      | Cloudflare R2                      | See "Dataset architecture" above                                                |
 | `apps/api` + PostgreSQL | Existing dedicated server          | Long-running Fastify process + stateful DB; not a natural fit for Workers today |
 
@@ -165,9 +186,9 @@ Deployment targets are chosen per workload rather than one platform for everythi
 built first (`pnpm --filter @exiledata/docs build` writes `dist/site`); the deploy workflow runs
 that step. See `apps/docs/README.md`.
 
-To deploy manually from either app directory: `pnpm deploy` (runs `wrangler deploy`; requires
+To deploy manually from any of the three app directories: `pnpm deploy` (runs `wrangler deploy`; requires
 `wrangler login` or `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` env vars locally). CI deploys
-automatically on push to `main` when files under `apps/web/`, `apps/docs/` or `apps/api/openapi.json` change — this
+automatically on push to `main` when files under `apps/web/`, `apps/docs/`, `apps/data/` or `apps/api/openapi.json` change — this
 requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` to be set as GitHub Actions secrets.
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for the current status and remaining setup steps (custom
@@ -220,6 +241,15 @@ pnpm exiledata datasets list
 
 Writes to the storage `DATASET_STORAGE_DRIVER` selects. Set it to `r2` for one command to
 publish to production, e.g. `DATASET_STORAGE_DRIVER=r2 pnpm exiledata ingest ...`.
+
+### Publish downloads
+
+```sh
+pnpm exiledata downloads publish --game poe2 --extract-dir S:/POE2-Extracted/4.5.5.3-stripped
+pnpm exiledata downloads list
+```
+
+Run it after `ingest` for the same patch, with the same `DATASET_STORAGE_DRIVER`.
 
 ### Run the landing page and docs
 

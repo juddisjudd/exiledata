@@ -6,6 +6,7 @@ on:
     paths:
       - "apps/web/**"
       - "apps/docs/**"
+      - "apps/data/**"
       - "apps/api/openapi.json"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
@@ -59,3 +60,26 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/docs
+
+  deploy-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Only the Worker. The files it serves are uploaded with `exiledata downloads publish`.
+      - name: Deploy exiledata-data
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/data
