@@ -1,7 +1,5 @@
 # Downloads
 
-Every published patch of both games, as JSON files. Download them directly: no API key and no rate limit.
-
 <!-- downloads-browser -->
 
 ## Addresses

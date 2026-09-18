@@ -140,7 +140,7 @@ function layout(options: {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
-    <meta name="description" content="${escapeHtml(description)}" />
+    ${description ? `<meta name="description" content="${escapeHtml(description)}" />` : ""}
     ${options.noindex ? `<meta name="robots" content="noindex" />` : ""}
     <meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
