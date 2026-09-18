@@ -1,6 +1,7 @@
 import { AwsClient } from "aws4fetch";
 import type { DatasetMetadata, Game } from "@exiledata/schema";
-import type { DatasetStorage } from "./types.js";
+import { datasetKey } from "./keys.js";
+import type { DatasetStorage, StoredDataset } from "./types.js";
 
 export interface R2DatasetStorageConfig {
   accountId: string;
@@ -13,7 +14,7 @@ export interface R2DatasetStorageConfig {
  * R2-backed dataset storage using R2's S3-compatible API. Uses `aws4fetch` (a minimal SigV4
  * signer) rather than the full AWS SDK — R2 access doesn't need most of what the AWS SDK offers.
  *
- * Object key layout: `{game}/{datasetVersion}/dataset.json`, matching the local driver.
+ * Object key layout: `{game}/{gameVersion}/dataset.json`, matching the local driver.
  */
 export class R2DatasetStorage implements DatasetStorage {
   private readonly client: AwsClient;
@@ -29,12 +30,8 @@ export class R2DatasetStorage implements DatasetStorage {
     this.endpoint = `https://${config.accountId}.r2.cloudflarestorage.com/${config.bucketName}`;
   }
 
-  private key(game: Game, datasetVersion: string): string {
-    return `${game}/${datasetVersion}/dataset.json`;
-  }
-
   async put(metadata: DatasetMetadata, data: string): Promise<void> {
-    const key = this.key(metadata.game, metadata.datasetVersion);
+    const key = datasetKey(metadata.game, metadata.gameVersion);
     const response = await this.client.fetch(`${this.endpoint}/${key}`, {
       method: "PUT",
       body: data,
@@ -48,8 +45,8 @@ export class R2DatasetStorage implements DatasetStorage {
     }
   }
 
-  async get(game: Game, datasetVersion: string): Promise<string | undefined> {
-    const key = this.key(game, datasetVersion);
+  async get(game: Game, gameVersion: string): Promise<string | undefined> {
+    const key = datasetKey(game, gameVersion);
     const response = await this.client.fetch(`${this.endpoint}/${key}`);
 
     if (response.status === 404) return undefined;
@@ -62,25 +59,54 @@ export class R2DatasetStorage implements DatasetStorage {
     return response.text();
   }
 
-  async listVersions(game: Game): Promise<string[]> {
-    const prefix = `${game}/`;
-    const response = await this.client.fetch(
-      `${this.endpoint}?list-type=2&prefix=${encodeURIComponent(prefix)}&delimiter=/`
-    );
+  async list(game: Game): Promise<StoredDataset[]> {
+    const datasets: StoredDataset[] = [];
+    let continuationToken: string | undefined;
 
-    if (!response.ok) {
+    do {
+      const params = new URLSearchParams({ "list-type": "2", prefix: `${game}/` });
+      if (continuationToken) params.set("continuation-token", continuationToken);
+
+      const response = await this.client.fetch(`${this.endpoint}?${params}`);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to list datasets for "${game}": ${response.status} ${response.statusText}`
+        );
+      }
+
+      const xml = await response.text();
+      for (const [, block = ""] of xml.matchAll(/<Contents>([\s\S]*?)<\/Contents>/g)) {
+        const gameVersion = /^[^/]+\/([^/]+)\/dataset\.json$/.exec(tag(block, "Key") ?? "")?.[1];
+        if (!gameVersion) continue;
+
+        datasets.push({
+          game,
+          gameVersion,
+          etag: (tag(block, "ETag") ?? "").replace(/&quot;|"/g, ""),
+          size: Number(tag(block, "Size") ?? 0),
+          lastModified: tag(block, "LastModified") ?? ""
+        });
+      }
+
+      continuationToken =
+        tag(xml, "IsTruncated") === "true" ? tag(xml, "NextContinuationToken") : undefined;
+    } while (continuationToken);
+
+    return datasets;
+  }
+
+  async delete(game: Game, gameVersion: string): Promise<void> {
+    const key = datasetKey(game, gameVersion);
+    const response = await this.client.fetch(`${this.endpoint}/${key}`, { method: "DELETE" });
+
+    if (!response.ok && response.status !== 404) {
       throw new Error(
-        `Failed to list datasets for "${game}": ${response.status} ${response.statusText}`
+        `Failed to delete dataset "${key}": ${response.status} ${response.statusText}`
       );
     }
-
-    const xml = await response.text();
-    const prefixes = [...xml.matchAll(/<Prefix>([^<]+)<\/Prefix>/g)]
-      .map((match) => match[1])
-      .filter((value): value is string => value !== undefined);
-
-    return prefixes
-      .map((p) => p.slice(prefix.length).replace(/\/$/, ""))
-      .filter((version) => version.length > 0);
   }
+}
+
+function tag(xml: string, name: string): string | undefined {
+  return new RegExp(`<${name}>([^<]*)</${name}>`).exec(xml)?.[1];
 }

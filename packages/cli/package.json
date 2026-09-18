@@ -16,11 +16,16 @@
   },
   "dependencies": {
     "@exiledata/ingestion-common": "workspace:*",
+    "@exiledata/ingestion-poe1": "workspace:*",
     "@exiledata/ingestion-poe2": "workspace:*",
     "@exiledata/schema": "workspace:*",
-    "commander": "^12.1.0"
+    "@exiledata/storage": "workspace:*",
+    "@exiledata/types": "workspace:*",
+    "commander": "^12.1.0",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.23.1",
     "rimraf": "^6.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

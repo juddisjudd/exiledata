@@ -26,18 +26,16 @@ handling it separately.
 ```mermaid
 flowchart LR
     subgraph Upstream
-        RePoE
-        PoEDB
+        Extract[GGPK extracts]
     end
     subgraph Ingestion
         Source --> Parser --> Normalizer --> Validator --> Dataset
     end
-    Dataset --> API[apps/api]
-    Dataset --> Storage[(Versioned dataset storage)]
+    Extract --> Source
+    Dataset --> Storage[(Dataset storage: R2)]
+    Storage --> API[apps/api]
     API --> SDK[packages/client]
-    RePoE --> Source
-    PoEDB --> Source
-    Postgres[(PostgreSQL)] --- API
+    Postgres[(PostgreSQL: keys, usage)] --- API
 ```
 
 - **`packages/schema`** — the canonical, source-agnostic ExileData data model. The most
@@ -45,26 +43,30 @@ flowchart LR
   conventions.
 - **`packages/types`** — shared TypeScript types re-exporting the schema, plus API wire types.
 - **`ingestion/common`, `ingestion/poe1`, `ingestion/poe2`** — the ingestion pipeline
-  (`source → parser → normalized model → validator → dataset`), with PoE 1 and PoE 2 as
-  independent implementations of shared interfaces.
+  (`source → parser → normalized model → validator → dataset`). Both games' GGPK extracts share
+  one format, so the extract stage lives in `ingestion/common` and each game package binds it.
+- **`packages/storage`** — dataset storage drivers (local filesystem, R2), shared by ingestion
+  and the API.
 - **`apps/api`** — the versioned HTTP API (`/v1/...`), designed around dataset versions rather
-  than an assumed-immutable "latest".
+  than an assumed-immutable "latest", plus the admin API and dashboard (`/admin`).
 - **`packages/client`** — the TypeScript SDK consuming the API.
-- **`packages/cli`** — developer/data-operations CLI (`exiledata ingest|validate|build|diff|...`).
+- **`packages/cli`** — operations CLI: `ingest`, `datasets list|delete`, `db migrate`,
+  `keys list|create|limit|revoke`.
 - **`apps/web`**, **`apps/docs`** — placeholder marketing site and documentation app.
-- **PostgreSQL** — holds application/service state (API clients, keys, dataset metadata, usage),
-  _not_ game data itself. Large immutable datasets are served from versioned storage, not rows in
-  Postgres — see "Database" below.
+- **PostgreSQL** — holds application/service state (API clients, keys, usage), _not_ game data
+  itself. Large immutable datasets are served from versioned storage, not rows in Postgres — see
+  "Database" below.
 
 ## Current project status
 
-Early-stage scaffold. The canonical schema, ingestion interfaces, API route structure, SDK
-architecture, and CLI commands are established, but:
+Early stage, but live at `https://api.exiledata.dev`:
 
-- no real ingestion from RePoE/PoEDB is implemented yet,
-- no dataset has been generated,
-- most API endpoints return `501 Not Implemented`,
-- authentication is architected but not enforced yet.
+- Base items for both games are ingested from local GGPK extracts and published to R2, one
+  dataset per game patch.
+- `GET /v1/{game}/bases` and `GET /v1/versions` serve them. `items`, `mods`, `gems` and `skills`
+  still return `501 Not Implemented`.
+- Every `/v1` route requires an API key, with a per-key rate limit and hourly usage counts.
+  Keys are managed through the admin dashboard at `/admin` or the CLI's `keys` commands.
 
 ## Repository structure
 
@@ -75,17 +77,18 @@ apps/
   docs/    — placeholder documentation app
 packages/
   schema/  — canonical ExileData schema
-  types/   — shared types (re-exports schema + API wire types)
+  types/   — shared types (re-exports schema + API and admin wire types)
+  storage/ — dataset storage drivers (local, R2)
   client/  — TypeScript SDK
-  cli/     — developer CLI
+  cli/     — operations CLI
 ingestion/
-  common/  — shared ingestion pipeline interfaces
-  poe1/    — PoE 1 ingestion (architecture only)
-  poe2/    — PoE 2 ingestion (architecture only)
+  common/  — pipeline interfaces, runner, and the shared GGPK extract stage
+  poe1/    — PoE 1 ingestion
+  poe2/    — PoE 2 ingestion
 data/fixtures/ — small, hand-written test fixtures (never generated datasets)
 migrations/    — PostgreSQL schema migrations (application state only)
-docker/        — local infrastructure (PostgreSQL)
-tests/         — cross-package tests (schema, API health, config, SDK, boundaries)
+docker/        — local infrastructure (PostgreSQL) and the API image
+tests/         — cross-package tests; database tests run on in-process Postgres (PGlite)
 .github/workflows/ — CI
 ```
 
@@ -94,37 +97,57 @@ tests/         — cross-package tests (schema, API health, config, SDK, boundar
 Generated datasets are **never committed to this repository**. Git holds source code, schema,
 migrations, ingestion logic, tests, and small fixtures only.
 
-Datasets are conceptually organized as:
+There is one dataset per game patch, stored as:
 
 ```
-dataset/
-  {game}/
-    {game-version}/
-      {dataset-version}/
+{game}/{gameVersion}/dataset.json
 ```
 
-e.g. `poe2/0.x/2026.09.03.1/`. Every dataset carries metadata: `game`, `gameVersion`,
-`datasetVersion`, `generatedAt`, `schemaVersion`, and source information (see `DatasetMetadata`
-in `packages/schema`). The exact versioning scheme is expected to evolve.
+e.g. `poe2/4.5.5.3/dataset.json`. The patch comes from the extract's `version.txt`. Every
+dataset carries metadata: `game`, `gameVersion`, `generatedAt`, `schemaVersion`, and source
+information (see `DatasetMetadata` in `packages/schema`).
 
-Actual storage is pluggable (`ingestion/common/src/storage`): a filesystem driver for local
-development, and a [Cloudflare R2](https://developers.cloudflare.com/r2/) driver (S3-compatible,
-no egress fees) for production, selected via `DATASET_STORAGE_DRIVER` in `.env`.
+Re-ingesting a patch replaces its dataset (`exiledata ingest --overwrite`), and `generatedAt`
+tells the builds apart. The API notices a replaced dataset through the storage ETag within a
+minute, without a restart. "Latest" means the highest patch, compared numerically.
+
+Storage is pluggable (`packages/storage`): a filesystem driver for local development, and a
+[Cloudflare R2](https://developers.cloudflare.com/r2/) driver (S3-compatible, no egress fees) for
+production, selected via `DATASET_STORAGE_DRIVER` in `.env`.
 
 ## Database
 
-PostgreSQL is used for **application/service state only**: API clients, API keys, dataset
-version metadata, usage tracking, and permissions (see `migrations/0001_initial.sql`). It does
-not store item/gem/mod/passive data — that belongs in generated, versioned datasets served from
-optimized storage. This keeps the database small and simple, and avoids coupling application
-state churn to dataset churn.
+PostgreSQL is used for **application/service state only**: API clients, API keys, and hourly
+usage counts (see `migrations/`). It does not store item/gem/mod/passive data — that belongs in
+generated, versioned datasets served from optimized storage. This keeps the database small and
+simple, and avoids coupling application state churn to dataset churn.
+
+Apply migrations with `pnpm exiledata db migrate`. It records what it applied in
+`schema_migrations` and skips those on the next run.
 
 ## Authentication
 
-The API is designed for authenticated, rate-limited access from day one, even while free. See
-`apps/api/src/plugins/auth.ts` for the current (architecture-only) state, and
-`migrations/0001_initial.sql` for the planned `api_keys` shape (revocation, per-key rate limits,
-usage tracking). There is no billing system.
+Every `/v1` route needs an API key, sent as `x-api-key: exd_...` or `Authorization: Bearer
+exd_...`. `/health`, `/status` and `/admin` stay open. There is no billing system.
+
+- **Keys** are stored as an HMAC-SHA256 of the key under `API_KEY_SECRET`, plus a short display
+  prefix. The full key is shown once, when it is issued.
+- **Rate limits** are per key, per minute, in memory. A second API replica would need a shared
+  counter.
+- **Usage** is counted per key per hour in `api_key_usage_hourly`, written in batches every
+  10 seconds and on shutdown.
+- **Admin** routes under `/admin/api` take `ADMIN_TOKEN` as a bearer token and answer 503 while
+  it is unset. The dashboard at `/admin` and the CLI both use them:
+
+```sh
+pnpm exiledata keys create --client poe-overlay --rate-limit 300
+pnpm exiledata keys list
+pnpm exiledata keys limit <key-id> 600
+pnpm exiledata keys revoke <key-id>
+```
+
+The CLI targets `https://api.exiledata.dev` unless `EXILEDATA_API_URL` or `--api-url` says
+otherwise.
 
 ## Deployment
 
@@ -154,8 +177,10 @@ Requires [pnpm](https://pnpm.io/) (do not use npm or yarn) and Docker.
 
 ```sh
 pnpm install
-cp .env.example .env
+cp .env.example .env                                # then set API_KEY_SECRET and ADMIN_TOKEN
 docker compose -f docker/docker-compose.yml up -d   # PostgreSQL
+pnpm build                                          # the CLI runs against built packages
+pnpm exiledata db migrate
 ```
 
 ### Run tests
@@ -164,12 +189,24 @@ docker compose -f docker/docker-compose.yml up -d   # PostgreSQL
 pnpm test
 ```
 
+Tests need no running database: they apply the real migrations to PGlite in-process.
+
 ### Run the API
 
 ```sh
-pnpm --filter @exiledata/api dev
-# -> http://localhost:3000/health
+pnpm dev:api
+# -> http://localhost:3000/health, dashboard at http://localhost:3000/admin
 ```
+
+### Ingest a dataset
+
+```sh
+pnpm exiledata ingest --game poe2 --extract-dir S:/POE2-Extracted/4.5.5.3-stripped
+pnpm exiledata datasets list
+```
+
+Writes to the storage `DATASET_STORAGE_DRIVER` selects. Set it to `r2` for one command to
+publish to production, e.g. `DATASET_STORAGE_DRIVER=r2 pnpm exiledata ingest ...`.
 
 ### Run the web/docs placeholders
 

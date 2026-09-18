@@ -2,7 +2,7 @@
   "name": "@exiledata/ingestion-poe1",
   "version": "0.0.0",
   "private": true,
-  "description": "PoE 1 ingestion — architecture/interfaces only, no complete ingestion implementation yet",
+  "description": "PoE 1 ingestion from GGPK extracts",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
