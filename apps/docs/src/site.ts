@@ -5,6 +5,7 @@ import { renderApiReference, type OpenApiDocument } from "./api-reference.js";
 import { DOWNLOADS_PLACEHOLDER, downloadsBrowser } from "./downloads.js";
 import { escapeHtml, renderMarkdown, type Heading } from "./markdown.js";
 import { NAV, hrefFor, type NavPage } from "./nav.js";
+import { OG_HEIGHT, OG_WIDTH, loadOgFonts, renderOgImage, type OgCard } from "./og.js";
 
 const docsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -25,6 +26,9 @@ export const PATHS = {
 
 const DOCS_ORIGIN = "https://docs.exiledata.dev";
 
+/** The landing page has no build step, so its link preview card is rendered here. */
+export const LANDING_OG_IMAGE = "og/landing.png";
+
 export interface Shell {
   header: string;
   footer: string;
@@ -42,6 +46,34 @@ export async function loadShell(): Promise<Shell> {
 
   const local = (html: string) => html.replaceAll(`href="${DOCS_ORIGIN}/`, `href="/`);
   return { header: local(header), footer: local(footer) };
+}
+
+function decodeEntities(text: string): string {
+  const named: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" };
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
+    if (code.startsWith("#x") || code.startsWith("#X")) {
+      return String.fromCodePoint(parseInt(code.slice(2), 16));
+    }
+    if (code.startsWith("#")) return String.fromCodePoint(Number(code.slice(1)));
+    return named[code] ?? entity;
+  });
+}
+
+/** Tag-free text of an HTML fragment. */
+function plainText(html: string): string {
+  return decodeEntities(html.replace(/<[^>]+>/g, ""))
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** The landing page's card: its hero heading and lede. */
+export async function landingCard(): Promise<OgCard> {
+  const landing = await readFile(PATHS.landing, "utf8");
+  const hero = /<section class="hero">([\s\S]*?)<\/section>/.exec(landing)?.[1] ?? "";
+  const title = /<h1>([\s\S]*?)<\/h1>/.exec(hero)?.[1];
+  const lede = /<p class="lede">([\s\S]*?)<\/p>/.exec(hero)?.[1];
+  if (!title || !lede) throw new Error(`No hero heading or lede found in ${PATHS.landing}`);
+  return { title: plainText(title), description: plainText(lede), url: "exiledata.dev" };
 }
 
 /** Marks the header link for the section a page belongs to. */
@@ -115,13 +147,34 @@ function pager(current: NavPage): string {
   return `<nav class="pager" aria-label="Pages">${link(prev, "Previous", "prev")}${link(next, "Next", "next")}</nav>`;
 }
 
+/** The paragraph right after the page title, as plain text. */
+function lede(html: string): string {
+  return plainText(/<\/h1>\s*<p>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? "");
+}
+
 function describe(html: string): string {
-  const lede = /<\/h1>\s*<p>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? "";
-  const text = lede
-    .replace(/<[^>]+>/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  const text = lede(html);
   return text.length > 160 ? `${text.slice(0, 157)}…` : text;
+}
+
+/** Open Graph and Twitter tags for a page whose card is at `image`, a site path. */
+function socialMeta(og: { title: string; description: string; path: string; image: string }) {
+  return [
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:site_name" content="ExileData" />`,
+    `<meta property="og:title" content="${escapeHtml(og.title)}" />`,
+    og.description
+      ? `<meta property="og:description" content="${escapeHtml(og.description)}" />`
+      : "",
+    `<meta property="og:url" content="${DOCS_ORIGIN}${og.path}" />`,
+    `<meta property="og:image" content="${DOCS_ORIGIN}/${og.image}" />`,
+    `<meta property="og:image:width" content="${OG_WIDTH}" />`,
+    `<meta property="og:image:height" content="${OG_HEIGHT}" />`,
+    `<meta property="og:image:alt" content="${escapeHtml(og.title)}" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`
+  ]
+    .filter(Boolean)
+    .join("\n    ");
 }
 
 function layout(options: {
@@ -132,6 +185,7 @@ function layout(options: {
   body: string;
   nav?: string;
   noindex?: boolean;
+  og?: { title: string; path: string; image: string };
 }): string {
   const { shell, title, description, body, nav } = options;
   return `<!doctype html>
@@ -142,6 +196,7 @@ function layout(options: {
     <title>${escapeHtml(title)}</title>
     ${description ? `<meta name="description" content="${escapeHtml(description)}" />` : ""}
     ${options.noindex ? `<meta name="robots" content="noindex" />` : ""}
+    ${options.og ? socialMeta({ ...options.og, description }) : ""}
     <meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
     <script>${THEME_BOOT}</script>
@@ -200,19 +255,33 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
 
   await rm(outDir, { recursive: true, force: true });
   await mkdir(path.join(outDir, "assets", "fonts"), { recursive: true });
+  await mkdir(path.join(outDir, "og"), { recursive: true });
+  const fonts = await loadOgFonts(PATHS.fonts);
+  const card = async (file: string, og: OgCard) =>
+    writeFile(path.join(outDir, file), await renderOgImage(og, fonts));
 
   const written: string[] = [];
   for (const page of NAV) {
     const content = await loadPage(page, openapi);
     const file = `${page.slug}.html`;
     const title = page.slug === "index" ? "ExileData docs" : `${content.title} · ExileData docs`;
+    const description = describe(content.html);
+    const href = hrefFor(page.slug);
+    const image = `og/${page.slug}.png`;
+    await card(image, {
+      eyebrow: page.slug === "index" ? "Docs" : `Docs · ${page.group}`,
+      title: content.title,
+      description: lede(content.html),
+      url: `docs.exiledata.dev${href === "/" ? "" : href}`
+    });
     await writeFile(
       path.join(outDir, file),
       layout({
         shell,
         slug: page.slug,
         title,
-        description: describe(content.html),
+        description,
+        og: { title: content.title, path: href, image },
         nav: navList(page, content.headings),
         body: `<article class="prose">${content.html}</article>${pager(page)}`
       })
@@ -233,6 +302,8 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
     })
   );
   written.push("404.html");
+
+  await card(LANDING_OG_IMAGE, await landingCard());
 
   await writeFile(path.join(outDir, "openapi.json"), openapiSource);
   await copyFile(PATHS.baseCss, path.join(outDir, "base.css"));

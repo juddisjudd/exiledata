@@ -3,10 +3,17 @@ import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { buildSite, loadShell } from "../apps/docs/src/site.js";
+import { LANDING_OG_IMAGE, buildSite, landingCard, loadShell } from "../apps/docs/src/site.js";
 import { NAV } from "../apps/docs/src/nav.js";
 import { ERROR_CODES, formatJson } from "../apps/docs/src/api-reference.js";
 import { renderCodeBlock } from "../apps/docs/src/markdown.js";
+import { OG_HEIGHT, OG_WIDTH, cardDescription } from "../apps/docs/src/og.js";
+
+/** Width and height from a PNG's IHDR chunk. */
+function pngSize(png: Buffer): [number, number] {
+  expect(png.subarray(1, 4).toString()).toBe("PNG");
+  return [png.readUInt32BE(16), png.readUInt32BE(20)];
+}
 
 const apiSrc = new URL("../apps/api/src/", import.meta.url);
 
@@ -96,6 +103,44 @@ describe("docs site", () => {
     );
     expect(html).not.toContain("downloads-browser");
     expect(() => new Function(script!)).not.toThrow();
+  });
+
+  it("gives every page a link preview card, and renders the landing page's", async () => {
+    for (const page of NAV) {
+      const html = pages.get(`${page.slug}.html`)!;
+      const image =
+        /<meta property="og:image" content="https:\/\/docs\.exiledata\.dev\/([^"]+)"/.exec(
+          html
+        )?.[1];
+
+      expect(image, page.slug).toBe(`og/${page.slug}.png`);
+      expect(html, page.slug).toContain(
+        '<meta name="twitter:card" content="summary_large_image" />'
+      );
+      expect(pngSize(await readFile(path.join(out, image!))), page.slug).toEqual([
+        OG_WIDTH,
+        OG_HEIGHT
+      ]);
+    }
+    expect(pages.get("404.html")).not.toContain("og:image");
+
+    const landing = await readFile(
+      new URL("../apps/web/public/index.html", import.meta.url),
+      "utf8"
+    );
+    expect(landing).toContain(
+      `<meta property="og:image" content="https://docs.exiledata.dev/${LANDING_OG_IMAGE}" />`
+    );
+    expect(pngSize(await readFile(path.join(out, LANDING_OG_IMAGE)))).toEqual([
+      OG_WIDTH,
+      OG_HEIGHT
+    ]);
+    expect((await landingCard()).title).toBe("Game data for Path of Exile tools.");
+  });
+
+  it("writes descriptions as plain text, decoding what markdown escaped", () => {
+    expect(pages.get("sources.html")).toContain("the game client's own files");
+    expect(pages.get("sources.html")).not.toContain("&amp;#39;");
   });
 
   it("leaves no rendering artifacts", () => {
@@ -193,6 +238,13 @@ describe("docs rendering helpers", () => {
 
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
+  });
+
+  it("puts whole sentences on a card, cutting a long first sentence at a word", () => {
+    expect(cardDescription("One short sentence. Another one. " + "x ".repeat(80))).toBe(
+      "One short sentence. Another one."
+    );
+    expect(cardDescription("word ".repeat(40), 20)).toBe("word word word word…");
   });
 
   it("keeps short JSON values on one line and breaks long ones", () => {

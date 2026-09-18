@@ -19,6 +19,10 @@ HTML in `dist/site`, which Cloudflare serves as static assets. There is no Worke
   `<!-- downloads-browser -->` marker in `content/downloads.md`. It runs in the browser and reads
   `https://data.exiledata.dev/index.json` and each patch's manifest, so a newly published patch
   shows up without a docs deploy.
+- `src/og.ts`: link preview cards. The build renders a 1200x630 PNG per page into `og/` with
+  [Takumi](https://takumi.kane.tw), from the page title and its first paragraph, and points the
+  page's Open Graph and Twitter tags at it. It also renders `og/landing.png` for exiledata.dev from
+  the landing hero, because the landing page has no build step.
 
 ## Commands
 
