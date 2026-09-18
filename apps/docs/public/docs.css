@@ -1,17 +1,9 @@
-/* Docs layout and prose. Tokens, title bar, buttons and footer come from base.css. */
+/* Docs layout and prose. Tokens, title bar, buttons and footer come from base.css; the header
+   and footer markup comes from the landing page, and the layout uses the same --page-w column,
+   so nothing moves when a reader crosses between the two sites. */
 
 :root {
-  --docs-w: 1120px;
-  --side-w: 212px;
-}
-
-.top-in.wide,
-.foot-in.wide {
-  max-width: var(--docs-w);
-}
-
-.crumb {
-  letter-spacing: 0.12em;
+  --side-w: 188px;
 }
 
 .skip {
@@ -32,8 +24,8 @@
 .docs {
   display: grid;
   grid-template-columns: var(--side-w) minmax(0, 1fr);
-  gap: 48px;
-  max-width: var(--docs-w);
+  gap: 40px;
+  max-width: var(--page-w);
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
@@ -111,7 +103,6 @@
 }
 
 .prose {
-  max-width: 760px;
   font-size: 14px;
   line-height: 1.65;
   color: var(--fg-1);
@@ -407,7 +398,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  max-width: 760px;
   margin-top: 48px;
   padding-top: 24px;
   border-top: 1px solid var(--line-0);
@@ -471,10 +461,6 @@
     border: 1px solid var(--line-1);
     border-radius: var(--r-2);
     background: var(--bg-1);
-  }
-
-  .crumb {
-    display: none;
   }
 }
 

@@ -3,7 +3,7 @@ import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { buildSite } from "../apps/docs/src/site.js";
+import { buildSite, loadShell } from "../apps/docs/src/site.js";
 import { NAV } from "../apps/docs/src/nav.js";
 import { ERROR_CODES, formatJson } from "../apps/docs/src/api-reference.js";
 import { renderCodeBlock } from "../apps/docs/src/markdown.js";
@@ -91,6 +91,73 @@ describe("docs site", () => {
       expect(html, file).not.toContain("[object Object]");
       expect(html, file).not.toMatch(/\]\([^)]*\.md\)/);
     }
+  });
+});
+
+describe("header and footer shared by exiledata.dev and the docs", () => {
+  const web = new URL("../apps/web/public/", import.meta.url);
+  const block = (html: string, tag: "header" | "footer") =>
+    new RegExp(`<${tag} class="(?:top|foot)">[\\s\\S]*?</${tag}>`).exec(html)?.[0];
+  let out: string;
+
+  beforeAll(async () => {
+    out = await mkdtemp(path.join(tmpdir(), "exiledata-shell-"));
+    await buildSite(out);
+  });
+
+  afterAll(async () => {
+    await rm(out, { recursive: true, force: true });
+  });
+
+  it("uses the same header and footer on the landing page and its 404 page", async () => {
+    const index = await readFile(new URL("index.html", web), "utf8");
+    const notFound = await readFile(new URL("404.html", web), "utf8");
+
+    for (const tag of ["header", "footer"] as const) {
+      expect(block(index, tag), tag).toBeDefined();
+      expect(block(notFound, tag), tag).toBe(block(index, tag));
+    }
+  });
+
+  it("puts the landing page's header and footer on every docs page, marking one section", async () => {
+    const shell = await loadShell();
+
+    for (const file of [...NAV.map((p) => `${p.slug}.html`), "404.html"]) {
+      const html = await readFile(path.join(out, file), "utf8");
+      const header = block(html, "header")!;
+      const marked = header.match(/ aria-current="true"/g)?.length ?? 0;
+
+      expect(header.replace(' aria-current="true"', ""), file).toBe(shell.header);
+      expect(block(html, "footer"), file).toBe(shell.footer);
+      expect(marked, file).toBe(file === "404.html" ? 0 : 1);
+    }
+  });
+
+  it("marks API and Changelog on their pages and Docs everywhere else", async () => {
+    const current = async (file: string) =>
+      /<a class="[^"]*" href="([^"]*)" aria-current="true">/.exec(
+        await readFile(path.join(out, file), "utf8")
+      )?.[1];
+
+    expect(await current("api.html")).toBe("/api");
+    expect(await current("changelog.html")).toBe("/changelog");
+    expect(await current("schema.html")).toBe("/");
+  });
+
+  it("loads fonts from exiledata.dev on both sites, with a local fallback", async () => {
+    const css = await readFile(new URL("base.css", web), "utf8");
+    const headers = await readFile(new URL("_headers", web), "utf8");
+    const docsPage = await readFile(path.join(out, "index.html"), "utf8");
+
+    for (const face of css.match(/@font-face\s*{[^}]*}/g) ?? []) {
+      expect(face).toMatch(
+        /src:\s*url\("https:\/\/exiledata\.dev\/assets\/fonts\/[^"]+"\)[^,]*,\s*url\("\/assets\/fonts\//
+      );
+    }
+    expect(headers).toMatch(/\/assets\/fonts\/\*\n\s+Access-Control-Allow-Origin: \*/);
+    expect(docsPage).toContain(
+      'href="https://exiledata.dev/assets/fonts/geist-latin-wght-normal.woff2"'
+    );
   });
 });
 
