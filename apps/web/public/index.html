@@ -68,9 +68,7 @@
         </p>
         <div class="row">
           <a class="btn primary lg" href="https://docs.exiledata.dev/">Read the docs</a>
-          <a class="btn lg" href="https://docs.exiledata.dev/authentication"
-            >Get started with keys</a
-          >
+          <a class="btn lg" href="https://docs.exiledata.dev/authentication">How keys work</a>
         </div>
         <p class="meta mono">Preview · API keys are issued by hand</p>
       </section>
@@ -114,7 +112,7 @@
             <h3>One dataset per patch</h3>
             <p>
               Every game patch becomes its own dataset. Ask for one with
-              <code>?version=4.5.5.3</code> or take the latest. Each response names the patch it
+              <code>?version=4.5.5.3</code> or take the latest, and each response names the patch it
               came from.
             </p>
           </article>
@@ -140,7 +138,7 @@
             </p>
           </article>
           <article>
-            <h3>API keys with clear limits</h3>
+            <h3>Per-key rate limits</h3>
             <p>
               Each key has its own per-minute limit. Every response says how many requests are left,
               and a 429 says how long to wait.

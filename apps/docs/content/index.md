@@ -8,7 +8,7 @@ ExileData serves Path of Exile 1 and 2 game data over HTTP. Each game patch beco
 
 ### 1. Get an API key
 
-Every request under `/v1` needs a key. Keys are issued by hand during the preview. Ask [@juddisjudd](https://github.com/juddisjudd) for one.
+Every request under `/v1` needs a key. Keys are issued by hand during the preview, so ask [@juddisjudd](https://github.com/juddisjudd) for one.
 
 Keep the key out of client-side code and public repositories. The examples in these docs read it from an environment variable:
 

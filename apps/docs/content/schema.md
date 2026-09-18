@@ -1,6 +1,6 @@
 # Record format
 
-Every record has the same outer shape, whatever it describes. Fields at the top level are the stable contract. Everything else from the game files sits in `ext`.
+Every record has the same outer shape, whatever it describes: fields at the top level are the stable contract, and everything else from the game files sits in `ext`.
 
 ## Common fields
 
@@ -16,7 +16,7 @@ Every record has the same outer shape, whatever it describes. Fields at the top 
 
 Top-level fields such as `name` and `itemClass` are normalized and documented. A change to one of them is a schema change, announced in the [changelog](./changelog.md).
 
-`ext` keeps the game files' own field names and values, unchanged. Nothing is dropped, so you can reach data that ExileData has not normalized yet. The trade-off is that `ext` is not a stable contract: its fields follow the game files and can differ between games and patches. Read `ext` defensively, and expect fields to appear or disappear.
+`ext` keeps the game files' own field names and values, unchanged. Nothing is dropped, so you can reach data that ExileData has not normalized yet. It is not a stable contract, though: its fields follow the game files and can differ between games and patches. Read `ext` defensively, and expect fields to appear or disappear.
 
 When a field in `ext` proves useful and stable, it is promoted to a top-level field in a later schema version.
 

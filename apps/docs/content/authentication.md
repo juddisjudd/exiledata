@@ -1,6 +1,6 @@
 # Authentication
 
-Every `/v1` endpoint needs an API key. Each key has its own rate limit, and every response tells you how much of it is left.
+Every `/v1` endpoint needs an API key. Each key has its own rate limit, and responses tell you how much of it is left.
 
 ## Sending your key
 
