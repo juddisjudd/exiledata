@@ -41,4 +41,10 @@ System (the default), Light and Dark, chosen from the switch in the shared heade
 - `tests/theme.test.ts` fails if the dark palette changes, if light surfaces stop sitting above
   the page, or if light text contrast drops below its floors.
 
+## Link preview
+
+The card at https://docs.exiledata.dev/og/landing.png is rendered by the docs build from the
+hero heading and lede in `public/index.html`, so it changes when they do. The deploy workflow
+redeploys the docs whenever this app changes.
+
 Run locally: `pnpm --filter @exiledata/web dev` (http://localhost:4000).
