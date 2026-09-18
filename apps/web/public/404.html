@@ -2,45 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>ExileData — Not Found</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0a0a0a" />
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-        background: #0a0a0a;
-        color: #ededed;
-        font-family:
-          system-ui,
-          -apple-system,
-          "Segoe UI",
-          sans-serif;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100dvh;
-        text-align: center;
-        gap: 0.75rem;
-      }
-      h1 {
-        margin: 0;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        font-size: clamp(1.5rem, 5vw, 2.5rem);
-      }
-      a {
-        color: #ededed;
-      }
-    </style>
+    <title>Page not found · ExileData</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0b0b0c" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0b0c'/%3E%3Cpath d='M4.5 3.5h7v1.75H6.25v1.9h4.5v1.7h-4.5v1.9h5.25v1.75h-7z' fill='%23f2f2f4'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <h1>404 — Not Found</h1>
-    <p><a href="/">Back to ExileData</a></p>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="mark" viewBox="0 0 16 16">
+        <path d="M3 2h10v2.5H5.75v2.25h6.5v2.5h-6.5v2.25H13V14H3z" />
+      </symbol>
+    </svg>
+
+    <header class="top">
+      <div class="top-in">
+        <a class="brand" href="/">
+          <svg class="mark" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="name">Exile<span class="thin">Data</span></span>
+        </a>
+        <nav class="nav" aria-label="Links">
+          <a class="btn primary sm" href="https://docs.exiledata.dev/">Docs</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero lost">
+        <div class="label mono">404</div>
+        <h1>Page not found.</h1>
+        <p class="lede">Nothing lives at this address. The API is at api.exiledata.dev.</p>
+        <div class="row">
+          <a class="btn primary lg" href="/">Back to ExileData</a>
+          <a class="btn lg" href="https://docs.exiledata.dev/">Read the docs</a>
+        </div>
+      </section>
+    </main>
   </body>
 </html>
