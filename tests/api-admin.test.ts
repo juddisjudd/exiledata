@@ -164,6 +164,19 @@ describe("admin api", () => {
     expect(keys[0].lastUsedAt).not.toBeNull();
   });
 
+  it("keeps working after a key with unflushed usage is deleted from the database", async () => {
+    const { key, secret } = (await createKey({ client: "short-lived" })).json();
+    await app.inject({ url: "/v1/games", headers: { "x-api-key": secret } });
+    await db.query("DELETE FROM api_clients WHERE id = $1", [key.clientId]);
+
+    const keys = await app.inject({ url: "/admin/api/keys", headers: auth });
+    const usage = await app.inject({ url: "/admin/api/usage?hours=24", headers: auth });
+
+    expect(keys.statusCode).toBe(200);
+    expect(keys.json().keys).toEqual([]);
+    expect(usage.statusCode).toBe(200);
+  });
+
   it("rejects an out-of-range usage window", async () => {
     const res = await app.inject({ url: "/admin/api/usage?hours=0", headers: auth });
     expect(res.statusCode).toBe(400);
