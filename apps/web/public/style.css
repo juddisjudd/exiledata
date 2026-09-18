@@ -68,7 +68,7 @@ section:last-child {
   height: 32px;
   padding: 0 14px;
   border-bottom: 1px solid var(--line-0);
-  background: var(--bg-0);
+  background: var(--chrome);
 }
 
 .frame pre {
@@ -114,6 +114,7 @@ section:last-child {
   border: 1px solid var(--line-0);
   border-radius: var(--r-2);
   background: var(--line-0);
+  box-shadow: 0 1px 2px var(--shadow-soft);
 }
 
 .grid article {

@@ -236,6 +236,7 @@
   border: 1px solid var(--line-1);
   border-radius: var(--r-2);
   background: var(--bg-1);
+  box-shadow: 0 1px 2px var(--shadow-soft);
 }
 
 .code + .code {
@@ -249,7 +250,7 @@
   height: 30px;
   padding: 0 8px 0 12px;
   border-bottom: 1px solid var(--line-0);
-  background: var(--bg-0);
+  background: var(--chrome);
 }
 
 .copy {
@@ -312,6 +313,8 @@
   overflow-x: auto;
   border: 1px solid var(--line-0);
   border-radius: var(--r-2);
+  background: var(--table-bg);
+  box-shadow: 0 1px 2px var(--shadow-soft);
 }
 
 .table table {
@@ -324,7 +327,7 @@
   height: 32px;
   padding: 0 12px;
   border-bottom: 1px solid var(--line-0);
-  background: var(--bg-1);
+  background: var(--table-head);
   font-size: var(--fs-2xs);
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -363,6 +366,7 @@
   border: 1px solid var(--line-0);
   border-radius: var(--r-2);
   background: var(--bg-1);
+  box-shadow: 0 1px 2px var(--shadow-soft);
 }
 
 .method {
