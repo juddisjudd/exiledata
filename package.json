@@ -21,7 +21,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "clean": "pnpm -r --if-present run clean",
-    "exiledata": "tsx --env-file-if-exists=.env packages/cli/src/index.ts"
+    "exiledata": "tsx --env-file-if-exists=.env packages/cli/src/index.ts",
+    "openapi": "pnpm --filter @exiledata/api openapi"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",

@@ -6,6 +6,7 @@ on:
     paths:
       - "apps/web/**"
       - "apps/docs/**"
+      - "apps/api/openapi.json"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -46,6 +47,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Renders content/ and apps/api/openapi.json into dist/site, with the stylesheet and fonts
+      # from apps/web/public.
+      - name: Build docs
+        run: pnpm --filter @exiledata/docs build
 
       - name: Deploy exiledata-docs
         uses: cloudflare/wrangler-action@v4

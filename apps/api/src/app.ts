@@ -1,4 +1,4 @@
-import Fastify, { type FastifyInstance } from "fastify";
+import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import { requireApiKey } from "./plugins/auth.js";
 import { createHealthRoutes } from "./routes/health.js";
 import { createAdminRoutes } from "./routes/admin.js";
@@ -8,6 +8,7 @@ import { createGameDataRoutes } from "./routes/v1/game-data.js";
 import { loadConfig, type AppConfig } from "./config.js";
 import { createDatasetReader, type DatasetReader } from "./datasets.js";
 import { createPgDb, type Db } from "./db.js";
+import { registerOpenApi } from "./openapi.js";
 import { KeyStore } from "./auth/key-store.js";
 import { Authenticator } from "./auth/authenticator.js";
 import { RateLimiter } from "./auth/rate-limiter.js";
@@ -42,6 +43,29 @@ export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
     await usage.stop();
     if (!options.db) await db.close?.();
   });
+
+  registerOpenApi(app);
+  app.setErrorHandler<FastifyError>(async (error, request, reply) => {
+    if (error.validation || (error.statusCode && error.statusCode < 500)) {
+      return reply
+        .code(error.statusCode ?? 400)
+        .send({ error: "invalid_request", message: error.message });
+    }
+    request.log.error({ err: error }, "unhandled error");
+    return reply
+      .code(500)
+      .send({ error: "internal_error", message: "The server failed to handle the request." });
+  });
+  app.setNotFoundHandler(async (request, reply) =>
+    reply.code(404).send({
+      error: "not_found",
+      message: `No route for ${request.method} ${request.url.split("?")[0]}`
+    })
+  );
+
+  app.get("/openapi.json", { schema: { hide: true } }, async (_request, reply) =>
+    reply.header("access-control-allow-origin", "*").send(app.swagger())
+  );
 
   app.decorateRequest("apiKey", null);
   app.register(createHealthRoutes(config, store));

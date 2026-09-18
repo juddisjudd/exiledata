@@ -1,0 +1,662 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ExileData API",
+    "version": "0.2.0",
+    "description": "Path of Exile 1 and 2 game data, one dataset per game patch. Every `/v1` route needs an API key."
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      },
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Body of every error response.",
+        "required": [
+          "error",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Stable code to branch on, e.g. `invalid_api_key`."
+          },
+          "message": {
+            "type": "string",
+            "description": "Explanation for people. Its wording can change."
+          }
+        },
+        "example": {
+          "error": "invalid_api_key",
+          "message": "The API key is invalid or revoked."
+        }
+      },
+      "EntityVersion": {
+        "type": "object",
+        "description": "Which schema and game patch a record belongs to.",
+        "required": [
+          "schemaVersion",
+          "game"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "description": "ExileData schema version, e.g. `0.2.0`."
+          },
+          "game": {
+            "type": "string",
+            "enum": [
+              "poe1",
+              "poe2"
+            ],
+            "description": "Game the record belongs to."
+          },
+          "gameVersion": {
+            "type": "string",
+            "description": "Game patch, e.g. `4.5.5.3`."
+          }
+        }
+      },
+      "SourceProvenance": {
+        "type": "object",
+        "description": "Where a record came from.",
+        "required": [
+          "name",
+          "retrievedAt"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Source id, e.g. `poe2-ggpk-extract`."
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the source, here the game patch."
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the source was read."
+          },
+          "locator": {
+            "type": "string",
+            "description": "Where in the source the record was found, e.g. `base_items.json#<id>`."
+          }
+        }
+      },
+      "BaseItem": {
+        "type": "object",
+        "description": "The template for an item type, such as Crimson Amulet, before any modifiers.",
+        "required": [
+          "id",
+          "name",
+          "version",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The game's metadata path. Stable across patches while the item exists."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name."
+          },
+          "itemClass": {
+            "type": "string",
+            "description": "The game's item class, e.g. `Amulet`."
+          },
+          "version": {
+            "$ref": "#/components/schemas/EntityVersion"
+          },
+          "source": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceProvenance"
+            }
+          },
+          "ext": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Every other field from the game files, under its original name. Not a stable contract."
+          },
+          "derived": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Values ExileData computes. Empty today."
+          }
+        }
+      },
+      "DatasetMetadata": {
+        "type": "object",
+        "description": "Describes one published dataset: one game patch.",
+        "required": [
+          "game",
+          "gameVersion",
+          "generatedAt",
+          "schemaVersion",
+          "sources"
+        ],
+        "properties": {
+          "game": {
+            "type": "string",
+            "enum": [
+              "poe1",
+              "poe2"
+            ]
+          },
+          "gameVersion": {
+            "type": "string",
+            "description": "Game patch, e.g. `4.5.5.3`."
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this build of the dataset was made. Changes if the patch is rebuilt."
+          },
+          "schemaVersion": {
+            "type": "string",
+            "description": "Schema version the records follow."
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "retrievedAt"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "retrievedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListMeta": {
+        "type": "object",
+        "required": [
+          "game",
+          "gameVersion"
+        ],
+        "properties": {
+          "game": {
+            "type": "string",
+            "enum": [
+              "poe1",
+              "poe2"
+            ]
+          },
+          "gameVersion": {
+            "type": "string",
+            "description": "The patch that answered. Pass it as `?version=` to pin to it."
+          },
+          "total": {
+            "type": "integer",
+            "description": "Matching records before `limit` and `offset`."
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Liveness",
+        "tags": [
+          "Service"
+        ],
+        "description": "Answers while the process is up. Checks nothing else.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The process is up.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The process is up.",
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "status": "ok"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Service status",
+        "tags": [
+          "Service"
+        ],
+        "description": "Uptime, database reachability, and which dataset storage is in use.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Current status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Current status.",
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    },
+                    "uptimeSeconds": {
+                      "type": "integer"
+                    },
+                    "nodeVersion": {
+                      "type": "string"
+                    },
+                    "database": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "unreachable"
+                      ]
+                    },
+                    "adminApi": {
+                      "type": "string",
+                      "enum": [
+                        "enabled",
+                        "disabled"
+                      ]
+                    },
+                    "datasetStorage": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "properties": {
+                        "driver": {
+                          "type": "string",
+                          "enum": [
+                            "local",
+                            "r2"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "ok",
+                  "uptimeSeconds": 3600,
+                  "nodeVersion": "v24.21.0",
+                  "database": "ok",
+                  "adminApi": "enabled",
+                  "datasetStorage": {
+                    "driver": "r2",
+                    "bucket": "exiledata-datasets"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/games": {
+      "get": {
+        "summary": "List games",
+        "tags": [
+          "Datasets"
+        ],
+        "description": "The games ExileData covers. Use one as `{game}` in other paths.",
+        "responses": {
+          "200": {
+            "description": "Supported games.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Supported games.",
+                  "type": "object",
+                  "required": [
+                    "games"
+                  ],
+                  "properties": {
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "poe1",
+                          "poe2"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "games": [
+                    "poe1",
+                    "poe2"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key is missing, invalid or revoked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The key's per-minute limit is used up. Wait `retry-after` seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/versions": {
+      "get": {
+        "summary": "List published datasets",
+        "tags": [
+          "Datasets"
+        ],
+        "description": "One entry per published game patch, oldest patch first within each game. The last entry for a game is the one that answers when no `version` is given.",
+        "responses": {
+          "200": {
+            "description": "Published datasets.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Published datasets.",
+                  "type": "object",
+                  "required": [
+                    "datasets"
+                  ],
+                  "properties": {
+                    "datasets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DatasetMetadata"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "datasets": [
+                    {
+                      "game": "poe1",
+                      "gameVersion": "3.29.3.3",
+                      "generatedAt": "2026-09-18T16:14:25.635Z",
+                      "schemaVersion": "0.2.0",
+                      "sources": [
+                        {
+                          "name": "poe1-ggpk-extract",
+                          "version": "3.29.3.3",
+                          "retrievedAt": "2026-09-18T16:14:25.635Z"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key is missing, invalid or revoked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The key's per-minute limit is used up. Wait `retry-after` seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{game}/bases": {
+      "get": {
+        "summary": "List base items",
+        "tags": [
+          "Game data"
+        ],
+        "description": "Base items from one game patch, in the order the game files list them. Without `version`, the highest published patch answers, and `meta.gameVersion` names it.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "example": "4.5.5.3",
+            "in": "query",
+            "name": "version",
+            "required": false,
+            "description": "Game patch to read, e.g. `4.5.5.3`. Default: the highest published patch."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "example": "Amulet",
+            "in": "query",
+            "name": "itemClass",
+            "required": false,
+            "description": "Only items of this class. Exact match, e.g. `Amulet`."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100
+            },
+            "example": 1,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "description": "Records to return."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "description": "Records to skip. Use with `limit` to page through results."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "example": "poe2",
+            "in": "path",
+            "name": "game",
+            "required": true,
+            "description": "`poe1` or `poe2`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested page of base items.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The requested page of base items.",
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BaseItem"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ListMeta"
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "Metadata/Items/Amulets/FourAmulet1",
+                      "name": "Crimson Amulet",
+                      "itemClass": "Amulet",
+                      "version": {
+                        "schemaVersion": "0.2.0",
+                        "game": "poe2",
+                        "gameVersion": "4.5.5.3"
+                      },
+                      "source": [
+                        {
+                          "name": "poe2-ggpk-extract",
+                          "version": "4.5.5.3",
+                          "retrievedAt": "2026-09-18T16:14:26.910Z",
+                          "locator": "base_items.json#Metadata/Items/Amulets/FourAmulet1"
+                        }
+                      ],
+                      "ext": {
+                        "domain": "item",
+                        "drop_level": 1,
+                        "implicit_text": [
+                          "(2-4) Life Regeneration per second"
+                        ],
+                        "tags": [
+                          "amulet",
+                          "default"
+                        ]
+                      }
+                    }
+                  ],
+                  "meta": {
+                    "game": "poe2",
+                    "gameVersion": "4.5.5.3",
+                    "total": 25
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A query parameter is out of range, e.g. `limit=5000`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key is missing, invalid or revoked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown game (`unknown_game`), no dataset for the game (`no_dataset`), or no dataset for that patch (`unknown_game_version`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The key's per-minute limit is used up. Wait `retry-after` seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.exiledata.dev"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    },
+    {
+      "bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Game data",
+      "description": "Records from a game patch."
+    },
+    {
+      "name": "Datasets",
+      "description": "Which games and patches are published."
+    },
+    {
+      "name": "Service",
+      "description": "Health checks. No key needed."
+    }
+  ]
+}

@@ -10,13 +10,15 @@ Open:
 - `GET /status`: uptime, database reachability, whether the admin API is on, and which dataset
   storage the process resolved.
 - `GET /admin`: the admin dashboard page. It holds no data until the admin token is entered.
+- `GET /openapi.json`: the OpenAPI 3.1 document for the public routes, readable from any origin.
+  Generated from the route schemas; the committed copy is `openapi.json` (`pnpm openapi`).
 
 API key required (`x-api-key: exd_...` or `Authorization: Bearer exd_...`):
 
 - `GET /v1/games`: supported games.
 - `GET /v1/versions`: metadata of every published dataset, in patch order.
 - `GET /v1/{game}/bases`: base items. `?version=4.5.5.3` picks a patch (default: highest),
-  plus `?itemClass=`, `?limit=` (max 1000) and `?offset=`. `meta.gameVersion` says which patch
+  plus `?itemClass=`, `?limit=` (1 to 1000) and `?offset=`. `meta.gameVersion` says which patch
   answered.
 - `GET /v1/{game}/items|mods|gems|skills`: `501 Not Implemented` until ingestion produces them.
 
@@ -33,7 +35,10 @@ Admin changes take effect at once. Wire types are in `@exiledata/types` (`admin.
 
 ## Errors
 
-Every error body is `{ "error": "<code>", "message": "<text>" }`. Codes on keyed routes:
+Every error body is `{ "error": "<code>", "message": "<text>" }`, including unknown routes
+(`not_found`), failed query validation (`invalid_request`, 400) and server errors
+(`internal_error`). Route schemas validate query parameters, so out-of-range `limit` or
+`offset` values get 400. Codes on keyed routes:
 `missing_api_key` and `invalid_api_key` (401), `rate_limited` (429, with `retry-after`).
 Keyed responses carry `x-ratelimit-limit`, `x-ratelimit-remaining` and `x-ratelimit-reset`.
 
