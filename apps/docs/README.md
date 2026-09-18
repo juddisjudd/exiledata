@@ -10,8 +10,11 @@ HTML in `dist/site`, which Cloudflare serves as static assets. There is no Worke
 - `src/nav.ts`: page order and sidebar groups. A page missing from it fails the build.
 - `apps/api/openapi.json`: the API reference page (`/api`) is generated from it, and it is
   published at `/openapi.json`. Regenerate it with `pnpm openapi` after changing API routes.
+- `apps/web/public/index.html`: the header and footer are copied from it, so they match the
+  landing page exactly. The docs mark the current section in the header.
 - `apps/web/public/base.css` and `apps/web/public/assets/fonts/`: shared with the landing page,
-  so both sites keep the same tokens and fonts. `public/docs.css` adds the docs layout.
+  so both sites keep the same tokens and fonts. `public/docs.css` adds the docs layout, which uses
+  the same 960px column as the landing page.
 
 ## Commands
 

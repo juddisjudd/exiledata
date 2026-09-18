@@ -1,17 +1,25 @@
-/* Shared by exiledata.dev and docs.exiledata.dev (the docs build copies this file). */
+/* Shared by exiledata.dev and docs.exiledata.dev (the docs build copies this file). Fonts load
+   from exiledata.dev on both sites, so the docs reuse the copy cached on the landing page; the
+   second src is the site's own copy, used if that request fails. */
 @font-face {
   font-family: "Geist Variable";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/assets/fonts/geist-latin-wght-normal.woff2") format("woff2-variations");
+  src:
+    url("https://exiledata.dev/assets/fonts/geist-latin-wght-normal.woff2")
+      format("woff2-variations"),
+    url("/assets/fonts/geist-latin-wght-normal.woff2") format("woff2-variations");
 }
 @font-face {
   font-family: "Geist Mono Variable";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/assets/fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
+  src:
+    url("https://exiledata.dev/assets/fonts/geist-mono-latin-wght-normal.woff2")
+      format("woff2-variations"),
+    url("/assets/fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
 }
 
 :root {
@@ -87,6 +95,10 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  scrollbar-gutter: stable;
 }
 
 html,
@@ -190,6 +202,10 @@ a:focus-visible {
   color: var(--fg-1);
 }
 
+.nav .text-link[aria-current] {
+  color: var(--fg-0);
+}
+
 .nav .text-link:hover {
   color: var(--fg-0);
 }
@@ -283,6 +299,11 @@ a:focus-visible {
   color: var(--fg-2);
 }
 
+.foot-cols {
+  display: flex;
+  gap: 48px;
+}
+
 .foot-col ul {
   display: flex;
   flex-direction: column;
@@ -324,5 +345,9 @@ a:focus-visible {
 @media (max-width: 600px) {
   .foot-grid {
     grid-template-columns: 1fr;
+  }
+
+  .nav .wide-only {
+    display: none;
   }
 }

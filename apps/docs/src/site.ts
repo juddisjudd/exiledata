@@ -7,15 +7,47 @@ import { NAV, hrefFor, type NavPage } from "./nav.js";
 
 const docsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-/** Inputs outside apps/docs: the shared stylesheet and fonts, and the API's OpenAPI document. */
+/**
+ * Inputs outside apps/docs: the landing page (source of the shared header and footer), the
+ * shared stylesheet and fonts, and the API's OpenAPI document.
+ */
 export const PATHS = {
   content: path.join(docsDir, "content"),
   docsCss: path.join(docsDir, "public", "docs.css"),
+  landing: path.join(docsDir, "..", "web", "public", "index.html"),
   baseCss: path.join(docsDir, "..", "web", "public", "base.css"),
   fonts: path.join(docsDir, "..", "web", "public", "assets", "fonts"),
   openapi: path.join(docsDir, "..", "api", "openapi.json"),
   out: path.join(docsDir, "dist", "site")
 };
+
+const DOCS_ORIGIN = "https://docs.exiledata.dev";
+
+export interface Shell {
+  header: string;
+  footer: string;
+}
+
+/**
+ * The header and footer, taken verbatim from the landing page so the two sites cannot drift.
+ * Links to the docs become site paths, which keeps local builds on the local server.
+ */
+export async function loadShell(): Promise<Shell> {
+  const landing = await readFile(PATHS.landing, "utf8");
+  const header = /<header class="top">[\s\S]*?<\/header>/.exec(landing)?.[0];
+  const footer = /<footer class="foot">[\s\S]*?<\/footer>/.exec(landing)?.[0];
+  if (!header || !footer) throw new Error(`No header or footer found in ${PATHS.landing}`);
+
+  const local = (html: string) => html.replaceAll(`href="${DOCS_ORIGIN}/`, `href="/`);
+  return { header: local(header), footer: local(footer) };
+}
+
+/** Marks the header link for the section a page belongs to. */
+function markSection(header: string, slug: string | undefined): string {
+  if (!slug) return header;
+  const href = slug === "api" || slug === "changelog" ? `/${slug}` : "/";
+  return header.replace(`href="${href}">`, `href="${href}" aria-current="true">`);
+}
 
 const FAVICON =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0b0c'/%3E%3Cpath d='M4.5 3.5h7v1.75H6.25v1.9h4.5v1.7h-4.5v1.9h5.25v1.75h-7z' fill='%23f2f2f4'/%3E%3C/svg%3E";
@@ -86,13 +118,15 @@ function describe(html: string): string {
 }
 
 function layout(options: {
+  shell: Shell;
+  slug?: string;
   title: string;
   description: string;
   body: string;
   nav?: string;
   noindex?: boolean;
 }): string {
-  const { title, description, body, nav } = options;
+  const { shell, title, description, body, nav } = options;
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -103,8 +137,8 @@ function layout(options: {
     ${options.noindex ? `<meta name="robots" content="noindex" />` : ""}
     <meta name="theme-color" content="#0b0b0c" />
     <link rel="icon" href="${FAVICON}" />
-    <link rel="preload" href="/assets/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/assets/fonts/geist-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://exiledata.dev/assets/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://exiledata.dev/assets/fonts/geist-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/base.css" />
     <link rel="stylesheet" href="/docs.css" />
   </head>
@@ -113,19 +147,7 @@ function layout(options: {
       <symbol id="mark" viewBox="0 0 16 16"><path d="M3 2h10v2.5H5.75v2.25h6.5v2.5h-6.5v2.25H13V14H3z" /></symbol>
     </svg>
     <a class="skip" href="#content">Skip to content</a>
-    <header class="top">
-      <div class="top-in wide">
-        <a class="brand" href="/">
-          <svg class="mark" aria-hidden="true"><use href="#mark" /></svg>
-          <span class="name">Exile<span class="thin">Data</span><span class="thin crumb"> / Docs</span></span>
-        </a>
-        <nav class="nav" aria-label="Links">
-          <a class="text-link" href="https://exiledata.dev/">exiledata.dev</a>
-          <span class="vr" aria-hidden="true"></span>
-          <a class="btn sm" href="/openapi.json">openapi.json</a>
-        </nav>
-      </div>
-    </header>
+    ${markSection(shell.header, options.slug)}
     <div class="docs">
       ${nav ? `<aside class="side"><nav aria-label="Documentation">${nav}</nav></aside>` : ""}
       <main id="content" class="doc">
@@ -133,14 +155,7 @@ function layout(options: {
         ${body}
       </main>
     </div>
-    <footer class="foot">
-      <div class="foot-in wide">
-        <div class="legal">
-          <span>MIT · <a href="https://github.com/juddisjudd">@juddisjudd</a></span>
-          <span>Not affiliated with or endorsed by Grinding Gear Games.</span>
-        </div>
-      </div>
-    </footer>
+    ${shell.footer}
     <script>${COPY_SCRIPT}</script>
   </body>
 </html>
@@ -161,6 +176,7 @@ async function loadPage(page: NavPage, openapi: OpenApiDocument): Promise<PageCo
 export async function buildSite(outDir = PATHS.out): Promise<string[]> {
   const openapiSource = await readFile(PATHS.openapi, "utf8");
   const openapi = JSON.parse(openapiSource) as OpenApiDocument;
+  const shell = await loadShell();
 
   const contentFiles = (await readdir(PATHS.content)).filter((f) => f.endsWith(".md"));
   const listed = new Set(NAV.filter((p) => p.source === "markdown").map((p) => `${p.slug}.md`));
@@ -178,6 +194,8 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
     await writeFile(
       path.join(outDir, file),
       layout({
+        shell,
+        slug: page.slug,
         title,
         description: describe(content.html),
         nav: navList(page, content.headings),
@@ -190,6 +208,7 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
   await writeFile(
     path.join(outDir, "404.html"),
     layout({
+      shell,
       title: "Page not found · ExileData docs",
       description: "This page does not exist.",
       noindex: true,

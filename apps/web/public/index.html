@@ -20,14 +20,14 @@
     />
     <link
       rel="preload"
-      href="/assets/fonts/geist-latin-wght-normal.woff2"
+      href="https://exiledata.dev/assets/fonts/geist-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="/assets/fonts/geist-mono-latin-wght-normal.woff2"
+      href="https://exiledata.dev/assets/fonts/geist-mono-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -44,14 +44,16 @@
 
     <header class="top">
       <div class="top-in">
-        <a class="brand" href="/">
+        <a class="brand" href="https://exiledata.dev/">
           <svg class="mark" aria-hidden="true"><use href="#mark" /></svg>
           <span class="name">Exile<span class="thin">Data</span></span>
         </a>
-        <nav class="nav" aria-label="Links">
-          <a class="text-link" href="https://docs.exiledata.dev/authentication">Authentication</a>
+        <nav class="nav" aria-label="Site">
+          <a class="text-link" href="https://docs.exiledata.dev/">Docs</a>
+          <a class="text-link wide-only" href="https://docs.exiledata.dev/api">API</a>
+          <a class="text-link wide-only" href="https://docs.exiledata.dev/changelog">Changelog</a>
           <span class="vr" aria-hidden="true"></span>
-          <a class="btn primary sm" href="https://docs.exiledata.dev/">Docs</a>
+          <a class="btn primary sm" href="https://docs.exiledata.dev/#quick-start">Quick start</a>
         </nav>
       </div>
     </header>
@@ -159,20 +161,32 @@
       <div class="foot-in">
         <div class="foot-grid">
           <div class="foot-brand">
-            <a class="brand" href="/">
+            <a class="brand" href="https://exiledata.dev/">
               <svg class="mark" aria-hidden="true"><use href="#mark" /></svg>
               <span class="name">Exile<span class="thin">Data</span></span>
             </a>
             <p>Normalized Path of Exile 1 &amp; 2 data for tool developers.</p>
           </div>
-          <nav class="foot-col" aria-label="Documentation">
-            <h2 class="label">Docs</h2>
-            <ul>
-              <li><a href="https://docs.exiledata.dev/">Overview</a></li>
-              <li><a href="https://docs.exiledata.dev/authentication">Authentication</a></li>
-              <li><a href="https://docs.exiledata.dev/api">API</a></li>
-            </ul>
-          </nav>
+          <div class="foot-cols">
+            <nav class="foot-col" aria-label="Guides">
+              <h2 class="label">Guides</h2>
+              <ul>
+                <li><a href="https://docs.exiledata.dev/">Overview</a></li>
+                <li><a href="https://docs.exiledata.dev/authentication">Authentication</a></li>
+                <li><a href="https://docs.exiledata.dev/datasets">Datasets and versions</a></li>
+                <li><a href="https://docs.exiledata.dev/schema">Record format</a></li>
+              </ul>
+            </nav>
+            <nav class="foot-col" aria-label="Reference">
+              <h2 class="label">Reference</h2>
+              <ul>
+                <li><a href="https://docs.exiledata.dev/api">API reference</a></li>
+                <li><a href="https://docs.exiledata.dev/openapi.json">openapi.json</a></li>
+                <li><a href="https://docs.exiledata.dev/changelog">Changelog</a></li>
+                <li><a href="https://api.exiledata.dev/status">Service status</a></li>
+              </ul>
+            </nav>
+          </div>
         </div>
         <div class="legal">
           <span>MIT · <a href="https://github.com/juddisjudd">@juddisjudd</a></span>
