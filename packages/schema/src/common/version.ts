@@ -3,4 +3,4 @@
  * changes; datasets record it so consumers can reason about compatibility without inspecting
  * the entities themselves.
  */
-export const SCHEMA_VERSION = "0.1.0";
+export const SCHEMA_VERSION = "0.2.0";

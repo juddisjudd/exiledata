@@ -29,9 +29,9 @@ function isGame(value: string): value is Game {
  * Per-game data endpoints. Only `bases` is served today — it is backed by the base-item dataset
  * produced by `exiledata ingest`. The rest stay 501 rather than returning fabricated data.
  *
- * Requests are answered from a specific dataset version. `?version=` selects one explicitly;
- * without it the most recent published version is used and echoed back in `meta.datasetVersion`,
- * so a client can pin to what it just read.
+ * Requests are answered from one game patch. `?version=` selects a patch explicitly (e.g.
+ * `4.5.5.3`); without it the most recent published patch is used and echoed back in
+ * `meta.gameVersion`, so a client can pin to what it just read.
  */
 export function createGameDataRoutes(reader: DatasetReader): FastifyPluginAsync {
   return async (app) => {
@@ -43,19 +43,19 @@ export function createGameDataRoutes(reader: DatasetReader): FastifyPluginAsync 
           return reply.code(404).send({ error: "unknown_game", message: `Unknown game "${game}"` });
         }
 
-        const version = request.query.version ?? (await reader.latestVersion(game));
-        if (!version) {
+        const gameVersion = request.query.version ?? (await reader.latestVersion(game));
+        if (!gameVersion) {
           return reply.code(404).send({
             error: "no_dataset",
             message: `No dataset has been published for "${game}"`
           });
         }
 
-        const dataset = await reader.get(game, version);
+        const dataset = await reader.get(game, gameVersion);
         if (!dataset) {
           return reply.code(404).send({
-            error: "unknown_dataset_version",
-            message: `No dataset "${version}" for "${game}"`
+            error: "unknown_game_version",
+            message: `No dataset for "${game}" patch "${gameVersion}"`
           });
         }
 
@@ -69,7 +69,7 @@ export function createGameDataRoutes(reader: DatasetReader): FastifyPluginAsync 
 
         return reply.send({
           data: entities.slice(offset, offset + limit),
-          meta: { game, datasetVersion: version, total: entities.length }
+          meta: { game, gameVersion, total: entities.length }
         });
       }
     );

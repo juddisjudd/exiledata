@@ -1,10 +1,14 @@
 # migrations/
 
-Plain SQL migrations for PostgreSQL application/service state (API clients, keys, dataset
-metadata, usage). Not for game data — see the root README.
+Plain SQL migrations for PostgreSQL application/service state (API clients, keys, usage). Not
+for game data — see the root README.
 
-No migration runner is wired up yet. Apply manually during scaffolding, e.g.:
+Apply them with the CLI, which reads `DATABASE_URL`:
 
 ```
-psql "$DATABASE_URL" -f migrations/0001_initial.sql
+pnpm exiledata db migrate
 ```
+
+Files run in name order, each in a transaction, and are recorded in `schema_migrations`. Never
+edit a migration that has been applied anywhere; add a new file instead. Tests apply every file
+to an in-process Postgres (PGlite), so a migration that fails to parse fails `pnpm test`.

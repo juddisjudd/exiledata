@@ -1,5 +1,4 @@
 # @exiledata/ingestion-poe1
 
-PoE 1 ingestion package. Establishes the architecture for eventually consuming sources such as
-RePoE/PoEDB — does not yet implement complete ingestion. See `@exiledata/ingestion-common` for
-the shared pipeline interfaces this package implements against.
+PoE 1 ingestion. `createBaseItemsStage(extractDir)` reads base items from a GGPK extract using the
+shared extract stage in `@exiledata/ingestion-common`. The RePoE source is still a placeholder.

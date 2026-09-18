@@ -1,29 +1,59 @@
 # @exiledata/api
 
-Initial ExileData HTTP API application, built on [Fastify](https://fastify.dev/).
+ExileData HTTP API, built on [Fastify](https://fastify.dev/). Live at `https://api.exiledata.dev`.
 
-## Status
+## Routes
 
-Architecture-only for most routes. Implemented:
+Open:
 
-- `GET /health`, `GET /status` — liveness/status.
-- `GET /v1/games` — static list of supported games.
-- `GET /v1/versions` — dataset metadata list (currently empty; no dataset generated yet).
-- `GET /v1/{game}/items|bases|mods|gems|skills` — stubs returning `501 Not Implemented`.
+- `GET /health`: liveness.
+- `GET /status`: uptime, database reachability, whether the admin API is on, and which dataset
+  storage the process resolved.
+- `GET /admin`: the admin dashboard page. It holds no data until the admin token is entered.
+
+API key required (`x-api-key: exd_...` or `Authorization: Bearer exd_...`):
+
+- `GET /v1/games`: supported games.
+- `GET /v1/versions`: metadata of every published dataset, in patch order.
+- `GET /v1/{game}/bases`: base items. `?version=4.5.5.3` picks a patch (default: highest),
+  plus `?itemClass=`, `?limit=` (max 1000) and `?offset=`. `meta.gameVersion` says which patch
+  answered.
+- `GET /v1/{game}/items|mods|gems|skills`: `501 Not Implemented` until ingestion produces them.
+
+`ADMIN_TOKEN` as a bearer token (503 while it is unset):
+
+- `GET /admin/api/keys`: every key with 24-hour and 7-day request counts.
+- `POST /admin/api/keys` `{ client, rateLimitPerMinute? }`: issues a key, creating the client if
+  the name is new. The response carries the full key once.
+- `PATCH /admin/api/keys/{id}` `{ rateLimitPerMinute }`: changes a limit.
+- `POST /admin/api/keys/{id}/revoke`: revokes a key. Idempotent.
+- `GET /admin/api/usage?hours=168`: hourly request and error counts per key.
+
+Admin changes take effect at once. Wire types are in `@exiledata/types` (`admin.ts`).
+
+## Errors
+
+Every error body is `{ "error": "<code>", "message": "<text>" }`. Codes on keyed routes:
+`missing_api_key` and `invalid_api_key` (401), `rate_limited` (429, with `retry-after`).
+Keyed responses carry `x-ratelimit-limit`, `x-ratelimit-remaining` and `x-ratelimit-reset`.
 
 ## Design notes
 
-- The API is versioned by URL prefix (`/v1/...`) and, within that, by dataset version (see
-  `GET /v1/versions` and `DatasetMetadata` in `@exiledata/schema`). The latest dataset is never
-  assumed to be immutable — clients should be able to pin a dataset version once that's wired up.
-- `src/plugins/auth.ts` establishes where API-key authentication will be enforced. It currently
-  reads the `x-api-key` header but does not yet reject requests — real key storage/validation
-  depends on the PostgreSQL schema in `/migrations`.
-- Route handlers never call upstream sources (RePoE/PoEDB) directly or at request time; they will
-  read from generated datasets/storage once ingestion exists.
+- Datasets are read from storage, never from upstream sources at request time. A parsed dataset
+  stays cached until the storage listing reports a new ETag for it, so re-ingesting a patch
+  shows up within the listing TTL (60 seconds) without a restart.
+- Rate limits and the key lookup cache live in memory. That is correct for one process only.
+- Usage counts are buffered and written every 10 seconds and on SIGTERM.
+
+## Configuration
+
+Required: `DATABASE_URL`, `API_KEY_SECRET`. Optional: `ADMIN_TOKEN` (32+ characters),
+`DEFAULT_RATE_LIMIT_PER_MINUTE` (default 120), `API_PORT`, and the `DATASET_STORAGE_*` / `R2_*`
+variables. See the root `.env.example`.
 
 ## Run locally
 
 ```
-pnpm --filter @exiledata/api dev
+pnpm exiledata db migrate
+pnpm dev:api
 ```

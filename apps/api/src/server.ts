@@ -13,3 +13,16 @@ app
     app.log.error(error);
     process.exit(1);
   });
+
+// Closing the app flushes usage counts that have not reached Postgres yet.
+for (const signal of ["SIGTERM", "SIGINT"] as const) {
+  process.once(signal, () => {
+    app.close().then(
+      () => process.exit(0),
+      (error) => {
+        app.log.error(error);
+        process.exit(1);
+      }
+    );
+  });
+}

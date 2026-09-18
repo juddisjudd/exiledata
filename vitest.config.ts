@@ -13,7 +13,10 @@ export default defineConfig({
     alias: {
       "@exiledata/schema": path.resolve(rootDir, "packages/schema/src/index.ts"),
       "@exiledata/types": path.resolve(rootDir, "packages/types/src/index.ts"),
-      "@exiledata/ingestion-common": path.resolve(rootDir, "ingestion/common/src/index.ts")
+      "@exiledata/storage": path.resolve(rootDir, "packages/storage/src/index.ts"),
+      "@exiledata/ingestion-common": path.resolve(rootDir, "ingestion/common/src/index.ts"),
+      "@exiledata/ingestion-poe1": path.resolve(rootDir, "ingestion/poe1/src/index.ts"),
+      "@exiledata/ingestion-poe2": path.resolve(rootDir, "ingestion/poe2/src/index.ts")
     }
   }
 });
