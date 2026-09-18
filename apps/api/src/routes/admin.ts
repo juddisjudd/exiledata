@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import type { FastifyInstance, FastifyPluginAsync, FastifyReply } from "fastify";
+import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import type {
   AdminCreateKeyRequest,
   AdminCreateKeyResponse,
@@ -97,8 +97,12 @@ function registerAdminApi(api: FastifyInstance, deps: AdminRoutesDeps): void {
     }
   });
 
-  api.get<{ Reply: AdminKeysResponse }>("/keys", async () => {
-    await usage.flush();
+  // A failed flush keeps its counts queued for the next try; the read still answers.
+  const flushUsage = (request: FastifyRequest) =>
+    usage.flush().catch((error) => request.log.error({ err: error }, "usage flush failed"));
+
+  api.get<{ Reply: AdminKeysResponse }>("/keys", async (request) => {
+    await flushUsage(request);
     return { keys: await store.listKeys() };
   });
 
@@ -164,7 +168,7 @@ function registerAdminApi(api: FastifyInstance, deps: AdminRoutesDeps): void {
       return badRequest(reply, `"hours" must be an integer 1-${MAX_USAGE_HOURS}.`);
     }
 
-    await usage.flush();
+    await flushUsage(request);
     const to = new Date(floorToHour(new Date()).getTime() + 3_600_000);
     const from = new Date(to.getTime() - hours * 3_600_000);
     const response: AdminUsageResponse = {

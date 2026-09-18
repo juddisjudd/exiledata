@@ -102,13 +102,19 @@ export class KeyStore {
     return rows.length ? this.getKey(id) : undefined;
   }
 
-  /** Adds counts to the hourly rollups and advances each key's `last_used_at`. */
+  /**
+   * Adds counts to the hourly rollups and advances each key's `last_used_at`. Counts for keys
+   * deleted since the request are dropped; otherwise one deleted key would fail every batch.
+   */
   async recordUsage(entries: UsageEntry[]): Promise<void> {
     if (entries.length === 0) return;
 
     await this.db.query(
       `INSERT INTO api_key_usage_hourly (api_key_id, hour, requests, errors)
-       SELECT * FROM unnest($1::uuid[], $2::timestamptz[], $3::int[], $4::int[])
+       SELECT u.api_key_id, u.hour, u.requests, u.errors
+         FROM unnest($1::uuid[], $2::timestamptz[], $3::int[], $4::int[])
+              AS u (api_key_id, hour, requests, errors)
+         JOIN api_keys k ON k.id = u.api_key_id
        ON CONFLICT (api_key_id, hour) DO UPDATE
           SET requests = api_key_usage_hourly.requests + EXCLUDED.requests,
               errors = api_key_usage_hourly.errors + EXCLUDED.errors`,
