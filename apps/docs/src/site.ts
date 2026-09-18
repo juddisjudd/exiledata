@@ -2,6 +2,7 @@ import { copyFile, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promi
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderApiReference, type OpenApiDocument } from "./api-reference.js";
+import { DOWNLOADS_PLACEHOLDER, downloadsBrowser } from "./downloads.js";
 import { escapeHtml, renderMarkdown, type Heading } from "./markdown.js";
 import { NAV, hrefFor, type NavPage } from "./nav.js";
 
@@ -46,7 +47,7 @@ export async function loadShell(): Promise<Shell> {
 /** Marks the header link for the section a page belongs to. */
 function markSection(header: string, slug: string | undefined): string {
   if (!slug) return header;
-  const href = slug === "api" || slug === "changelog" ? `/${slug}` : "/";
+  const href = ["api", "changelog", "downloads"].includes(slug) ? `/${slug}` : "/";
   return header.replace(`href="${href}">`, `href="${href}" aria-current="true">`);
 }
 
@@ -178,7 +179,12 @@ async function loadPage(page: NavPage, openapi: OpenApiDocument): Promise<PageCo
   }
   const source = await readFile(path.join(PATHS.content, `${page.slug}.md`), "utf8");
   const { title, html, headings } = renderMarkdown(source);
-  return { page, title: title || page.title, html, headings };
+  return {
+    page,
+    title: title || page.title,
+    html: html.replace(DOWNLOADS_PLACEHOLDER, downloadsBrowser()),
+    headings
+  };
 }
 
 /** Renders the whole site into `outDir`, replacing what was there. Returns the pages written. */

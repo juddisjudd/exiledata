@@ -86,6 +86,18 @@ describe("docs site", () => {
     );
   });
 
+  it("puts the file browser on the Downloads page, with a fallback without JavaScript", () => {
+    const html = pages.get("downloads.html")!;
+    const script = /<div id="dl"[\s\S]*?<\/div>\s*<script>([\s\S]*?)<\/script>/.exec(html)?.[1];
+
+    expect(html).toContain(`data-base="https://data.exiledata.dev"`);
+    expect(html).toMatch(
+      /<noscript>[\s\S]*https:\/\/data\.exiledata\.dev\/index\.json[\s\S]*<\/noscript>/
+    );
+    expect(html).not.toContain("downloads-browser");
+    expect(() => new Function(script!)).not.toThrow();
+  });
+
   it("leaves no rendering artifacts", () => {
     for (const [file, html] of pages) {
       expect(html, file).not.toContain("[object Object]");
@@ -133,7 +145,7 @@ describe("header and footer shared by exiledata.dev and the docs", () => {
     }
   });
 
-  it("marks API and Changelog on their pages and Docs everywhere else", async () => {
+  it("marks API, Downloads and Changelog on their pages and Docs everywhere else", async () => {
     const current = async (file: string) =>
       /<a class="[^"]*" href="([^"]*)" aria-current="true">/.exec(
         await readFile(path.join(out, file), "utf8")
@@ -141,6 +153,7 @@ describe("header and footer shared by exiledata.dev and the docs", () => {
 
     expect(await current("api.html")).toBe("/api");
     expect(await current("changelog.html")).toBe("/changelog");
+    expect(await current("downloads.html")).toBe("/downloads");
     expect(await current("schema.html")).toBe("/");
   });
 

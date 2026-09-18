@@ -13,6 +13,7 @@ export const NAV: NavPage[] = [
   { slug: "datasets", title: "Datasets and versions", group: "Data", source: "markdown" },
   { slug: "schema", title: "Record format", group: "Data", source: "markdown" },
   { slug: "sources", title: "Data sources", group: "Data", source: "markdown" },
+  { slug: "downloads", title: "Downloads", group: "Data", source: "markdown" },
   { slug: "api", title: "API reference", group: "Reference", source: "api" },
   { slug: "changelog", title: "Changelog", group: "Reference", source: "markdown" }
 ];

@@ -1,6 +1,6 @@
 # ExileData documentation
 
-ExileData serves Path of Exile 1 and 2 game data over HTTP. Each game patch becomes its own dataset of normalized records, so your tool reads JSON instead of parsing game files.
+ExileData serves Path of Exile 1 and 2 game data over HTTP. Each game patch becomes its own dataset of normalized records, so your tool reads JSON instead of parsing game files. Query the data through the API with a key, or [download](./downloads.md) whole patches without one.
 
 > ExileData is in preview. The API can change between releases, and every change is listed in the [changelog](./changelog.md).
 
@@ -58,6 +58,7 @@ $ curl -H "x-api-key: $EXILEDATA_KEY" \
 | ------------------------- | ---------------------------------- | --------------------------------- |
 | Base items                | `GET /v1/{game}/bases`             | Available for both games          |
 | Items, mods, gems, skills | `GET /v1/{game}/items` and similar | Planned. These return `501` today |
+| Every exported game file  | [Downloads](./downloads.md)        | Available for both games, no key  |
 
 `{game}` is `poe1` or `poe2`. `GET /v1/versions` lists every published patch.
 
@@ -66,5 +67,6 @@ $ curl -H "x-api-key: $EXILEDATA_KEY" \
 - [Authentication](./authentication.md): sending the key, rate limits, error codes.
 - [Record format](./schema.md): what each field means and which fields are stable.
 - [API reference](/api): every endpoint and parameter.
+- [Downloads](./downloads.md): every file of a patch as JSON, without a key.
 
 There is no published SDK yet. The [OpenAPI document](/openapi.json) works with client generators and with tools such as Postman or Insomnia.

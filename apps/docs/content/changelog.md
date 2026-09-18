@@ -18,6 +18,7 @@ Changes to the API, the record format and the published datasets, newest first.
 - Rate limits per key, reported in `x-ratelimit-*` headers.
 - The OpenAPI document at `https://api.exiledata.dev/openapi.json`.
 - Every error, including unknown routes, now uses the `{ "error", "message" }` body.
+- [Downloads](./downloads.md) at `https://data.exiledata.dev`: every exported game file and the normalized records of each patch, with a manifest and a zip per patch. No key is needed.
 
 ### Datasets
 

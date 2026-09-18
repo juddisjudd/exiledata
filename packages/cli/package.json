@@ -22,6 +22,7 @@
     "@exiledata/storage": "workspace:*",
     "@exiledata/types": "workspace:*",
     "commander": "^12.1.0",
+    "fflate": "^0.8.3",
     "pg": "^8.23.0"
   },
   "devDependencies": {

@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import { ingest } from "./ingest.js";
 import { deleteDataset, listDatasets } from "./datasets.js";
+import { listDownloads, publishDownloads } from "./downloads.js";
 import { runMigrations } from "./db.js";
 import { createKey, listKeys, revokeKey, setRateLimit } from "./keys.js";
 
@@ -40,6 +41,26 @@ datasets
   .requiredOption("--patch <version>", "game patch, e.g. 4.5.5.3")
   .option("--yes", "confirm the deletion")
   .action(deleteDataset);
+
+const downloads = program
+  .command("downloads")
+  .description("Publish and list the public download files (data.exiledata.dev)");
+
+downloads
+  .command("publish")
+  .description("Publish an extract's JSON files, the normalized records, a manifest and a zip")
+  .requiredOption("--game <game>", "poe1 or poe2")
+  .requiredOption("--extract-dir <path>", "path to a GGPK extract directory")
+  .option("--overwrite", "replace a patch that is already published")
+  .option("--dry-run", "build everything but upload nothing")
+  .action(async (options) => {
+    await publishDownloads(options);
+  });
+
+downloads
+  .command("list")
+  .description("List published download patches")
+  .action(() => listDownloads());
 
 program
   .command("db")

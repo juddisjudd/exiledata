@@ -6,7 +6,7 @@
     <title>ExileData · Path of Exile 1 &amp; 2 game data API</title>
     <meta
       name="description"
-      content="ExileData turns each Path of Exile 1 and 2 patch into a normalized, versioned dataset and serves it through an HTTP API for tool developers."
+      content="ExileData turns each Path of Exile 1 and 2 patch into a normalized, versioned dataset for tool developers. Query it through an HTTP API or download the JSON files."
     />
     <meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
@@ -59,6 +59,7 @@
         <nav class="nav" aria-label="Site">
           <a class="text-link" href="https://docs.exiledata.dev/">Docs</a>
           <a class="text-link wide-only" href="https://docs.exiledata.dev/api">API</a>
+          <a class="text-link wide-only" href="https://docs.exiledata.dev/downloads">Downloads</a>
           <a class="text-link wide-only" href="https://docs.exiledata.dev/changelog">Changelog</a>
           <div class="theme" role="group" aria-label="Color theme">
             <button
@@ -105,14 +106,15 @@
         <div class="label">Path of Exile 1 &amp; 2</div>
         <h1>Game data for Path of Exile tools.</h1>
         <p class="lede">
-          ExileData turns each game patch into a normalized, versioned dataset and serves it through
-          an HTTP API. Your tool reads records instead of parsing game files.
+          ExileData turns each game patch into a normalized, versioned dataset. Query it through an
+          HTTP API, or download the whole patch as JSON files. Your tool reads records instead of
+          parsing game files.
         </p>
         <div class="row">
           <a class="btn primary lg" href="https://docs.exiledata.dev/">Read the docs</a>
-          <a class="btn lg" href="https://docs.exiledata.dev/authentication">How keys work</a>
+          <a class="btn lg" href="https://docs.exiledata.dev/downloads">Download the files</a>
         </div>
-        <p class="meta mono">Preview · API keys are issued by hand</p>
+        <p class="meta mono">Preview · API keys are issued by hand · Downloads need no key</p>
       </section>
 
       <section class="shot" aria-label="Example request">
@@ -189,8 +191,9 @@
           <article>
             <h3>Available today</h3>
             <p>
-              Base items for both games, from the latest patch. Items, mods, gems and skills come
-              next.
+              The API serves base items for both games, with items, mods, gems and skills next. The
+              downloads hold every data file of each patch, including mods, skills, uniques and the
+              passive trees.
             </p>
           </article>
         </div>
@@ -215,6 +218,7 @@
                 <li><a href="https://docs.exiledata.dev/authentication">Authentication</a></li>
                 <li><a href="https://docs.exiledata.dev/datasets">Datasets and versions</a></li>
                 <li><a href="https://docs.exiledata.dev/schema">Record format</a></li>
+                <li><a href="https://docs.exiledata.dev/downloads">Downloads</a></li>
               </ul>
             </nav>
             <nav class="foot-col" aria-label="Reference">

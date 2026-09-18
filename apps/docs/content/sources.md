@@ -7,7 +7,7 @@ All data comes from the game client's own files. Nothing is scraped from website
 1. **Extract.** The game files of a patch are exported ahead of time into JSON, one file per kind of data.
 2. **Normalize.** ExileData maps each exported entry into a record: stable fields at the top level, the rest in `ext`.
 3. **Validate.** Every record needs a unique id, a name, the right game, and a source. A patch with any invalid record is not published.
-4. **Publish.** The records are stored as one dataset for that patch, and the API serves them from there.
+4. **Publish.** The records are stored as one dataset for that patch, and the API serves them from there. The exported files and the records are also published as [downloads](./downloads.md).
 
 Building happens offline. The API only reads datasets that are already published.
 
