@@ -12,7 +12,7 @@ const SCRIPT = `
   const base = root.dataset.base;
   const GAME_NAMES = { poe2: "Path of Exile 2", poe1: "Path of Exile 1" };
   const params = new URLSearchParams(location.search);
-  const state = { index: null, game: params.get("game"), version: params.get("version"), query: "" };
+  const state = { index: null, status: null, game: params.get("game"), version: params.get("version"), query: "" };
   const cache = new Map();
 
   const el = (tag, props = {}, ...children) => {
@@ -39,6 +39,23 @@ const SCRIPT = `
 
   function status(text, isError) {
     root.replaceChildren(el("p", { class: "dl-status" + (isError ? " error" : ""), role: "status", text }));
+  }
+
+  function notices() {
+    const games = (state.status && state.status.games) || {};
+    return Object.entries(games).map(([game, s]) => {
+      const name = GAME_NAMES[game] || game;
+      const tables = s.tables || [];
+      const listed = tables.slice(0, 4).join(", ") + (tables.length > 4 ? " and " + (tables.length - 4) + " more" : "");
+      const why = s.state === "waiting"
+        ? " The patch changed the layout of some game tables" + (listed ? " (" + listed + ")" : "") +
+          ", and its files wait on the community schema, dat-schema, to catch up."
+        : " Publishing it failed.";
+      const newest = s.published ? " The newest files here are for " + s.published + "." : "";
+      return el("p", { class: "dl-notice" + (s.state === "waiting" ? "" : " error"), role: "status" },
+        el("strong", { text: name + " " + s.patch + " is not published yet." }),
+        why + newest + " Checked every six hours since " + date(s.since) + ".");
+    });
   }
 
   function rows(files, paired) {
@@ -117,6 +134,7 @@ const SCRIPT = `
       el("a", { class: "btn", href: url("manifest.json"), text: "manifest.json" }));
 
     root.replaceChildren(
+      ...notices(),
       el("div", { class: "dl-controls" },
         el("div", { class: "dl-seg", role: "group", "aria-label": "Game" },
           games.map((g) => el("button", {
@@ -149,9 +167,15 @@ const SCRIPT = `
   }
 
   status("Loading the list of patches\\u2026");
+  const publishing = fetch(base + "/status.json").then((r) => (r.ok ? r.json() : null)).catch(() => null);
   fetch(base + "/index.json")
     .then((r) => { if (!r.ok) throw new Error("index " + r.status); return r.json(); })
-    .then((index) => { state.index = index; if (!Object.keys(index.games).length) throw new Error("empty"); return render(); })
+    .then(async (index) => {
+      state.index = index;
+      state.status = await publishing;
+      if (!Object.keys(index.games).length) throw new Error("empty");
+      return render();
+    })
     .catch(() => status("The list of patches could not be loaded. It is also at " + base + "/index.json.", true));
 })();
 `;

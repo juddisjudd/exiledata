@@ -64,10 +64,27 @@ ggpk-explorer export-tree --cdn <patch> --<game> --flat -o <work>/<game>/<patch>
 ```
 
 - `--check` only prints the comparison. Under GitHub Actions it also writes
-  `stale=<games>` to `GITHUB_OUTPUT`.
+  `stale=<games>` to `GITHUB_OUTPUT`. A game whose published patch has no saved tables yet
+  counts too.
 - `--force` treats every game as behind, and replaces the dataset and the published patch.
   Without it, a dataset already in storage is kept and only the downloads are published.
 - `--dry-run` exports and builds everything but writes nothing to storage.
+
+Each export's `export_report.json` names the tables the patch moved (`refused` or `skipped`). For
+those, `update` downloads the previous patch's saved tables and the layouts it was published with,
+and re-fits them:
+
+```
+ggpk-explorer refit --cdn <patch> --<game> --old <published> --old-dir <tables> --table <A,B> --write --strict
+```
+
+It then exports again and publishes only if nothing is left refused. After a publish it saves the
+patch's tables (`refit --save`) to `refit/<game>/<patch>/` for the next patch. Each game keeps its
+re-fitted layouts in `<work>/<game>/schema_overrides.json` (`GGPK_EXPLORER_OVERRIDES`).
+
+A game that cannot be published is written to `downloads/status.json`: `waiting` when tables
+did not re-fit, `failed` for anything else, with the patch, the newest published patch and the
+time it first failed. A later publish of that game clears it.
 
 ggpk-explorer's output goes to `<work>/<game>/<patch>.log`. When it exits with an error, the
 end of its output is printed. A game that fails does not stop the other one, but `update` exits

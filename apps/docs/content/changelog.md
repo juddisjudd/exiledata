@@ -2,6 +2,12 @@
 
 Changes to the API, the record format and the published datasets, newest first.
 
+## 2026-09-30
+
+### Added
+
+- [`status.json`](./downloads.md#when-a-new-patch-is-late) and a notice on the Downloads page when a new patch cannot be published yet, for example while it waits for dat-schema to catch up.
+
 ## 2026-09-29
 
 ### Breaking changes
