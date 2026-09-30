@@ -52,9 +52,9 @@ flowchart LR
   than an assumed-immutable "latest", plus the admin API and dashboard (`/admin`).
 - **`packages/client`** — the TypeScript SDK consuming the API.
 - **`packages/cli`** — operations CLI: `ingest`, `datasets list|delete`, `downloads publish|list`,
-  `db migrate`, `keys list|create|limit|revoke`.
+  `patch`, `update`, `db migrate`, `keys list|create|limit|revoke`.
 - **`apps/data`** — the download server at data.exiledata.dev: a Worker serving published
-  patches as JSON files from R2, with no key and no rate limit.
+  patches as files from R2, with no key and no rate limit.
 - **`apps/web`** — the landing page at exiledata.dev. **`apps/docs`** — the documentation at
   docs.exiledata.dev, rendered from markdown plus an API reference generated from
   `apps/api/openapi.json`.
@@ -66,14 +66,16 @@ flowchart LR
 
 Early stage, but live at `https://api.exiledata.dev`:
 
-- Base items for both games are ingested from local GGPK extracts and published to R2, one
-  dataset per game patch.
+- Base items for both games are ingested from GGPK extracts and published to R2, one dataset
+  per game patch.
 - `GET /v1/{game}/bases` and `GET /v1/versions` serve them. `items`, `mods`, `gems` and `skills`
   still return `501 Not Implemented`.
 - Every `/v1` route requires an API key, with a per-key rate limit and hourly usage counts.
   Keys are managed through the admin dashboard at `/admin` or the CLI's `keys` commands.
-- Every exported game file of each patch, plus the normalized records, can be downloaded without
-  a key from `https://data.exiledata.dev`, browsed at `https://docs.exiledata.dev/downloads`.
+- Every exported game file of each patch, plus the normalized records and Path of Building's
+  passive tree data, can be downloaded without a key from `https://data.exiledata.dev`, browsed
+  at `https://docs.exiledata.dev/downloads`.
+- A scheduled workflow publishes each new game patch; see "Keeping up with patches" below.
 
 ## Repository structure
 
@@ -97,7 +99,7 @@ data/fixtures/ — small, hand-written test fixtures (never generated datasets)
 migrations/    — PostgreSQL schema migrations (application state only)
 docker/        — local infrastructure (PostgreSQL) and the API image
 tests/         — cross-package tests; database tests run on in-process Postgres (PGlite)
-.github/workflows/ — CI
+.github/workflows/ — CI, deploys and the patch update
 ```
 
 ## Dataset architecture
@@ -127,7 +129,8 @@ Published patches also live in the same bucket, under their own prefix:
 downloads/index.json
 downloads/{game}/{gameVersion}/manifest.json
 downloads/{game}/{gameVersion}/{game}-{gameVersion}.zip
-downloads/{game}/{gameVersion}/...   every exported file, and normalized/
+downloads/{game}/{gameVersion}/{game}-{gameVersion}-pob-tree-{tree}.zip
+downloads/{game}/{gameVersion}/...   every exported file, normalized/ and pob_tree/
 ```
 
 `exiledata downloads publish` writes them and `apps/data` serves them publicly; see their READMEs.
@@ -249,7 +252,32 @@ pnpm exiledata downloads publish --game poe2 --extract-dir S:/POE2-Extracted/4.5
 pnpm exiledata downloads list
 ```
 
-Run it after `ingest` for the same patch, with the same `DATASET_STORAGE_DRIVER`.
+Run it after `ingest` for the same patch, with the same `DATASET_STORAGE_DRIVER`. The PoB tree
+data is published when the extract has a `pob_tree/` folder, as `update` writes it.
+
+### Keeping up with patches
+
+```sh
+pnpm exiledata patch                          # each game's current patch
+pnpm exiledata update --check                 # which games are behind the published downloads
+pnpm exiledata update                         # export, ingest and publish every game that is behind
+pnpm exiledata update poe2 --force --dry-run  # rebuild one game without writing to storage
+```
+
+`update` asks GGG's patch servers for each game's current patch and compares it with the latest
+patch in `downloads/index.json`. For each game that is behind, it exports that patch from the
+patch CDN with [ggpk-explorer](https://github.com/juddisjudd/ggpk-explorer), so no game install
+is needed: `export-data` for the game files, then `export-tree` for PoB's tree data into
+`pob_tree/`. Then it ingests the extract and publishes the downloads. The extracts and
+ggpk-explorer's log go to `work/{game}/`.
+
+A dataset that is already in storage is kept; `--force` ingests and publishes again, replacing
+both. `update` needs `ggpk-explorer` on `PATH`, or `GGPK_EXPLORER` set to it. On a machine
+without the ggpk-explorer GUI's cached schema, set `DAT_SCHEMA` to a downloaded
+[schema.min.json](https://github.com/poe-tool-dev/dat-schema/releases/latest/download/schema.min.json).
+
+`.github/workflows/update.yml` runs it against R2 every six hours. See
+[DEPLOYMENT.md](./DEPLOYMENT.md) for the secrets it needs.
 
 ### Run the landing page and docs
 

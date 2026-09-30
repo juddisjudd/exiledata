@@ -29,8 +29,14 @@ records come from its dataset. It uploads, under `downloads/{game}/{patch}/`:
   `passive_skill_trees` and `stat_translations` folders (the extractor's report and images are
   left out);
 - `normalized/base_items.json` and `.min.json`, the records the API serves;
+- every file in the tree folders of `pob_tree/`, such as `pob_tree/0_5/`, as it is. These are
+  Path of Building's `src/TreeData` files. Files at the root of `pob_tree/` are the exporter's
+  own and are left out, and an extract without `pob_tree/` publishes without trees;
 - `{game}-{patch}.zip` with every minified file;
-- `manifest.json` with each file's size, SHA-256, record count and description.
+- `{game}-{patch}-pob-tree-{tree}.zip` for each tree, holding `{tree}/...`. Images and `.zst`
+  files are stored in it uncompressed, since they are compressed already;
+- `manifest.json` with each file's size, SHA-256 and description, the record count and `min`
+  variant of each JSON file, and the tree zips under `trees`.
 
 It writes the manifest after the files and `downloads/index.json` last, so the index never lists
 a patch whose files are missing. It refuses to replace a published patch without `--overwrite`.
@@ -39,6 +45,34 @@ come from `src/file-descriptions.ts`; add a line there when the extractor gains 
 
 `list` prints the published patches from the index. Both commands use the storage that
 `DATASET_STORAGE_DRIVER` selects, so set it to `r2` to publish to production.
+
+## Patches
+
+```
+exiledata patch [poe1] [poe2]
+exiledata update [poe1] [poe2] [--check] [--force] [--dry-run] [--work-dir work]
+```
+
+`patch` prints each game's current patch, as GGG's patch servers report it to the game client.
+
+`update` compares that patch with the latest one in `downloads/index.json`. For each game that
+is behind, it runs ggpk-explorer against the patch CDN, then ingests and publishes the result:
+
+```
+ggpk-explorer export-data --cdn <patch> --<game> --trade-stats --strip-null -o <work>/<game> [--schema <DAT_SCHEMA>]
+ggpk-explorer export-tree --cdn <patch> --<game> --flat -o <work>/<game>/<patch>-stripped/pob_tree [--schema <DAT_SCHEMA>]
+```
+
+- `--check` only prints the comparison. Under GitHub Actions it also writes
+  `stale=<games>` to `GITHUB_OUTPUT`.
+- `--force` treats every game as behind, and replaces the dataset and the published patch.
+  Without it, a dataset already in storage is kept and only the downloads are published.
+- `--dry-run` exports and builds everything but writes nothing to storage.
+
+ggpk-explorer's output goes to `<work>/<game>/<patch>.log`. When it exits with an error, the
+end of its output is printed. A game that fails does not stop the other one, but `update` exits
+with an error. The binary is `ggpk-explorer` on `PATH` unless `GGPK_EXPLORER` names another.
+`DAT_SCHEMA`, when set, is passed as `--schema`.
 
 ## Database
 

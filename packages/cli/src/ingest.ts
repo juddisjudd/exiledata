@@ -14,12 +14,15 @@ export interface IngestOptions {
   extractDir: string;
   dryRun?: boolean;
   overwrite?: boolean;
+  env?: NodeJS.ProcessEnv;
+  log?: (line: string) => void;
 }
 
 const STAGES = { poe1: createPoe1BaseItemsStage, poe2: createPoe2BaseItemsStage };
 
 /** Runs the base-item stage against an extract and writes one dataset per game patch. */
-export async function ingest(options: IngestOptions): Promise<void> {
+export async function ingest(options: IngestOptions): Promise<Dataset> {
+  const log = options.log ?? console.log;
   const game = parseGame(options.game);
   const result = await runStage(STAGES[game](options.extractDir));
 
@@ -41,13 +44,13 @@ export async function ingest(options: IngestOptions): Promise<void> {
   };
   const dataset: Dataset = { metadata, entities: result.entities };
 
-  console.log(`Normalized ${result.entities.length} base items from ${game} ${gameVersion}.`);
+  log(`Normalized ${result.entities.length} base items from ${game} ${gameVersion}.`);
   if (options.dryRun) {
-    console.log("--dry-run: nothing written.");
-    return;
+    log("--dry-run: nothing written.");
+    return dataset;
   }
 
-  const config = datasetStorageConfigFromEnv(process.env);
+  const config = datasetStorageConfigFromEnv(options.env ?? process.env);
   const storage = createDatasetStorage(config);
   const exists = (await storage.list(game)).some((d) => d.gameVersion === gameVersion);
   if (exists && !options.overwrite) {
@@ -58,7 +61,8 @@ export async function ingest(options: IngestOptions): Promise<void> {
   }
 
   await storage.put(metadata, JSON.stringify(dataset));
-  console.log(
+  log(
     `${exists ? "Replaced" : "Wrote"} ${game}/${gameVersion} in ${describeDatasetStorage(config)}.`
   );
+  return dataset;
 }

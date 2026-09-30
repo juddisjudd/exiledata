@@ -55,6 +55,7 @@ export const FOLDER_DESCRIPTIONS: Record<string, string> = {
   base_items: "Base items split into one file per item class.",
   passive_skill_trees: "Passive and atlas trees, one file per tree.",
   stat_translations: "Stat description files: how stats render as item and skill text.",
+  pob_tree: "Path of Building's passive tree data (src/TreeData), one folder per tree.",
   normalized: "ExileData records in the documented record format."
 };
 

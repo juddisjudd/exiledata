@@ -2,6 +2,17 @@
 
 Changes to the API, the record format and the published datasets, newest first.
 
+## 2026-09-29
+
+### Breaking changes
+
+- **`min` and `records` can be missing in `manifest.json`.** Files in `pob_tree/` are published once and have no record count. Check for `min` before you use it.
+
+### Added
+
+- Path of Building passive tree data in [Downloads](./downloads.md). Each patch has a `pob_tree/` folder laid out like PoB's `src/TreeData`, one folder per tree, and a zip for each tree.
+- `trees` in `manifest.json` lists the tree zips.
+
 ## 2026-09-18
 
 ### Breaking changes
