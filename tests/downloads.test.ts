@@ -5,12 +5,26 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { unzipSync } from "fflate";
 import { buildRelease, mergeIndex, type DownloadIndex } from "../packages/cli/src/release.js";
-import { publishDownloads } from "../packages/cli/src/downloads.js";
+import { contentType, publishDownloads } from "../packages/cli/src/downloads.js";
 import { LocalDatasetStorage } from "../packages/storage/src/local.js";
-import { LocalObjectStorage } from "../packages/storage/src/objects.js";
+import { LocalObjectStorage, type ObjectStorage } from "../packages/storage/src/objects.js";
 import { SCHEMA_VERSION } from "../packages/schema/src/common/version.js";
 
 const sha = (data: Uint8Array | string) => createHash("sha256").update(data).digest("hex");
+
+const TREE_LUA = "return { tree = '0_5', nodes = {} }\n".repeat(20);
+
+/** Each entry's compression method from a zip's local headers: 0 stored, 8 deflated. */
+function zipMethods(zip: Uint8Array): Record<string, number> {
+  const buf = Buffer.from(zip);
+  const methods: Record<string, number> = {};
+  for (let pos = 0; buf.readUInt32LE(pos) === 0x04034b50;) {
+    const nameLength = buf.readUInt16LE(pos + 26);
+    methods[buf.toString("utf8", pos + 30, pos + 30 + nameLength)] = buf.readUInt16LE(pos + 8);
+    pos += 30 + nameLength + buf.readUInt16LE(pos + 28) + buf.readUInt32LE(pos + 18);
+  }
+  return methods;
+}
 
 async function write(file: string, value: unknown, pretty = true) {
   await mkdir(path.dirname(file), { recursive: true });
@@ -42,6 +56,11 @@ async function fakeExtract(dir: string, version: string) {
   );
   await write(path.join(dir, "unknown_folder", "x.json"), {});
   await write(path.join(dir, "unknown_folder", "x.min.json"), {}, false);
+  await write(path.join(dir, "pob_tree", "version.txt"), `${version}\n`);
+  await write(path.join(dir, "pob_tree", "export_report.json"), { ok: true });
+  await write(path.join(dir, "pob_tree", "0_5", "tree.lua"), TREE_LUA);
+  await write(path.join(dir, "pob_tree", "0_5", "orbit.png"), "PNG");
+  await write(path.join(dir, "pob_tree", "0_5", "skills.dds.zst"), "ZSTD");
 }
 
 const RECORDS = [
@@ -72,15 +91,17 @@ describe("buildRelease", () => {
 
   it("publishes JSON pairs, skips the extractor report, images and unknown folders", async () => {
     const { manifest } = await build();
+    const pairs = manifest.files.filter((f) => f.min);
 
-    expect(manifest.files.map((f) => `${f.path} + ${f.min.path}`)).toEqual([
+    expect(pairs.map((f) => `${f.path} + ${f.min!.path}`)).toEqual([
       "normalized/base_items.json + normalized/base_items.min.json",
       "mods.json + mods.min.json",
       "tags.json + tags.min.json",
       "stat_translations/skill.json + stat_translations/skill.min.json",
       "stat_translations/specific/bolt/bolt.json + stat_translations/specific/bolt/bolt.min.json"
     ]);
-    expect(manifest.files.at(-1)!.folder).toBe("stat_translations");
+    expect(pairs.at(-1)!.folder).toBe("stat_translations");
+    expect(manifest.files.some((f) => f.path.includes("Art/"))).toBe(false);
   });
 
   it("records sizes, checksums, record counts and descriptions", async () => {
@@ -90,11 +111,76 @@ describe("buildRelease", () => {
     expect(mods.records).toBe(2);
     expect(mods.bytes).toBe(objects.get("mods.json")!.byteLength);
     expect(mods.sha256).toBe(sha(objects.get("mods.json")!));
-    expect(mods.min.sha256).toBe(sha(objects.get("mods.min.json")!));
+    expect(mods.min!.sha256).toBe(sha(objects.get("mods.min.json")!));
     expect(mods.description).toMatch(/modifier/i);
     expect(manifest.files.find((f) => f.path === "tags.json")!.records).toBe(3);
     expect(manifest.files[0]).toMatchObject({ kind: "normalized", records: 1 });
-    expect(Object.keys(manifest.folders).sort()).toEqual(["normalized", "stat_translations"]);
+    expect(Object.keys(manifest.folders).sort()).toEqual([
+      "normalized",
+      "pob_tree",
+      "stat_translations"
+    ]);
+  });
+
+  it("publishes PoB tree files as they are, once each, without the exporter's own files", async () => {
+    const { manifest, objects } = await build();
+    const tree = manifest.files.filter((f) => f.folder === "pob_tree");
+
+    expect(tree.map((f) => f.path)).toEqual([
+      "pob_tree/0_5/orbit.png",
+      "pob_tree/0_5/skills.dds.zst",
+      "pob_tree/0_5/tree.lua"
+    ]);
+    for (const f of tree) {
+      expect(f, f.path).toEqual({
+        kind: "raw",
+        folder: "pob_tree",
+        path: f.path,
+        bytes: objects.get(f.path)!.byteLength,
+        sha256: sha(objects.get(f.path)!)
+      });
+    }
+    expect(Buffer.from(objects.get("pob_tree/0_5/tree.lua")!).toString()).toBe(TREE_LUA);
+    expect([...objects.keys()].filter((k) => k.startsWith("pob_tree/")).length).toBe(3);
+    expect(manifest.folders.pob_tree).toMatch(/Path of Building/);
+  });
+
+  it("zips each PoB tree on its own, storing compressed formats as they are", async () => {
+    const { manifest, objects } = await build();
+    const archive = objects.get("poe2-4.5.5.3-pob-tree-0_5.zip")!;
+
+    expect(manifest.trees).toEqual([
+      {
+        version: "0_5",
+        archive: {
+          path: "poe2-4.5.5.3-pob-tree-0_5.zip",
+          bytes: archive.byteLength,
+          sha256: sha(archive)
+        }
+      }
+    ]);
+    const zip = unzipSync(archive);
+    expect(Object.keys(zip).sort()).toEqual([
+      "0_5/orbit.png",
+      "0_5/skills.dds.zst",
+      "0_5/tree.lua"
+    ]);
+    expect(Buffer.from(zip["0_5/tree.lua"]!).toString()).toBe(TREE_LUA);
+    expect(zipMethods(archive)).toEqual({
+      "0_5/orbit.png": 0,
+      "0_5/skills.dds.zst": 0,
+      "0_5/tree.lua": 8
+    });
+  });
+
+  it("builds an extract without a pob_tree folder", async () => {
+    await rm(path.join(dir, "pob_tree"), { recursive: true });
+    const { manifest, objects } = await build();
+
+    expect(manifest.trees).toEqual([]);
+    expect(manifest.files.every((f) => f.min && f.records !== undefined)).toBe(true);
+    expect(Object.keys(manifest.folders)).not.toContain("pob_tree");
+    expect([...objects.keys()].some((k) => k.includes("pob"))).toBe(false);
   });
 
   it("zips every minified file under a folder named for the patch", async () => {
@@ -156,6 +242,17 @@ describe("mergeIndex", () => {
     expect(index.games.poe2!.versions).toHaveLength(1);
     expect(index.games.poe1!.latest).toBe("3.29.3.3");
   });
+
+  it("counts a file without a min variant once", () => {
+    const manifest = manifestFor("poe2", "4.5.5.3");
+    const tree = { kind: "raw" as const, folder: "pob_tree", path: "pob_tree/0_5/tree.lua" };
+    const index = mergeIndex(undefined, {
+      ...manifest,
+      files: [...manifest.files, { ...tree, bytes: 100, sha256: "t" }]
+    });
+
+    expect(index.games.poe2!.versions[0]).toMatchObject({ files: 2, bytes: 108 });
+  });
 });
 
 describe("publishDownloads", () => {
@@ -199,18 +296,62 @@ describe("publishDownloads", () => {
       log: quiet
     });
 
-    for (const f of manifest.files) {
-      expect(sha((await store.get(`downloads/poe2/4.5.5.3/${f.path}`))!), f.path).toBe(f.sha256);
-      expect(sha((await store.get(`downloads/poe2/4.5.5.3/${f.min.path}`))!), f.min.path).toBe(
-        f.min.sha256
-      );
+    const variants = [
+      manifest.archive,
+      ...manifest.trees!.map((t) => t.archive),
+      ...manifest.files.flatMap((f) => (f.min ? [f, f.min] : [f]))
+    ];
+    for (const v of variants) {
+      expect(sha((await store.get(`downloads/poe2/4.5.5.3/${v.path}`))!), v.path).toBe(v.sha256);
     }
+    expect(variants.map((v) => v.path)).toContain("pob_tree/0_5/skills.dds.zst");
     const published = JSON.parse(
       Buffer.from((await store.get("downloads/poe2/4.5.5.3/manifest.json"))!).toString()
     );
     expect(published).toEqual(manifest);
     const index = JSON.parse(Buffer.from((await store.get("downloads/index.json"))!).toString());
     expect(index.games.poe2.latest).toBe("4.5.5.3");
+  });
+
+  it("sends each file with the content type of its extension, cached as immutable", async () => {
+    const headers = new Map<string, string>();
+    const recording: ObjectStorage = {
+      put: (key, body, options) => {
+        headers.set(key, `${options.contentType} | ${options.cacheControl}`);
+        return store.put(key, body);
+      },
+      get: (key) => store.get(key)
+    };
+    await publishDownloads({
+      game: "poe2",
+      extractDir: extract,
+      store: recording,
+      env: env(),
+      log: quiet
+    });
+
+    const immutable = "public, max-age=31536000, immutable";
+    const patch = "downloads/poe2/4.5.5.3";
+    expect(headers.get(`${patch}/mods.min.json`)).toBe(
+      `application/json; charset=utf-8 | ${immutable}`
+    );
+    expect(headers.get(`${patch}/pob_tree/0_5/tree.lua`)).toBe(
+      `text/plain; charset=utf-8 | ${immutable}`
+    );
+    expect(headers.get(`${patch}/pob_tree/0_5/orbit.png`)).toBe(`image/png | ${immutable}`);
+    expect(headers.get(`${patch}/pob_tree/0_5/skills.dds.zst`)).toBe(
+      `application/zstd | ${immutable}`
+    );
+    expect(headers.get(`${patch}/poe2-4.5.5.3-pob-tree-0_5.zip`)).toBe(
+      `application/zip | ${immutable}`
+    );
+    expect(headers.get(`${patch}/manifest.json`)).toMatch(/^application\/json; charset=utf-8 \| /);
+    expect(["a.jpg", "a.JPEG", "a.webp", "a.bin"].map((file) => contentType(file))).toEqual([
+      "image/jpeg",
+      "image/jpeg",
+      "image/webp",
+      "application/octet-stream"
+    ]);
   });
 
   it("serves the same normalized records the API serves", async () => {

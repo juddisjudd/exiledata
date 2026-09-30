@@ -3,6 +3,9 @@ import { Command } from "commander";
 import { ingest } from "./ingest.js";
 import { deleteDataset, listDatasets } from "./datasets.js";
 import { listDownloads, publishDownloads } from "./downloads.js";
+import { parseGames } from "./games.js";
+import { patchVersion } from "./patch.js";
+import { update } from "./update.js";
 import { runMigrations } from "./db.js";
 import { createKey, listKeys, revokeKey, setRateLimit } from "./keys.js";
 
@@ -24,7 +27,9 @@ program
   .requiredOption("--extract-dir <path>", "path to a GGPK extract directory")
   .option("--dry-run", "run the pipeline but do not write to storage")
   .option("--overwrite", "replace an existing dataset for the same patch")
-  .action(ingest);
+  .action(async (options) => {
+    await ingest(options);
+  });
 
 const datasets = program.command("datasets").description("Inspect and manage dataset storage");
 
@@ -61,6 +66,26 @@ downloads
   .command("list")
   .description("List published download patches")
   .action(() => listDownloads());
+
+program
+  .command("patch")
+  .description("Print each game's current patch, as GGG's patch servers report it")
+  .argument("[games...]", "poe1 and/or poe2 (default: both)")
+  .action(async (games: string[]) => {
+    for (const game of parseGames(games)) console.log(`${game} ${await patchVersion(game)}`);
+  });
+
+program
+  .command("update")
+  .description("Export, ingest and publish each game whose current patch is not published yet")
+  .argument("[games...]", "poe1 and/or poe2 (default: both)")
+  .option("--check", "only report which games are behind")
+  .option("--force", "rebuild and republish even if the patch is already published")
+  .option("--work-dir <dir>", "where ggpk-explorer writes the extracts and its log", "work")
+  .option("--dry-run", "export and build everything but write nothing to storage")
+  .action(async (games: string[], options) => {
+    await update({ ...options, games });
+  });
 
 program
   .command("db")

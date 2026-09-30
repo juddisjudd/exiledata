@@ -24,7 +24,7 @@ cache, so repeated downloads do not read R2.
 ## Publishing
 
 The Worker never writes. `pnpm exiledata downloads publish` uploads a patch's files, its
-`manifest.json` and zip, and then updates `downloads/index.json`. See `packages/cli/README.md`.
+`manifest.json` and zips, and then updates `downloads/index.json`. See `packages/cli/README.md`.
 
 A published file is served as immutable, so browsers and the edge may keep it for a year.
 Republishing a patch with `--overwrite` does not reach those copies; publish a fix as a new

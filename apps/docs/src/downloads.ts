@@ -41,24 +41,28 @@ const SCRIPT = `
     root.replaceChildren(el("p", { class: "dl-status" + (isError ? " error" : ""), role: "status", text }));
   }
 
-  function rows(files) {
-    return files.map((f) =>
-      el("tr", {},
+  function rows(files, paired) {
+    return files.map((f) => {
+      const last = f.min || f;
+      return el("tr", {},
         el("td", {},
           el("a", { class: "dl-file", href: url(f.path) }, breakable(f.path)),
           f.description ? el("span", { class: "dl-desc", text: f.description }) : null),
-        el("td", { class: "num", text: count(f.records) }),
-        el("td", { class: "num col-pretty" }, el("a", { href: url(f.path), text: size(f.bytes) })),
-        el("td", { class: "num" }, el("a", { href: url(f.min.path), text: size(f.min.bytes) }))));
+        paired ? el("td", { class: "num", text: f.records == null ? "" : count(f.records) }) : null,
+        paired ? el("td", { class: "num col-pretty" }, f.min ? el("a", { href: url(f.path), text: size(f.bytes) }) : null) : null,
+        el("td", { class: "num" }, el("a", { href: url(last.path), text: size(last.bytes) })));
+    });
   }
 
   function table(files) {
+    const paired = files.some((f) => f.min);
     return el("div", { class: "table" },
       el("table", {},
         el("thead", {}, el("tr", {},
-          el("th", { text: "File" }), el("th", { class: "num", text: "Records" }),
-          el("th", { class: "num col-pretty", text: ".json" }), el("th", { class: "num", text: ".min.json" }))),
-        el("tbody", {}, rows(files))));
+          el("th", { text: "File" }),
+          paired ? [el("th", { class: "num", text: "Records" }), el("th", { class: "num col-pretty", text: ".json" }), el("th", { class: "num", text: ".min.json" })]
+            : el("th", { class: "num", text: "Size" }))),
+        el("tbody", {}, rows(files, paired))));
   }
 
   function renderFiles(manifest, box) {
@@ -108,6 +112,10 @@ const SCRIPT = `
       oninput: (e) => { state.query = e.target.value; manifestFor(state.game, state.version).then((m) => renderFiles(m, filesBox)); }
     });
 
+    const actions = el("div", { class: "dl-actions" },
+      el("a", { class: "btn primary", href: url(version.archive.path), text: "Download all JSON (" + size(version.archive.bytes) + " zip)" }),
+      el("a", { class: "btn", href: url("manifest.json"), text: "manifest.json" }));
+
     root.replaceChildren(
       el("div", { class: "dl-controls" },
         el("div", { class: "dl-seg", role: "group", "aria-label": "Game" },
@@ -127,13 +135,14 @@ const SCRIPT = `
         el("div", {},
           el("p", { class: "dl-title", text: (GAME_NAMES[state.game] || state.game) + " " + state.version }),
           el("p", { class: "dl-meta", text: "Published " + date(version.generatedAt) + " \\u00b7 " + count(version.files) + " files \\u00b7 " + size(version.bytes) })),
-        el("div", { class: "dl-actions" },
-          el("a", { class: "btn primary", href: base + "/" + state.game + "/" + state.version + "/" + version.archive.path, text: "Download all (" + size(version.archive.bytes) + " zip)" }),
-          el("a", { class: "btn", href: base + "/" + state.game + "/" + state.version + "/manifest.json", text: "manifest.json" }))),
+        actions),
       filesBox);
 
     try {
-      renderFiles(await manifestFor(state.game, state.version), filesBox);
+      const manifest = await manifestFor(state.game, state.version);
+      actions.append(...(manifest.trees || []).map((t) =>
+        el("a", { class: "btn", href: url(t.archive.path), text: "PoB tree " + t.version + " (" + size(t.archive.bytes) + " zip)" })));
+      renderFiles(manifest, filesBox);
     } catch {
       filesBox.replaceChildren(el("p", { class: "dl-status error", role: "status", text: "The file list could not be loaded. Try again, or open manifest.json directly." }));
     }

@@ -59,6 +59,7 @@ $ curl -H "x-api-key: $EXILEDATA_KEY" \
 | Base items                | `GET /v1/{game}/bases`             | Available for both games          |
 | Items, mods, gems, skills | `GET /v1/{game}/items` and similar | Planned. These return `501` today |
 | Every exported game file  | [Downloads](./downloads.md)        | Available for both games, no key  |
+| Path of Building trees    | [Downloads](./downloads.md)        | Available for both games, no key  |
 
 `{game}` is `poe1` or `poe2`. `GET /v1/versions` lists every published patch.
 

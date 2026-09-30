@@ -17,10 +17,21 @@ const IMMUTABLE = "public, max-age=31536000, immutable";
 const SHORT = "public, max-age=60";
 const UPLOAD_CONCURRENCY = 8;
 
-const contentType = (file: string) =>
-  file.endsWith(".zip") ? "application/zip" : "application/json; charset=utf-8";
+const CONTENT_TYPES: Record<string, string> = {
+  ".json": "application/json; charset=utf-8",
+  ".lua": "text/plain; charset=utf-8",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".zst": "application/zstd",
+  ".zip": "application/zip"
+};
 
-async function readJson<T>(store: ObjectStorage, key: string): Promise<T | undefined> {
+export const contentType = (file: string) =>
+  CONTENT_TYPES[path.extname(file).toLowerCase()] ?? "application/octet-stream";
+
+export async function readJson<T>(store: ObjectStorage, key: string): Promise<T | undefined> {
   const data = await store.get(key);
   return data ? (JSON.parse(Buffer.from(data).toString("utf8")) as T) : undefined;
 }
@@ -35,6 +46,8 @@ export async function publishDownloads(options: {
   extractDir: string;
   overwrite?: boolean;
   dryRun?: boolean;
+  /** The patch's normalized dataset, when it is not in storage, as after `ingest --dry-run`. */
+  dataset?: Dataset;
   store?: ObjectStorage;
   env?: NodeJS.ProcessEnv;
   log?: (line: string) => void;
@@ -51,14 +64,17 @@ export async function publishDownloads(options: {
     throw new Error(`${game} ${gameVersion} is already published. Pass --overwrite to replace it.`);
   }
 
-  const raw = await createDatasetStorage(config).get(game, gameVersion);
-  if (!raw) {
-    throw new Error(
-      `No normalized dataset for ${game} ${gameVersion} in ${describeDatasetStorage(config)}. ` +
-        "Run `exiledata ingest` for this patch first."
-    );
+  let dataset = options.dataset;
+  if (!dataset) {
+    const raw = await createDatasetStorage(config).get(game, gameVersion);
+    if (!raw) {
+      throw new Error(
+        `No normalized dataset for ${game} ${gameVersion} in ${describeDatasetStorage(config)}. ` +
+          "Run `exiledata ingest` for this patch first."
+      );
+    }
+    dataset = JSON.parse(raw) as Dataset;
   }
-  const dataset = JSON.parse(raw) as Dataset;
 
   const release = await buildRelease({
     game,
@@ -69,9 +85,11 @@ export async function publishDownloads(options: {
   });
   const { manifest, objects } = release;
   const total = [...objects.values()].reduce((sum, data) => sum + data.byteLength, 0);
+  const trees = manifest.trees ?? [];
   log(
     `${game} ${gameVersion}: ${manifest.files.length} files (${objects.size} objects, ` +
-      `${megabytes(total)}), archive ${megabytes(manifest.archive.bytes)}.`
+      `${megabytes(total)}), archive ${megabytes(manifest.archive.bytes)}` +
+      (trees.length ? `, PoB trees ${trees.map((t) => t.version).join(", ")}.` : ".")
   );
   if (options.dryRun) {
     log("--dry-run: nothing uploaded.");

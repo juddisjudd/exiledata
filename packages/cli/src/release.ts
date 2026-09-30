@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { zipSync } from "fflate";
+import { zipSync, type Zippable } from "fflate";
 import { compareGameVersions } from "@exiledata/storage";
 import type { Game } from "@exiledata/schema";
 import {
@@ -14,6 +14,14 @@ import {
 const FOLDERS = ["base_items", "passive_skill_trees", "stat_translations"];
 /** The extractor's own run report, not game data. */
 const SKIPPED = new Set(["export_report"]);
+/**
+ * Path of Building's `src/TreeData`, one folder per tree, published file for file. The exporter's
+ * own files (version.txt, its report) sit at the folder's root and are left out.
+ */
+const POB_TREE = "pob_tree";
+const TREE_VERSION = /^\d+_\d+(_[a-z]+)*$/;
+/** Already compressed, so the tree zips store them as they are. */
+const STORED = new Set([".png", ".jpg", ".jpeg", ".webp", ".zst", ".zip"]);
 
 export interface FileVariant {
   path: string;
@@ -21,13 +29,22 @@ export interface FileVariant {
   sha256: string;
 }
 
-/** One logical file, published pretty-printed (`path`) and minified (`min`). */
+/**
+ * One logical file. JSON is published pretty-printed (`path`) and minified (`min`) with a record
+ * count; `pob_tree/` files are published once, as they are, and have neither.
+ */
 export interface ManifestFile extends FileVariant {
   kind: "raw" | "normalized";
   folder: string | null;
-  records: number;
+  records?: number;
   description?: string;
-  min: FileVariant;
+  min?: FileVariant;
+}
+
+/** One PoB tree folder, zipped as `{version}/...` for dropping into `src/TreeData`. */
+export interface ManifestTree {
+  version: string;
+  archive: FileVariant;
 }
 
 export interface Manifest {
@@ -36,6 +53,7 @@ export interface Manifest {
   generatedAt: string;
   schemaVersion: string;
   archive: FileVariant;
+  trees?: ManifestTree[];
   folders: Record<string, string>;
   files: ManifestFile[];
 }
@@ -111,9 +129,25 @@ async function walkPairs(
   return pairs;
 }
 
+/** Every file under `dir`, as sorted `/`-separated paths relative to it. */
+async function walkFiles(dir: string): Promise<string[]> {
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true, recursive: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
+  return entries
+    .filter((e) => e.isFile())
+    .map((e) => path.relative(dir, path.join(e.parentPath, e.name)).split(path.sep).join("/"))
+    .sort();
+}
+
 /**
  * Builds one patch's download: the extract's JSON files as they are, the normalized records,
- * a manifest with sizes, checksums and record counts, and a zip of every minified file.
+ * Path of Building's tree files, a manifest with sizes, checksums and record counts, a zip of
+ * every minified file, and a zip per tree.
  */
 export async function buildRelease(options: {
   game: Game;
@@ -187,13 +221,36 @@ export async function buildRelease(options: {
     }
   }
 
+  const treeFiles = new Map<string, Zippable>();
+  for (const rel of await walkFiles(path.join(extractDir, POB_TREE))) {
+    const [version = "", ...rest] = rel.split("/");
+    if (rest.length === 0 || !TREE_VERSION.test(version)) continue;
+    const filePath = `${POB_TREE}/${rel}`;
+    const data = await readFile(path.join(extractDir, POB_TREE, ...rel.split("/")));
+    objects.set(filePath, data);
+    files.push({ kind: "raw", folder: POB_TREE, ...variant(filePath, data) });
+
+    const entries = treeFiles.get(version) ?? {};
+    entries[rel] = [data, { level: STORED.has(path.extname(rel).toLowerCase()) ? 0 : 6 }];
+    treeFiles.set(version, entries);
+  }
+
   const root = `${game}-${gameVersion}`;
   const zipped = zipSync(
-    Object.fromEntries(files.map((f) => [`${root}/${f.min.path}`, objects.get(f.min.path)!])),
+    Object.fromEntries(
+      files.flatMap((f) => (f.min ? [[`${root}/${f.min.path}`, objects.get(f.min.path)!]] : []))
+    ),
     { level: 6 }
   );
   const archivePath = `${root}.zip`;
   objects.set(archivePath, zipped);
+
+  const trees = [...treeFiles].map(([version, entries]): ManifestTree => {
+    const treePath = `${root}-pob-tree-${version}.zip`;
+    const data = zipSync(entries);
+    objects.set(treePath, data);
+    return { version, archive: variant(treePath, data) };
+  });
 
   const manifest: Manifest = {
     game,
@@ -201,6 +258,7 @@ export async function buildRelease(options: {
     generatedAt: (options.now ?? new Date()).toISOString(),
     schemaVersion: options.schemaVersion,
     archive: variant(archivePath, zipped),
+    trees,
     folders: Object.fromEntries(
       [...new Set(files.map((f) => f.folder).filter((f): f is string => f !== null))].map((f) => [
         f,
@@ -223,7 +281,7 @@ export function mergeIndex(
     gameVersion: manifest.gameVersion,
     generatedAt: manifest.generatedAt,
     files: manifest.files.length,
-    bytes: manifest.files.reduce((sum, f) => sum + f.bytes + f.min.bytes, 0),
+    bytes: manifest.files.reduce((sum, f) => sum + f.bytes + (f.min?.bytes ?? 0), 0),
     archive: manifest.archive
   };
   const versions = [

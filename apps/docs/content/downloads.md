@@ -14,11 +14,12 @@ For example, [`https://data.exiledata.dev/poe2/4.5.5.3/mods.min.json`](https://d
 
 To follow the newest patch, write `latest` instead of the patch. `latest` redirects to the patch address, and every file response carries an `x-exiledata-patch` header, so you always know which patch you got.
 
-| What                  | Address                                                                          |
-| --------------------- | -------------------------------------------------------------------------------- |
-| Every published patch | [`https://data.exiledata.dev/index.json`](https://data.exiledata.dev/index.json) |
-| One patch's file list | `https://data.exiledata.dev/{game}/{patch}/manifest.json`                        |
-| One patch, zipped     | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}.zip`                   |
+| What                     | Address                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| Every published patch    | [`https://data.exiledata.dev/index.json`](https://data.exiledata.dev/index.json) |
+| One patch's file list    | `https://data.exiledata.dev/{game}/{patch}/manifest.json`                        |
+| One patch's JSON, zipped | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}.zip`                   |
+| One PoB tree, zipped     | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}-pob-tree-{tree}.zip`   |
 
 The files allow cross-origin requests, so a browser tool can fetch them directly.
 
@@ -26,10 +27,11 @@ The files allow cross-origin requests, so a browser tool can fetch them directly
 
 - **Game files.** The JSON exported from the game client, one file per kind of data, as described in [Data sources](./sources.md). Their fields follow the game files and can change between patches.
 - **`normalized/`.** ExileData records in the [record format](./schema.md). Today that is `base_items.json`, the same records `GET /v1/{game}/bases` serves.
-- **`manifest.json`.** Every file with its size, SHA-256 checksum and record count, so you can check a download or skip files you already have.
-- **The zip.** Every minified file of the patch in one archive.
+- **`pob_tree/`.** Path of Building's passive tree data, laid out like PoB's `src/TreeData`. There is one folder per tree, named as in PoB, such as `0_5`, `3_29` or `3_29_ruthless`. Each holds `tree.lua` and the tree images.
+- **`manifest.json`.** Every file with its size and SHA-256 checksum, plus the record count of each JSON file, so you can check a download or skip files you already have.
+- **The zips.** Every minified JSON file of the patch in one archive, and each PoB tree in an archive of its own. A tree archive holds one folder, such as `0_5/`, so it unpacks straight into `src/TreeData`.
 
-Each file comes twice: `name.json` is indented for reading, and `name.min.json` is the same data minified. Images from the game files are not published yet.
+Each JSON file comes twice: `name.json` is indented for reading, and `name.min.json` is the same data minified. Files in `pob_tree/` come once, in the form PoB reads. Item, skill and buff icons from the game files are not published yet.
 
 ## Files or the API
 

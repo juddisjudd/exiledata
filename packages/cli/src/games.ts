@@ -8,3 +8,8 @@ export function parseGame(value: string): Game {
   }
   return value as Game;
 }
+
+/** The games named on the command line, or every game when none is. */
+export function parseGames(values: string[] = []): Game[] {
+  return values.length ? values.map(parseGame) : GAMES;
+}
