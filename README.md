@@ -276,6 +276,14 @@ both. `update` needs `ggpk-explorer` on `PATH`, or `GGPK_EXPLORER` set to it. On
 without the ggpk-explorer GUI's cached schema, set `DAT_SCHEMA` to a downloaded
 [schema.min.json](https://github.com/poe-tool-dev/dat-schema/releases/latest/download/schema.min.json).
 
+When a patch moves a table the schema reads, the export refuses that table rather than read the
+wrong bytes. `update` then re-fits those tables against the previous patch with ggpk-explorer's
+`refit`, and publishes only if every column was placed. GGG's CDN drops a patch once the next one
+ships, so after each publish `update` keeps the patch's tables under `refit/{game}/{patch}/` in
+the same bucket (private: the download server reads only `downloads/`). A patch that still cannot
+be published is posted in `downloads/status.json`, which the Downloads page shows as a notice,
+and the next run tries again. That is usually once dat-schema has caught up.
+
 `.github/workflows/update.yml` runs it against R2 every six hours. See
 [DEPLOYMENT.md](./DEPLOYMENT.md) for the secrets it needs.
 

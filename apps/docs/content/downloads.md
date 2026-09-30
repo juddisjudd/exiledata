@@ -14,14 +14,19 @@ For example, [`https://data.exiledata.dev/poe2/4.5.5.3/mods.min.json`](https://d
 
 To follow the newest patch, write `latest` instead of the patch. `latest` redirects to the patch address, and every file response carries an `x-exiledata-patch` header, so you always know which patch you got.
 
-| What                     | Address                                                                          |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| Every published patch    | [`https://data.exiledata.dev/index.json`](https://data.exiledata.dev/index.json) |
-| One patch's file list    | `https://data.exiledata.dev/{game}/{patch}/manifest.json`                        |
-| One patch's JSON, zipped | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}.zip`                   |
-| One PoB tree, zipped     | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}-pob-tree-{tree}.zip`   |
+| What                     | Address                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| Every published patch    | [`https://data.exiledata.dev/index.json`](https://data.exiledata.dev/index.json)   |
+| One patch's file list    | `https://data.exiledata.dev/{game}/{patch}/manifest.json`                          |
+| One patch's JSON, zipped | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}.zip`                     |
+| One PoB tree, zipped     | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}-pob-tree-{tree}.zip`     |
+| Patches not out yet      | [`https://data.exiledata.dev/status.json`](https://data.exiledata.dev/status.json) |
 
 The files allow cross-origin requests, so a browser tool can fetch them directly.
+
+## When a new patch is late
+
+New patches are published within six hours. Some patches change how the game lays out its data tables, and the export then waits for the community schema, [dat-schema](https://github.com/poe-tool-dev/dat-schema), to catch up. A notice at the top of this page says which patch is waiting and why, and `status.json` holds the same notice for tools: the game, the patch, the newest published patch, and the tables that changed. Until then, `latest` keeps pointing at the newest published patch.
 
 ## What each patch contains
 

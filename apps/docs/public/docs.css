@@ -679,6 +679,26 @@
   color: var(--err);
 }
 
+.prose .dl-notice {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-2);
+  background: var(--bg-2);
+  font-size: var(--fs-md);
+  color: var(--fg-1);
+}
+
+.prose .dl-notice strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--fg-0);
+}
+
+.prose .dl-notice.error {
+  border-color: var(--err);
+}
+
 .lost {
   min-height: 50dvh;
   padding-top: 48px;
