@@ -1,8 +1,10 @@
-import { copyFile, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderApiReference, type OpenApiDocument } from "./api-reference.js";
 import { DOWNLOADS_PLACEHOLDER, downloadsBrowser } from "./downloads.js";
+import { fileMapPage } from "./file-map.js";
+import type { FileMapData } from "./file-map-data.js";
 import { escapeHtml, renderMarkdown, type Heading } from "./markdown.js";
 import { NAV, hrefFor, type NavPage } from "./nav.js";
 import { OG_HEIGHT, OG_WIDTH, loadOgFonts, renderOgImage, type OgCard } from "./og.js";
@@ -16,6 +18,9 @@ const docsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 export const PATHS = {
   content: path.join(docsDir, "content"),
   docsCss: path.join(docsDir, "public", "docs.css"),
+  fileMapJs: path.join(docsDir, "public", "file-map.js"),
+  tooltip: path.join(docsDir, "public", "tooltip"),
+  fileMapData: path.join(docsDir, "data", "file-map.json"),
   landing: path.join(docsDir, "..", "web", "public", "index.html"),
   baseCss: path.join(docsDir, "..", "web", "public", "base.css"),
   themeJs: path.join(docsDir, "..", "web", "public", "theme.js"),
@@ -185,6 +190,8 @@ function layout(options: {
   body: string;
   nav?: string;
   noindex?: boolean;
+  /** A wider column, for pages built around a diagram. */
+  wide?: boolean;
   og?: { title: string; path: string; image: string };
 }): string {
   const { shell, title, description, body, nav } = options;
@@ -207,7 +214,7 @@ function layout(options: {
     <link rel="stylesheet" href="/docs.css" />
     <script src="/theme.js" defer></script>
   </head>
-  <body>
+  <body${options.wide ? ` class="wide"` : ""}>
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <symbol id="mark" viewBox="0 0 16 16"><path d="M3 2h10v2.5H5.75v2.25h6.5v2.5h-6.5v2.25H13V14H3z" /></symbol>
     </svg>
@@ -227,7 +234,11 @@ function layout(options: {
 `;
 }
 
-async function loadPage(page: NavPage, openapi: OpenApiDocument): Promise<PageContent> {
+async function loadPage(
+  page: NavPage,
+  openapi: OpenApiDocument,
+  fileMap: FileMapData
+): Promise<PageContent> {
   if (page.source === "api") {
     const { html, headings } = renderApiReference(openapi);
     return { page, title: page.title, html, headings };
@@ -237,7 +248,7 @@ async function loadPage(page: NavPage, openapi: OpenApiDocument): Promise<PageCo
   return {
     page,
     title: title || page.title,
-    html: html.replace(DOWNLOADS_PLACEHOLDER, downloadsBrowser()),
+    html: fileMapPage(html.replace(DOWNLOADS_PLACEHOLDER, downloadsBrowser()), fileMap),
     headings
   };
 }
@@ -246,6 +257,7 @@ async function loadPage(page: NavPage, openapi: OpenApiDocument): Promise<PageCo
 export async function buildSite(outDir = PATHS.out): Promise<string[]> {
   const openapiSource = await readFile(PATHS.openapi, "utf8");
   const openapi = JSON.parse(openapiSource) as OpenApiDocument;
+  const fileMap = JSON.parse(await readFile(PATHS.fileMapData, "utf8")) as FileMapData;
   const shell = await loadShell();
 
   const contentFiles = (await readdir(PATHS.content)).filter((f) => f.endsWith(".md"));
@@ -262,7 +274,7 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
 
   const written: string[] = [];
   for (const page of NAV) {
-    const content = await loadPage(page, openapi);
+    const content = await loadPage(page, openapi, fileMap);
     const file = `${page.slug}.html`;
     const title = page.slug === "index" ? "ExileData docs" : `${content.title} · ExileData docs`;
     const description = describe(content.html);
@@ -283,6 +295,7 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
         description,
         og: { title: content.title, path: href, image },
         nav: navList(page, content.headings),
+        wide: page.wide,
         body: `<article class="prose">${content.html}</article>${pager(page)}`
       })
     );
@@ -309,6 +322,8 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
   await copyFile(PATHS.baseCss, path.join(outDir, "base.css"));
   await copyFile(PATHS.themeJs, path.join(outDir, "theme.js"));
   await copyFile(PATHS.docsCss, path.join(outDir, "docs.css"));
+  await copyFile(PATHS.fileMapJs, path.join(outDir, "file-map.js"));
+  await cp(PATHS.tooltip, path.join(outDir, "tooltip"), { recursive: true });
   for (const font of await readdir(PATHS.fonts)) {
     await copyFile(path.join(PATHS.fonts, font), path.join(outDir, "assets", "fonts", font));
   }

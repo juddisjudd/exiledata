@@ -1,0 +1,3930 @@
+{
+  "generatedAt": "2026-10-02T21:18:45.961Z",
+  "games": {
+    "poe2": {
+      "game": "poe2",
+      "patch": "4.5.5.4",
+      "nodes": {
+        "active_skill_types": {
+          "id": "active_skill_types",
+          "description": "Skill type ids that skills and supports use to match each other.",
+          "shape": "list",
+          "sample": "Attack",
+          "count": 290,
+          "bytes": 5414
+        },
+        "ascendancies": {
+          "id": "ascendancies",
+          "description": "Ascendancy classes with their parent class, art and flavour text.",
+          "shape": "object",
+          "sample": "Druid1",
+          "count": 37,
+          "bytes": 99022
+        },
+        "attack_damage_scaling": {
+          "id": "attack_damage_scaling",
+          "description": "Damage multipliers for each attack scaling type.",
+          "shape": "object",
+          "sample": "None",
+          "count": 8,
+          "bytes": 4079
+        },
+        "audio": {
+          "id": "audio",
+          "description": "NPC dialogue lines with the speaker and the audio file.",
+          "shape": "object",
+          "sample": "MissionStrDexInt2Rewarded3",
+          "count": 41424,
+          "bytes": 12173833
+        },
+        "augments": {
+          "id": "augments",
+          "description": "Socketable augments such as runes and soul cores: where they fit and what they grant.",
+          "shape": "object",
+          "sample": "Metadata/Items/SoulCores/AmanamusGaze",
+          "count": 313,
+          "bytes": 299623
+        },
+        "base_items": {
+          "id": "base_items",
+          "description": "Every item base: class, tags, drop level, inventory size, implicits and requirements.",
+          "shape": "object",
+          "sample": "Metadata/Items/Currency/CurrencyWeaponQuality",
+          "count": 5496,
+          "bytes": 3343827
+        },
+        "buff_visuals": {
+          "id": "buff_visuals",
+          "description": "Visual effects attached to buffs.",
+          "shape": "object",
+          "sample": "invisible",
+          "count": 2930,
+          "bytes": 561392
+        },
+        "buffs": {
+          "id": "buffs",
+          "description": "Buff and debuff definitions with name, description and stats.",
+          "shape": "object",
+          "sample": "ignited",
+          "count": 3218,
+          "bytes": 856920
+        },
+        "character_constants": {
+          "id": "character_constants",
+          "description": "Values shared by all characters, such as resistance and block caps.",
+          "shape": "object",
+          "sample": "character",
+          "count": 3,
+          "bytes": 5252
+        },
+        "characters": {
+          "id": "characters",
+          "description": "Character classes and their base stats.",
+          "shape": "array",
+          "sample": "Metadata/Characters/Str/StrFour",
+          "count": 12,
+          "bytes": 5600
+        },
+        "cost_types": {
+          "id": "cost_types",
+          "description": "Skill cost types such as Mana and Life, and the stat each one uses.",
+          "shape": "object",
+          "sample": "Mana",
+          "count": 18,
+          "bytes": 1650
+        },
+        "damage_calculation_types": {
+          "id": "damage_calculation_types",
+          "description": "How each kind of hit is calculated, such as a main-hand attack.",
+          "shape": "object",
+          "sample": "MainHandAttack",
+          "count": 13,
+          "bytes": 28428
+        },
+        "default_monster_stats": {
+          "id": "default_monster_stats",
+          "description": "Base monster stats per level: life, accuracy, armour, damage, experience.",
+          "shape": "object",
+          "sample": "1",
+          "count": 100,
+          "bytes": 44110
+        },
+        "endgame_maps": {
+          "id": "endgame_maps",
+          "description": "Endgame map areas with their monster packs and content.",
+          "shape": "object",
+          "sample": "G_Endgame_Town",
+          "count": 173,
+          "bytes": 32483
+        },
+        "essences": {
+          "id": "essences",
+          "description": "Essences: tier, upgrade result and the mods they add.",
+          "shape": "object",
+          "sample": "Metadata/Items/Currency/CurrencyLesserEssenceLife",
+          "count": 95,
+          "bytes": 59103
+        },
+        "flavour": {
+          "id": "flavour",
+          "description": "Flavour text by id.",
+          "shape": "object",
+          "sample": "KeybladeText",
+          "count": 3591,
+          "bytes": 420698
+        },
+        "game_constants": {
+          "id": "game_constants",
+          "description": "Named numeric constants from the game.",
+          "shape": "object",
+          "sample": "MonsterAccuracyBase",
+          "count": 121,
+          "bytes": 4039
+        },
+        "gem_tags": {
+          "id": "gem_tags",
+          "description": "Gem tag ids and their display names.",
+          "shape": "object",
+          "sample": "fire",
+          "count": 61,
+          "bytes": 1325
+        },
+        "item_classes": {
+          "id": "item_classes",
+          "description": "Item classes with their category and display name.",
+          "shape": "object",
+          "sample": "LifeFlask",
+          "count": 118,
+          "bytes": 8763
+        },
+        "jewel_slots": {
+          "id": "jewel_slots",
+          "description": "Jewel sockets on the passive tree.",
+          "shape": "object",
+          "sample": "2491",
+          "count": 31,
+          "bytes": 2950
+        },
+        "keywords": {
+          "id": "keywords",
+          "description": "Keyword terms and their in-game definitions.",
+          "shape": "object",
+          "sample": "AbandonedCityMap",
+          "count": 1030,
+          "bytes": 238046
+        },
+        "level_scaling": {
+          "id": "level_scaling",
+          "description": "Values that scale with player and monster level.",
+          "shape": "object",
+          "sample": "player_level",
+          "count": 5,
+          "bytes": 19450
+        },
+        "liquid_emotions": {
+          "id": "liquid_emotions",
+          "description": "Distilled emotions: drop level and the mods they apply.",
+          "shape": "object",
+          "sample": "Metadata/Items/Currency/DistilledEmotion1",
+          "count": 26,
+          "bytes": 8250
+        },
+        "minion_stats": {
+          "id": "minion_stats",
+          "description": "Stats that pass from the player to minions.",
+          "shape": "object",
+          "sample": "minions_deal_no_damage",
+          "count": 398,
+          "bytes": 59906
+        },
+        "mods": {
+          "id": "mods",
+          "description": "Every modifier: domain, generation type, spawn weights, stats and tags.",
+          "shape": "object",
+          "sample": "Strength1",
+          "count": 16784,
+          "bytes": 9510253
+        },
+        "mods_by_base": {
+          "id": "mods_by_base",
+          "description": "The mod pool for each item class and tag set.",
+          "shape": "object",
+          "sample": "Stackable Currency",
+          "count": 82,
+          "bytes": 3647975
+        },
+        "monsters": {
+          "id": "monsters",
+          "description": "Monster types: name, category, tags and stat multipliers.",
+          "shape": "object",
+          "sample": "Any",
+          "count": 2793,
+          "bytes": 5198549
+        },
+        "skill_gems": {
+          "id": "skill_gems",
+          "description": "Skill and support gems: base item, colour and the skills they grant.",
+          "shape": "object",
+          "sample": "Metadata/Items/Gem/SkillGemAbyssalLivingBomb",
+          "count": 1191,
+          "bytes": 1510539
+        },
+        "skills": {
+          "id": "skills",
+          "description": "Skill definitions with per-level stats, costs and cast times.",
+          "shape": "object",
+          "sample": "ABTTKaruiCaptainBoss2KitavaBloodSiphon",
+          "count": 8349,
+          "bytes": 17014590
+        },
+        "stat_value_handlers": {
+          "id": "stat_value_handlers",
+          "description": "Rules that turn stat values into displayed numbers.",
+          "shape": "object",
+          "sample": "tq_noop",
+          "count": 74,
+          "bytes": 289509
+        },
+        "stats": {
+          "id": "stats",
+          "description": "Every stat id with its flags, such as local or virtual.",
+          "shape": "object",
+          "sample": "level",
+          "count": 27281,
+          "bytes": 5644959
+        },
+        "stats_by_file": {
+          "id": "stats_by_file",
+          "description": "Stat description text mapped to the stat ids and files that use it.",
+          "shape": "object",
+          "sample": "Attack damage of this skill is {0}% of [DefaultAttackDamage|Default Attack Damage]",
+          "count": 26186,
+          "bytes": 9525674
+        },
+        "tag_details": {
+          "id": "tag_details",
+          "description": "Tag ids with display names and whether crafting uses them.",
+          "shape": "object",
+          "sample": "2h_axe_adjudicator",
+          "count": 1339,
+          "bytes": 74756
+        },
+        "tags": {
+          "id": "tags",
+          "description": "Every tag id.",
+          "shape": "list",
+          "sample": "default",
+          "count": 1339,
+          "bytes": 25084
+        },
+        "timeless_jewels": {
+          "id": "timeless_jewels",
+          "description": "Timeless jewel data.",
+          "shape": "object",
+          "sample": "versions",
+          "count": 3,
+          "bytes": 123987
+        },
+        "unique_details": {
+          "id": "unique_details",
+          "description": "Unique items: name, class, flavour text and origin.",
+          "shape": "object",
+          "sample": "0",
+          "count": 449,
+          "bytes": 84544
+        },
+        "uniques": {
+          "id": "uniques",
+          "description": "Unique item art, inventory size and alternate-art flag.",
+          "shape": "object",
+          "sample": "0",
+          "count": 449,
+          "bytes": 114983
+        },
+        "world_areas": {
+          "id": "world_areas",
+          "description": "Areas: act, level, bosses, connections and waypoints.",
+          "shape": "object",
+          "sample": "NULL",
+          "count": 442,
+          "bytes": 1097676
+        },
+        "base_items/": {
+          "id": "base_items/",
+          "description": "Base items split into one file per item class.",
+          "shape": "folder",
+          "sample": "Active Skill Gem.json",
+          "count": 91,
+          "folder": true,
+          "records": 5496
+        },
+        "normalized/base_items": {
+          "id": "normalized/base_items",
+          "description": "Base items as ExileData records: the data GET /v1/{game}/bases serves.",
+          "shape": "array",
+          "sample": "Metadata/Items/Currency/CurrencyWeaponQuality",
+          "count": 5075,
+          "bytes": 4471888
+        },
+        "passive_skill_trees/": {
+          "id": "passive_skill_trees/",
+          "description": "Passive and atlas trees, one file per tree.",
+          "shape": "folder",
+          "sample": "Default.json",
+          "count": 5,
+          "folder": true,
+          "records": 6592,
+          "trees": [
+            "Atlas",
+            "BrequelTree",
+            "Default",
+            "EndgameMap",
+            "Royale"
+          ]
+        },
+        "stat_translations/": {
+          "id": "stat_translations/",
+          "description": "Stat description files: how stats render as item and skill text.",
+          "shape": "folder",
+          "sample": "stat_descriptions.json",
+          "count": 589,
+          "folder": true,
+          "records": 19519
+        }
+      },
+      "links": [
+        {
+          "from": "base_items",
+          "to": "item_classes",
+          "field": "item_class",
+          "kind": "key",
+          "hit": 5496,
+          "total": 5496,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "mods",
+          "field": "implicits[]",
+          "kind": "key",
+          "hit": 588,
+          "total": 588,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 17992,
+          "total": 17992,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "skill_gems",
+          "field": "skills_granted[]",
+          "kind": "key",
+          "hit": 301,
+          "total": 301,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "buffs",
+          "field": "grants_buff.id",
+          "kind": "key",
+          "hit": 13,
+          "total": 13,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "keywords",
+          "field": "[Id|text] in properties.description",
+          "kind": "text",
+          "hit": 812,
+          "total": 813,
+          "miss": [
+            "DNT"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "item_classes",
+          "to": "keywords",
+          "field": "[Id|text] in category",
+          "kind": "text",
+          "hit": 28,
+          "total": 28,
+          "miss": []
+        },
+        {
+          "from": "skill_gems",
+          "to": "base_items",
+          "field": "base_item.id",
+          "kind": "key",
+          "hit": 1191,
+          "total": 1191,
+          "miss": []
+        },
+        {
+          "from": "skill_gems",
+          "to": "skills",
+          "field": "grants_skills[]",
+          "kind": "key",
+          "hit": 1381,
+          "total": 1381,
+          "miss": []
+        },
+        {
+          "from": "skill_gems",
+          "to": "skill_gems",
+          "field": "recommended_supports[]",
+          "kind": "key",
+          "hit": 5003,
+          "total": 5003,
+          "miss": [],
+          "note": "These hold item paths, so they match skill_gems[].base_item.id."
+        },
+        {
+          "from": "skill_gems",
+          "to": "gem_tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 4228,
+          "total": 5336,
+          "miss": [
+            "intelligence",
+            "grants_active_skill",
+            "dexterity"
+          ],
+          "note": "Tags without a gem_tags entry, such as intelligence or grants_active_skill, are not shown in game."
+        },
+        {
+          "from": "mods_by_base",
+          "to": "item_classes",
+          "field": "key = item_classes[].name",
+          "kind": "key",
+          "hit": 81,
+          "total": 81,
+          "miss": [],
+          "note": "Keyed by the plural class name, such as “One Hand Maces”, not the class id."
+        },
+        {
+          "from": "mods_by_base",
+          "to": "base_items",
+          "field": "[class][tags].bases[]",
+          "kind": "key",
+          "hit": 5496,
+          "total": 5496,
+          "miss": []
+        },
+        {
+          "from": "mods_by_base",
+          "to": "mods",
+          "field": "[class][tags].mods.{generation}.{type}.{id}",
+          "kind": "key",
+          "hit": 86660,
+          "total": 86660,
+          "miss": [],
+          "note": "Each value is the mod’s required level, not a spawn weight."
+        },
+        {
+          "from": "uniques",
+          "to": "item_classes",
+          "field": "item_class",
+          "kind": "key",
+          "hit": 399,
+          "total": 449,
+          "miss": [
+            "Focii",
+            "Mace",
+            "Flask"
+          ],
+          "note": "The rest use loose names such as Focii, Mace or Flask."
+        },
+        {
+          "from": "uniques",
+          "to": "unique_details",
+          "field": "same key",
+          "kind": "same",
+          "hit": 449,
+          "total": 449,
+          "miss": []
+        },
+        {
+          "from": "augments",
+          "to": "base_items",
+          "field": "key",
+          "kind": "same",
+          "hit": 313,
+          "total": 313,
+          "miss": []
+        },
+        {
+          "from": "augments",
+          "to": "item_classes",
+          "field": "categories.*.target_item_classes[]",
+          "kind": "key",
+          "hit": 470,
+          "total": 470,
+          "miss": []
+        },
+        {
+          "from": "augments",
+          "to": "stats",
+          "field": "categories.*.stats[].id",
+          "kind": "key",
+          "hit": 573,
+          "total": 573,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "base_items",
+          "field": "key",
+          "kind": "same",
+          "hit": 95,
+          "total": 95,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "essences",
+          "field": "upgrade_result",
+          "kind": "key",
+          "hit": 57,
+          "total": 57,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "mods",
+          "field": "mods[].mod, monster_mod, monster_tank_mods[]",
+          "kind": "key",
+          "hit": 333,
+          "total": 333,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "item_classes",
+          "field": "mods[].item_classes[]",
+          "kind": "key",
+          "hit": 857,
+          "total": 857,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "stats",
+          "field": "map_stat",
+          "kind": "key",
+          "hit": 76,
+          "total": 76,
+          "miss": []
+        },
+        {
+          "from": "liquid_emotions",
+          "to": "base_items",
+          "field": "key",
+          "kind": "same",
+          "hit": 26,
+          "total": 26,
+          "miss": []
+        },
+        {
+          "from": "liquid_emotions",
+          "to": "mods",
+          "field": "mods.{jewel}.{prefix|suffix}",
+          "kind": "key",
+          "hit": 96,
+          "total": 96,
+          "miss": []
+        },
+        {
+          "from": "base_items/",
+          "to": "base_items",
+          "field": "same records, one file per class",
+          "kind": "same",
+          "hit": 5496,
+          "total": 5496,
+          "miss": []
+        },
+        {
+          "from": "normalized/base_items",
+          "to": "base_items",
+          "field": "id",
+          "kind": "same",
+          "hit": 5075,
+          "total": 5075,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "stats",
+          "field": "stats[].id",
+          "kind": "key",
+          "hit": 26082,
+          "total": 26082,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "tags",
+          "field": "spawn_weights[].tag, adds_tags[], implicit_tags[]",
+          "kind": "key",
+          "hit": 45822,
+          "total": 45822,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "skills",
+          "field": "grants_effects[].granted_effect_id, granted_skills[].granted_effect",
+          "kind": "key",
+          "hit": 93,
+          "total": 93,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "skill_gems",
+          "field": "granted_skills[].skill_gem",
+          "kind": "key",
+          "hit": 65,
+          "total": 65,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "keywords",
+          "field": "[Id|text] in text",
+          "kind": "text",
+          "hit": 13936,
+          "total": 13949,
+          "miss": [
+            "DNT-UNUSED",
+            "AscendancyMonk1Notable6",
+            "DNT"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "tag_details",
+          "to": "tags",
+          "field": "same key",
+          "kind": "same",
+          "hit": 1339,
+          "total": 1339,
+          "miss": []
+        },
+        {
+          "from": "stat_translations/",
+          "to": "stats",
+          "field": "ids[]",
+          "kind": "key",
+          "hit": 20381,
+          "total": 20381,
+          "miss": []
+        },
+        {
+          "from": "stat_translations/",
+          "to": "stat_value_handlers",
+          "field": "English[].index_handlers",
+          "kind": "key",
+          "hit": 9480,
+          "total": 9480,
+          "miss": []
+        },
+        {
+          "from": "stat_translations/",
+          "to": "keywords",
+          "field": "[Id|text] in English[].string",
+          "kind": "text",
+          "hit": 23879,
+          "total": 24007,
+          "miss": [
+            "Breach",
+            "DNT-UNUSED",
+            "Infusion"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "stats_by_file",
+          "to": "stat_translations/",
+          "field": "files[]",
+          "kind": "key",
+          "hit": 29618,
+          "total": 29618,
+          "miss": []
+        },
+        {
+          "from": "stats_by_file",
+          "to": "stats",
+          "field": "tokens[].stat",
+          "kind": "key",
+          "hit": 21441,
+          "total": 21441,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "active_skill_types",
+          "field": "active_skill.types[], support_gem.allowed_types[], support_gem.added_types[]",
+          "kind": "key",
+          "hit": 36664,
+          "total": 36664,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "stats",
+          "field": "stat_sets[].static.stats[].id",
+          "kind": "key",
+          "hit": 40765,
+          "total": 40765,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "stat_translations/",
+          "field": "stat_sets[].translation_file",
+          "kind": "key",
+          "hit": 8776,
+          "total": 8776,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "item_classes",
+          "field": "active_skill.weapon_restrictions[]",
+          "kind": "key",
+          "hit": 1759,
+          "total": 1759,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "cost_types",
+          "field": "per_level.{n}.costs (keys)",
+          "kind": "key",
+          "hit": 10240,
+          "total": 10240,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "keywords",
+          "field": "[Id|text] in active_skill.description",
+          "kind": "text",
+          "hit": 2849,
+          "total": 2894,
+          "miss": [
+            "DNT-UNUSED",
+            "DNT",
+            "Blinded"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "cost_types",
+          "to": "stats",
+          "field": "stat",
+          "kind": "key",
+          "hit": 18,
+          "total": 18,
+          "miss": []
+        },
+        {
+          "from": "buffs",
+          "to": "stats",
+          "field": "stats[]",
+          "kind": "key",
+          "hit": 4442,
+          "total": 4442,
+          "miss": []
+        },
+        {
+          "from": "buffs",
+          "to": "buff_visuals",
+          "field": "visuals",
+          "kind": "key",
+          "hit": 3218,
+          "total": 3218,
+          "miss": []
+        },
+        {
+          "from": "buffs",
+          "to": "mods",
+          "field": "sources.Mods[].id",
+          "kind": "key",
+          "hit": 265,
+          "total": 265,
+          "miss": []
+        },
+        {
+          "from": "minion_stats",
+          "to": "stats",
+          "field": "key, player_stats[]",
+          "kind": "key",
+          "hit": 802,
+          "total": 802,
+          "miss": []
+        },
+        {
+          "from": "damage_calculation_types",
+          "to": "stats",
+          "field": "damage, crit, accuracy, stun… (stat ids)",
+          "kind": "key",
+          "hit": 440,
+          "total": 440,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "stats",
+          "field": "passives.{hash}.stats (keys)",
+          "kind": "key",
+          "hit": 6790,
+          "total": 6790,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "ascendancies",
+          "field": "passives.{hash}.ascendancy",
+          "kind": "key",
+          "hit": 669,
+          "total": 669,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "skill_gems",
+          "field": "passives.{hash}.granted_skill",
+          "kind": "key",
+          "hit": 54,
+          "total": 54,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "buffs",
+          "field": "passives.{hash}.buff_definitions[]",
+          "kind": "key",
+          "hit": 3,
+          "total": 3,
+          "miss": []
+        },
+        {
+          "from": "ascendancies",
+          "to": "characters",
+          "field": "character = characters[].metadata_id",
+          "kind": "key",
+          "hit": 37,
+          "total": 37,
+          "miss": []
+        },
+        {
+          "from": "jewel_slots",
+          "to": "passive_skill_trees/",
+          "field": "passive = passives.{hash}.id",
+          "kind": "key",
+          "hit": 19,
+          "total": 31,
+          "miss": [
+            "jewel_slot1966",
+            "jewel_slot1964",
+            "jewel_slot1963"
+          ],
+          "note": "The other slots name passives that are not in any exported tree."
+        },
+        {
+          "from": "timeless_jewels",
+          "to": "stats",
+          "field": "passives/additions .stats[].id",
+          "kind": "key",
+          "hit": 418,
+          "total": 418,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "world_areas",
+          "field": "connections[], parent_town",
+          "kind": "key",
+          "hit": 576,
+          "total": 576,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "monsters",
+          "field": "bosses[], packs[].monsters.*.monster_variety, packs[].boss_monsters[]",
+          "kind": "key",
+          "hit": 3669,
+          "total": 3669,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "mods",
+          "field": "area_mods[]",
+          "kind": "key",
+          "hit": 110,
+          "total": 110,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 514,
+          "total": 514,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "default_monster_stats",
+          "field": "area_level (by value)",
+          "kind": "value",
+          "hit": 430,
+          "total": 442,
+          "miss": [
+            "0"
+          ],
+          "note": "The misses are level-0 placeholder areas."
+        },
+        {
+          "from": "endgame_maps",
+          "to": "world_areas",
+          "field": "key, native_packs[] = packs[].id",
+          "kind": "key",
+          "hit": 307,
+          "total": 307,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "mods",
+          "field": "mods[], special_mods[]",
+          "kind": "key",
+          "hit": 1732,
+          "total": 1732,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "skills",
+          "field": "granted_effects[]",
+          "kind": "key",
+          "hit": 16972,
+          "total": 16972,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 21595,
+          "total": 21595,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "item_classes",
+          "field": "main_hand_item_class, off_hand_item_class",
+          "kind": "key",
+          "hit": 1026,
+          "total": 1026,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "monsters",
+          "field": "spectre_override",
+          "kind": "key",
+          "hit": 205,
+          "total": 205,
+          "miss": []
+        }
+      ],
+      "examples": [
+        {
+          "id": "item",
+          "title": "Item",
+          "subject": "Wicked Warpick of the Bear · magic One Hand Mace · example rolls 8, 72, 14",
+          "tooltip": {
+            "frame": "magic",
+            "name": [
+              "Wicked Warpick of the Bear"
+            ],
+            "nameColor": "magic",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "One Hand Mace",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Physical Damage: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "31-41",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Critical Hit Chance: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "7.00%",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Attacks per Second: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1.45",
+                      "color": "white"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Requires: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "Level ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "22",
+                      "color": "white"
+                    },
+                    {
+                      "text": ", ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "41",
+                      "color": "white"
+                    },
+                    {
+                      "text": " Str",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 7,
+                  "parts": [
+                    {
+                      "text": "+8% to Critical Damage Bonus",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 8,
+                  "parts": [
+                    {
+                      "text": "72% increased Physical Damage",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 9,
+                  "parts": [
+                    {
+                      "text": "+14 to Strength",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                4,
+                1
+              ],
+              "code": "mods[prefix].name · base_items[id].name · mods[suffix].name",
+              "value": "\"Wicked\" · \"Warpick\" · \"of the Bear\"",
+              "note": "A magic item’s name is prefix name, base name, suffix name."
+            },
+            {
+              "steps": [
+                2
+              ],
+              "code": "item_classes[\"One Hand Mace\"].category",
+              "value": "\"[Mace|One Hand Mace]\"",
+              "note": "Markup: show the text after the bar."
+            },
+            {
+              "steps": [
+                1,
+                5
+              ],
+              "code": "base_items[id].properties.physical_damage_min / _max",
+              "value": "18 / 24",
+              "note": "Scaled by the 72% roll, then rounded: 18 × 1.72 = 31, 24 × 1.72 = 41. The roll changes this line because `stats[\"local_physical_damage_+%\"].is_local` is true."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].properties.critical_strike_chance",
+              "value": "700",
+              "note": "Hundredths of a percent."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].properties.attack_time",
+              "value": "690",
+              "note": "Milliseconds per attack: 1000 ÷ 690."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].requirements",
+              "value": "{ level: 22, strength: 41 }"
+            },
+            {
+              "steps": [
+                1,
+                4,
+                6,
+                7
+              ],
+              "code": "base_items[id].implicits[0]",
+              "value": "\"MaceImplicitCriticalMultiplier1\"",
+              "note": "Its stat `local_critical_strike_multiplier_+` rolls 5 to 10. The text entry gives `\"{0}% to [CriticalDamageBonus|Critical Damage Bonus]\"` with format `\"+#\"`."
+            },
+            {
+              "steps": [
+                3,
+                4,
+                6
+              ],
+              "code": "mods[\"LocalIncreasedPhysicalDamagePercent3\"]",
+              "value": "prefix · 65–84 · level 16",
+              "note": "Its stat `local_physical_damage_+%` rolls 65 to 84. The text entry has 5 variants; the one whose condition fits the roll gives `\"{0}% increased [Physical] Damage\"`."
+            },
+            {
+              "steps": [
+                3,
+                4,
+                6
+              ],
+              "code": "mods[\"Strength3\"]",
+              "value": "suffix · 13–16 · level 22",
+              "note": "Its stat `additional_strength` rolls 13 to 16. The text entry gives `\"{0} to [Strength|Strength]\"` with format `\"+#\"`."
+            }
+          ],
+          "steps": [
+            {
+              "code": "base_items[id]",
+              "text": "Look up the base by item path, here `Metadata/Items/Weapons/OneHandWeapons/OneHandMaces/FourOneHandMace5`. It holds the name, class, properties, requirements, tags and implicit mod ids."
+            },
+            {
+              "code": "item_classes[base.item_class]",
+              "text": "Gives the class line and the plural name, “One Hand Maces”, which step 3 needs."
+            },
+            {
+              "code": "mods_by_base[class.name][base.tags.join(\",\")]",
+              "text": "The mod pool for this base, grouped by generation type and mod type. Each value is the mod’s required level. All 5,496 bases resolve this way."
+            },
+            {
+              "code": "mods[id]",
+              "text": "For the implicit and each rolled mod: affix name, generation type, required level and `stats[]` with min and max."
+            },
+            {
+              "code": "stats[stat.id]",
+              "text": "Flags such as `is_local`. A local stat changes the item’s own lines instead of the character."
+            },
+            {
+              "code": "stat_translations/stat_descriptions",
+              "text": "Find the entry whose `ids[]` holds the stat. Pick the `English[]` variant whose `condition` fits the value, then apply `format` and `index_handlers` from `stat_value_handlers`."
+            },
+            {
+              "code": "keywords[Id]",
+              "text": "Text like `[Strength|Strength]` shows the part after the bar. The id before it gives the hover definition."
+            }
+          ],
+          "path": {
+            "links": [
+              "base_items>item_classes",
+              "mods_by_base>item_classes",
+              "mods_by_base>base_items",
+              "base_items>mods",
+              "mods_by_base>mods",
+              "mods>stats",
+              "stat_translations/>stats",
+              "stat_translations/>stat_value_handlers",
+              "mods>keywords",
+              "stat_translations/>keywords"
+            ],
+            "badges": {
+              "base_items": 1,
+              "item_classes": 2,
+              "mods_by_base": 3,
+              "mods": 4,
+              "stats": 5,
+              "stat_translations/": 6,
+              "stat_value_handlers": 6,
+              "keywords": 7
+            }
+          },
+          "code": "const base  = base_items[id];\nconst cls   = item_classes[base.item_class];\nconst pool  = mods_by_base[cls.name][base.tags.join(\",\")];\nconst mod   = mods[\"Strength3\"];\nconst entry = stat_descriptions.find(e => e.ids.includes(mod.stats[0].id));\n// then pick entry.English[] by condition and fill {0}"
+        },
+        {
+          "id": "skill",
+          "title": "Skill gem",
+          "subject": "Spark · level 1",
+          "tooltip": {
+            "frame": "gem",
+            "name": [
+              "Spark"
+            ],
+            "nameColor": "gem",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "Spell, Projectile, Lightning, Duration, Repeatable",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Level: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Cost: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "5 Mana",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Cast Time: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "0.70 sec",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Critical Hit Chance: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "9.00%",
+                      "color": "white"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 7,
+                  "parts": [
+                    {
+                      "text": "Requires: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "Level ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1",
+                      "color": "white"
+                    },
+                    {
+                      "text": ", ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "4",
+                      "color": "white"
+                    },
+                    {
+                      "text": " Int",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 8,
+                  "parts": [
+                    {
+                      "text": "Launch a spray of sparking Projectiles that travel erratically along the ground until they hit an enemy or expire. Consumes a Cold Infusion if possible to fire many sparks in a circle.",
+                      "color": "gem"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 9,
+                  "parts": [
+                    {
+                      "text": "Fires 4 Projectiles\nDeals 1 to 10 Lightning Damage",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 10,
+                  "parts": [
+                    {
+                      "text": "Projectile duration is 2 seconds\nProjectiles fired at the same time can Hit the same\ntarget no more than once every 0.66 seconds",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                1
+              ],
+              "code": "skill_gems[id].base_item.display_name",
+              "value": "\"Spark\""
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "skill_gems[id].tags[] → gem_tags[tag]",
+              "value": "\"[Spell]\", \"[Projectile]\", \"[Lightning]\", …",
+              "note": "`intelligence` and `grants_active_skill` have no `gem_tags` entry, so they stay hidden."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "skill_gems[id].requirements",
+              "value": "keys \"1\" to \"20\"",
+              "note": "One entry per gem level. `max_level` is 20."
+            },
+            {
+              "steps": [
+                4,
+                5
+              ],
+              "code": "skills[\"SparkPlayer\"].per_level[\"1\"].costs",
+              "value": "{ Mana: 5 }",
+              "note": "`cost_types[\"Mana\"].format_text` is `\"{0} Mana\"`."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"SparkPlayer\"].cast_time",
+              "value": "700",
+              "note": "Milliseconds."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"SparkPlayer\"].stat_sets[0].static.crit_chance",
+              "value": "900",
+              "note": "Hundredths of a percent."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "skill_gems[id].requirements[\"1\"]",
+              "value": "{ intelligence: 4, level: 1 }"
+            },
+            {
+              "steps": [
+                4,
+                8
+              ],
+              "code": "skills[\"SparkPlayer\"].active_skill.description",
+              "note": "Holds markup such as `[Projectile|…]`."
+            },
+            {
+              "steps": [
+                4,
+                7
+              ],
+              "code": "skills[\"SparkPlayer\"].stat_sets[0].per_level[\"1\"].stat_text",
+              "note": "Already rendered for each level. The raw values are in `stats[]`; the text rules are in `stat_translations/specific_skill_stat_descriptions/spark/statset_0.json`."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"SparkPlayer\"].stat_sets[0].static.stat_text",
+              "note": "Lines that do not change with level."
+            }
+          ],
+          "steps": [
+            {
+              "code": "skill_gems[…]",
+              "text": "Keyed by item path. Holds tags, requirements per level and `grants_skills`."
+            },
+            {
+              "code": "base_items[gem.base_item.id]",
+              "text": "Gives the item class, “Active Skill Gem”, and the socket limit."
+            },
+            {
+              "code": "gem_tags[tag]",
+              "text": "Display text for each tag. A tag with no entry is hidden."
+            },
+            {
+              "code": "skills[gem.grants_skills[0]]",
+              "text": "`\"SparkPlayer\"`: name, description, skill types, cast time, costs per level and stat sets."
+            },
+            {
+              "code": "cost_types[key]",
+              "text": "Format text and the stat behind each cost. Per-minute costs divide by `divisor`."
+            },
+            {
+              "code": "active_skill_types",
+              "text": "The skill’s `types[]`. A support fits when its `support_gem.allowed_types` match them."
+            },
+            {
+              "code": "stat_translations/{translation_file}",
+              "text": "Each stat set names its own text file. 558 different files are used."
+            },
+            {
+              "code": "keywords[Id]",
+              "text": "Hover text for the markup in the description."
+            }
+          ],
+          "path": {
+            "links": [
+              "skill_gems>base_items",
+              "skill_gems>gem_tags",
+              "skill_gems>skills",
+              "skills>cost_types",
+              "skills>active_skill_types",
+              "skills>stat_translations/",
+              "skills>stats",
+              "stat_translations/>stats",
+              "skills>keywords"
+            ],
+            "badges": {
+              "skill_gems": 1,
+              "base_items": 2,
+              "gem_tags": 3,
+              "skills": 4,
+              "cost_types": 5,
+              "active_skill_types": 6,
+              "stat_translations/": 7,
+              "stats": 7,
+              "keywords": 8
+            }
+          }
+        },
+        {
+          "id": "passive",
+          "title": "Passive",
+          "subject": "Heavy Buffer · notable in the Default tree",
+          "tooltip": {
+            "frame": "plain",
+            "name": [
+              "Heavy Buffer"
+            ],
+            "nameColor": "white",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "40% increased maximum Energy Shield",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "5% of Damage taken bypasses Energy Shield",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Group 705 · orbit 4 · slot 24 of 72",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Linked to Energy Shield Mastery, 2 Energy Shield nodes",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Gathering Winds",
+                      "color": "white"
+                    },
+                    {
+                      "text": "\nDeadeye ascendancy · Ranger",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                1
+              ],
+              "code": "passive_skill_trees/Default.json → passives[\"27491\"].name",
+              "value": "is_notable: true"
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "passives[\"27491\"].stats",
+              "value": "{ \"maximum_energy_shield_+%\": 40 }",
+              "note": ""
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "passives[\"27491\"].stats",
+              "value": "{ \"base_all_damage_bypass_energy_shield_%\": 5 }",
+              "note": "`stat_text` holds these lines pre-rendered."
+            },
+            {
+              "steps": [
+                2
+              ],
+              "code": "groups[705]",
+              "value": "x -1909, y -6476 · radius 4 · position_clockwise 24",
+              "note": "The group whose `passives[]` holds hash 27491. `orbit_radii[4]` is 493 and `skills_per_orbit[4]` is 72."
+            },
+            {
+              "steps": [
+                2
+              ],
+              "code": "groups[705].passives[].connections",
+              "value": "[3471]",
+              "note": "Each link is stored on one end only. 2 of these nodes list 27491 in its own `connections`."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "passives[\"30\"].ascendancy",
+              "value": "\"Ranger1\"",
+              "note": "A second node, for the ascendancy chain: `ascendancies[\"Ranger1\"].name` is Deadeye, and its `character`, `Metadata/Characters/Dex/DexFour`, is the Ranger in `characters`."
+            }
+          ],
+          "steps": [
+            {
+              "code": "passive_skill_trees/Default.json → passives[hash]",
+              "text": "Name, icon, flags such as `is_notable` and `is_keystone`, `stats` and `stat_text`. The folder holds 5 trees."
+            },
+            {
+              "code": "groups[] in the same file",
+              "text": "The group that lists the hash gives its x and y, the orbit (`radius`), the slot (`position_clockwise`) and the node’s outgoing connections."
+            },
+            {
+              "code": "stats + stat_translations",
+              "text": "In the Default tree, 5,549 of 5,957 stat references find their text in `stat_descriptions` and 408 in `passive_skill_stat_descriptions`."
+            },
+            {
+              "code": "ascendancies[passive.ascendancy] → characters",
+              "text": "669 nodes belong to an ascendancy. `character` matches `characters[].metadata_id`."
+            },
+            {
+              "code": "skill_gems, buffs, jewel_slots",
+              "text": "54 nodes grant a skill through `granted_skill`, an item path in `skill_gems`. 3 carry `buff_definitions`. `jewel_slots` names socket nodes by id."
+            }
+          ],
+          "path": {
+            "links": [
+              "passive_skill_trees/>stats",
+              "stat_translations/>stats",
+              "passive_skill_trees/>ascendancies",
+              "ascendancies>characters",
+              "passive_skill_trees/>skill_gems",
+              "passive_skill_trees/>buffs",
+              "jewel_slots>passive_skill_trees/"
+            ],
+            "badges": {
+              "passive_skill_trees/": 1,
+              "stats": 3,
+              "stat_translations/": 3,
+              "ascendancies": 4,
+              "characters": 4,
+              "skill_gems": 5,
+              "buffs": 5,
+              "jewel_slots": 5
+            }
+          }
+        },
+        {
+          "id": "monster",
+          "title": "Monster",
+          "subject": "The Riverbank and its boss",
+          "tooltip": {
+            "frame": "plain",
+            "name": [
+              "The Riverbank"
+            ],
+            "nameColor": "white",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "Act 1 · area level 1",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Leads to Clearfell Encampment",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "The Bloated Miller",
+                      "color": "unique"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Life ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "15 × 105%",
+                      "color": "white"
+                    },
+                    {
+                      "text": " · Damage ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "9.16 × 190%",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Uses Shield Charge, Basic Attack, Table Charge",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 7,
+                  "parts": [
+                    {
+                      "text": "Packs: Drowned (1–2), Porcupine Crab (1–2), Drowned (2–5)",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                1
+              ],
+              "code": "world_areas[\"G1_1\"]",
+              "value": "name, act, area_level"
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "world_areas[\"G1_1\"].area_level",
+              "value": "1",
+              "note": "Also the key into `default_monster_stats`, “1”."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "world_areas[\"G1_1\"].connections",
+              "value": "[\"G1_town\"]",
+              "note": "Each id is another `world_areas` key."
+            },
+            {
+              "steps": [
+                1,
+                2
+              ],
+              "code": "world_areas[\"G1_1\"].bosses[0] → monsters[path].name",
+              "value": "\"Metadata/Monsters/SwollenMiller/SwollenMillerBoss\""
+            },
+            {
+              "steps": [
+                2,
+                3
+              ],
+              "code": "default_monster_stats[\"1\"] × monsters[path].life_multiplier, damage_multiplier",
+              "value": "life 15, physical_damage 9.16 · 105, 190",
+              "note": "The level baseline, picked by `area_level`, scaled by the monster’s multipliers. Rarity and boss scaling come on top."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "monsters[path].granted_effects[] → skills[id]",
+              "value": "19 skills",
+              "note": "Only 3 have a `display_name`. The others are helper skills."
+            },
+            {
+              "steps": [
+                1,
+                2
+              ],
+              "code": "world_areas[\"G1_1\"].packs[].monsters.*.monster_variety",
+              "value": "weights 45, 25, 20, 10 in the first pack",
+              "note": "Each pack has `min_count`, `max_count` and weighted monster paths."
+            }
+          ],
+          "steps": [
+            {
+              "code": "world_areas[id]",
+              "text": "Name, act, level, waypoint, `connections`, `bosses`, `packs` and `area_mods`."
+            },
+            {
+              "code": "monsters[path]",
+              "text": "Name, tags, multipliers, resistances, weapon class and `granted_effects`."
+            },
+            {
+              "code": "default_monster_stats[String(area_level)]",
+              "text": "A value join: the key is the monster level, “1” to “100”."
+            },
+            {
+              "code": "skills[id]",
+              "text": "The same `skills` file that player gems use."
+            },
+            {
+              "code": "mods[id]",
+              "text": "`monsters.mods` and `special_mods`. This boss has none; 774 monsters do."
+            },
+            {
+              "code": "endgame_maps[id]",
+              "text": "Map areas share the `world_areas` key. `native_packs` match `packs[].id` in `world_areas`."
+            }
+          ],
+          "path": {
+            "links": [
+              "world_areas>monsters",
+              "world_areas>default_monster_stats",
+              "monsters>skills",
+              "monsters>mods",
+              "world_areas>world_areas",
+              "endgame_maps>world_areas"
+            ],
+            "badges": {
+              "world_areas": 1,
+              "monsters": 2,
+              "default_monster_stats": 3,
+              "skills": 4,
+              "mods": 5,
+              "endgame_maps": 6
+            }
+          }
+        }
+      ],
+      "gaps": [
+        {
+          "title": "Uniques have no mods or base type",
+          "text": "`uniques` and `unique_details` give the name, class, art and flavour text of 449 uniques. No file says which base or which mods a unique has. 10,447 mods have `generation_type: \"unique\"`, and `mods_by_base` lists them per class and tag set, not per unique."
+        },
+        {
+          "title": "inherits_from points at files that are not exported",
+          "text": "5,495 bases and 761 monsters name an abstract parent such as `…/AbstractOneHandMace`. Use it as a group label."
+        },
+        {
+          "title": "Two spellings of item class",
+          "text": "Most files use the class id, such as “One Hand Mace”. `mods_by_base` uses the plural name, such as “One Hand Maces”. 50 of 449 uniques use loose names such as Focii or Mace."
+        },
+        {
+          "title": "Two gem path spellings",
+          "text": "Gem ids start with `Metadata/Items/Gem/` (595) or `Metadata/Items/Gems/` (594). Match the exact string. Do not normalise it."
+        },
+        {
+          "title": "Hidden stats",
+          "text": "3,976 of 26,082 stat references in `mods` have no text in any `stat_translations` file, for example `local_weapon_implicit_hidden_%_base_damage_is_fire`. The game does not show them."
+        },
+        {
+          "title": "mods_by_base values are levels",
+          "text": "Each number is the mod’s `required_level` (86,660 of 86,660 agree). `spawn_weights` are only 0 or 1 in this game: a tag allows a mod or blocks it."
+        },
+        {
+          "title": "Some jewel slots point nowhere",
+          "text": "12 of 31 `jewel_slots` name a passive that is in no exported tree."
+        },
+        {
+          "title": "Text is often already rendered",
+          "text": "`mods.text`, `base_items.implicit_text`, skill `stat_text` and passive `stat_text` hold finished lines with ranges. You need `stat_translations` only to render a rolled value."
+        }
+      ]
+    },
+    "poe1": {
+      "game": "poe1",
+      "patch": "3.29.3.3",
+      "nodes": {
+        "active_skill_types": {
+          "id": "active_skill_types",
+          "description": "Skill type ids that skills and supports use to match each other.",
+          "shape": "list",
+          "sample": "Attack",
+          "count": 135,
+          "bytes": 2135
+        },
+        "ascendancies": {
+          "id": "ascendancies",
+          "description": "Ascendancy classes with their parent class, art and flavour text.",
+          "shape": "object",
+          "sample": "Ascendant",
+          "count": 21,
+          "bytes": 8361
+        },
+        "audio": {
+          "id": "audio",
+          "description": "NPC dialogue lines with the speaker and the audio file.",
+          "shape": "object",
+          "sample": "NessaIntro1",
+          "count": 28382,
+          "bytes": 7401016
+        },
+        "base_items": {
+          "id": "base_items",
+          "description": "Every item base: class, tags, drop level, inventory size, implicits and requirements.",
+          "shape": "object",
+          "sample": "Metadata/Items/Currency/CurrencyWeaponQuality",
+          "count": 5461,
+          "bytes": 3187017
+        },
+        "buff_visuals": {
+          "id": "buff_visuals",
+          "description": "Visual effects attached to buffs.",
+          "shape": "object",
+          "sample": "1339",
+          "count": 2468,
+          "bytes": 510899
+        },
+        "buffs": {
+          "id": "buffs",
+          "description": "Buff and debuff definitions with name, description and stats.",
+          "shape": "object",
+          "sample": "ignited",
+          "count": 2814,
+          "bytes": 1172918
+        },
+        "character_constants": {
+          "id": "character_constants",
+          "description": "Values shared by all characters, such as resistance and block caps.",
+          "shape": "object",
+          "sample": "character",
+          "count": 2,
+          "bytes": 5835
+        },
+        "characters": {
+          "id": "characters",
+          "description": "Character classes and their base stats.",
+          "shape": "array",
+          "sample": "Metadata/Characters/Str/Str",
+          "count": 7,
+          "bytes": 3962
+        },
+        "cluster_jewels": {
+          "id": "cluster_jewels",
+          "description": "Cluster jewel sizes and the passives they can add.",
+          "shape": "object",
+          "sample": "jewels",
+          "count": 2,
+          "bytes": 251496
+        },
+        "cost_types": {
+          "id": "cost_types",
+          "description": "Skill cost types such as Mana and Life, and the stat each one uses.",
+          "shape": "object",
+          "sample": "Mana",
+          "count": 13,
+          "bytes": 1217
+        },
+        "crafting_bench_options": {
+          "id": "crafting_bench_options",
+          "description": "Crafting bench recipes with tier and cost.",
+          "shape": "array",
+          "count": 829,
+          "bytes": 380642
+        },
+        "default_monster_stats": {
+          "id": "default_monster_stats",
+          "description": "Base monster stats per level: life, accuracy, armour, damage, experience.",
+          "shape": "object",
+          "sample": "1",
+          "count": 100,
+          "bytes": 22732
+        },
+        "enchantments": {
+          "id": "enchantments",
+          "description": "Enchantments grouped by type.",
+          "shape": "object",
+          "sample": "TriggerEnchantment",
+          "count": 5,
+          "bytes": 617175
+        },
+        "essences": {
+          "id": "essences",
+          "description": "Essences: tier, upgrade result and the mods they add.",
+          "shape": "object",
+          "sample": "Metadata/Items/Currency/CurrencyEssenceHatred1",
+          "count": 106,
+          "bytes": 233941
+        },
+        "flavour": {
+          "id": "flavour",
+          "description": "Flavour text by id.",
+          "shape": "object",
+          "sample": "KeybladeText",
+          "count": 2962,
+          "bytes": 363984
+        },
+        "game_constants": {
+          "id": "game_constants",
+          "description": "Named numeric constants from the game.",
+          "shape": "object",
+          "sample": "MonsterDamageReductionImprovement",
+          "count": 42,
+          "bytes": 1492
+        },
+        "gem_tags": {
+          "id": "gem_tags",
+          "description": "Gem tag ids and their display names.",
+          "shape": "object",
+          "sample": "fire",
+          "count": 47,
+          "bytes": 841
+        },
+        "item_classes": {
+          "id": "item_classes",
+          "description": "Item classes with their category and display name.",
+          "shape": "object",
+          "sample": "LifeFlask",
+          "count": 103,
+          "bytes": 7960
+        },
+        "jewel_slots": {
+          "id": "jewel_slots",
+          "description": "Jewel sockets on the passive tree.",
+          "shape": "object",
+          "sample": "2311",
+          "count": 60,
+          "bytes": 7627
+        },
+        "keywords": {
+          "id": "keywords",
+          "description": "Keyword terms and their in-game definitions.",
+          "shape": "object",
+          "sample": "AbyssFactionAmanamu",
+          "count": 46,
+          "bytes": 12703
+        },
+        "level_scaling": {
+          "id": "level_scaling",
+          "description": "Values that scale with player and monster level.",
+          "shape": "object",
+          "sample": "player_level",
+          "count": 2,
+          "bytes": 13795
+        },
+        "mods": {
+          "id": "mods",
+          "description": "Every modifier: domain, generation type, spawn weights, stats and tags.",
+          "shape": "object",
+          "sample": "Strength1",
+          "count": 40355,
+          "bytes": 23476092
+        },
+        "mods_by_base": {
+          "id": "mods_by_base",
+          "description": "The mod pool for each item class and tag set.",
+          "shape": "object",
+          "sample": "Stackable Currency",
+          "count": 83,
+          "bytes": 18810539
+        },
+        "monsters": {
+          "id": "monsters",
+          "description": "Monster types: name, category, tags and stat multipliers.",
+          "shape": "object",
+          "sample": "Any",
+          "count": 10691,
+          "bytes": 13766613
+        },
+        "pantheons": {
+          "id": "pantheons",
+          "description": "Pantheon gods and the souls that upgrade them.",
+          "shape": "object",
+          "sample": "TheBrineKing",
+          "count": 16,
+          "bytes": 7130
+        },
+        "skill_gems": {
+          "id": "skill_gems",
+          "description": "Skill and support gems: base item, colour and the skills they grant.",
+          "shape": "object",
+          "sample": "Absolution",
+          "count": 1059,
+          "bytes": 957883
+        },
+        "skills": {
+          "id": "skills",
+          "description": "Skill definitions with per-level stats, costs and cast times.",
+          "shape": "object",
+          "sample": "ABTTAncestralChannelSlow",
+          "count": 12829,
+          "bytes": 38364548
+        },
+        "stat_value_handlers": {
+          "id": "stat_value_handlers",
+          "description": "Rules that turn stat values into displayed numbers.",
+          "shape": "object",
+          "sample": "tq_noop",
+          "count": 74,
+          "bytes": 178340
+        },
+        "stats": {
+          "id": "stats",
+          "description": "Every stat id with its flags, such as local or virtual.",
+          "shape": "object",
+          "sample": "level",
+          "count": 23346,
+          "bytes": 4296851
+        },
+        "stats_by_file": {
+          "id": "stats_by_file",
+          "description": "Stat description text mapped to the stat ids and files that use it.",
+          "shape": "object",
+          "sample": "While you have this Skill and have no placed Banner, you can gain Valour",
+          "count": 24471,
+          "bytes": 8578303
+        },
+        "tag_details": {
+          "id": "tag_details",
+          "description": "Tag ids with display names and whether crafting uses them.",
+          "shape": "object",
+          "sample": "2h_axe_adjudicator",
+          "count": 1389,
+          "bytes": 79936
+        },
+        "tags": {
+          "id": "tags",
+          "description": "Every tag id.",
+          "shape": "list",
+          "sample": "default",
+          "count": 1389,
+          "bytes": 27835
+        },
+        "tattoos": {
+          "id": "tattoos",
+          "description": "Tattoos: name, type and the passives they can replace.",
+          "shape": "object",
+          "sample": "Ngamahu1",
+          "count": 343,
+          "bytes": 160517
+        },
+        "timeless_jewels": {
+          "id": "timeless_jewels",
+          "description": "Timeless jewel data.",
+          "shape": "object",
+          "sample": "versions",
+          "count": 3,
+          "bytes": 243297
+        },
+        "unique_details": {
+          "id": "unique_details",
+          "description": "Unique items: name, class, flavour text and origin.",
+          "shape": "object",
+          "sample": "0",
+          "count": 1556,
+          "bytes": 248150
+        },
+        "uniques": {
+          "id": "uniques",
+          "description": "Unique item art, inventory size and alternate-art flag.",
+          "shape": "object",
+          "sample": "0",
+          "count": 1556,
+          "bytes": 396415
+        },
+        "weapon_passive_skills": {
+          "id": "weapon_passive_skills",
+          "description": "Weapon passive tree nodes with tier, type and tags.",
+          "shape": "object",
+          "sample": "WeaponTreeAddedPhysicalHighReducedAttackSpeed1",
+          "count": 2632,
+          "bytes": 568156
+        },
+        "world_areas": {
+          "id": "world_areas",
+          "description": "Areas: act, level, bosses, connections and waypoints.",
+          "shape": "object",
+          "sample": "NULL",
+          "count": 1932,
+          "bytes": 5562195
+        },
+        "base_items/": {
+          "id": "base_items/",
+          "description": "Base items split into one file per item class.",
+          "shape": "folder",
+          "sample": "AbyssJewel.json",
+          "count": 87,
+          "folder": true,
+          "records": 5461
+        },
+        "normalized/base_items": {
+          "id": "normalized/base_items",
+          "description": "Base items as ExileData records: the data GET /v1/{game}/bases serves.",
+          "shape": "array",
+          "sample": "Metadata/Items/Currency/CurrencyWeaponQuality",
+          "count": 5041,
+          "bytes": 4299167
+        },
+        "passive_skill_trees/": {
+          "id": "passive_skill_trees/",
+          "description": "Passive and atlas trees, one file per tree.",
+          "shape": "folder",
+          "sample": "Default.json",
+          "count": 7,
+          "folder": true,
+          "records": 8320,
+          "trees": [
+            "Atlas",
+            "AtlasCurrentLeague",
+            "AtlasEmpty",
+            "BrequelTree",
+            "Default",
+            "DefaultAltAscendancies",
+            "Royale"
+          ]
+        },
+        "stat_translations/": {
+          "id": "stat_translations/",
+          "description": "Stat description files: how stats render as item and skill text.",
+          "shape": "folder",
+          "sample": "stat_descriptions.json",
+          "count": 44,
+          "folder": true,
+          "records": 17717
+        }
+      },
+      "links": [
+        {
+          "from": "base_items",
+          "to": "item_classes",
+          "field": "item_class",
+          "kind": "key",
+          "hit": 5461,
+          "total": 5461,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "mods",
+          "field": "implicits[]",
+          "kind": "key",
+          "hit": 791,
+          "total": 791,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 18101,
+          "total": 18101,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "buffs",
+          "field": "grants_buff.id",
+          "kind": "key",
+          "hit": 18,
+          "total": 18,
+          "miss": []
+        },
+        {
+          "from": "base_items",
+          "to": "keywords",
+          "field": "[Id|text] in properties.description",
+          "kind": "text",
+          "hit": 16,
+          "total": 16,
+          "miss": []
+        },
+        {
+          "from": "skill_gems",
+          "to": "base_items",
+          "field": "base_item.id",
+          "kind": "key",
+          "hit": 1059,
+          "total": 1059,
+          "miss": []
+        },
+        {
+          "from": "skill_gems",
+          "to": "skills",
+          "field": "grants_skills[], secondary_granted_effect",
+          "kind": "key",
+          "hit": 1271,
+          "total": 1271,
+          "miss": []
+        },
+        {
+          "from": "skill_gems",
+          "to": "skill_gems",
+          "field": "vaal_variant",
+          "kind": "key",
+          "hit": 100,
+          "total": 100,
+          "miss": [],
+          "note": "These hold item paths, so they match skill_gems[].base_item.id."
+        },
+        {
+          "from": "skill_gems",
+          "to": "gem_tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 4247,
+          "total": 6153,
+          "miss": [
+            "strength",
+            "grants_active_skill",
+            "dexterity"
+          ],
+          "note": "Tags without a gem_tags entry, such as intelligence or grants_active_skill, are not shown in game."
+        },
+        {
+          "from": "mods_by_base",
+          "to": "item_classes",
+          "field": "key = item_classes[].name",
+          "kind": "key",
+          "hit": 82,
+          "total": 82,
+          "miss": [],
+          "note": "Keyed by the plural class name, such as “One Hand Maces”, not the class id."
+        },
+        {
+          "from": "mods_by_base",
+          "to": "base_items",
+          "field": "[class][tags].bases[]",
+          "kind": "key",
+          "hit": 5461,
+          "total": 5461,
+          "miss": []
+        },
+        {
+          "from": "mods_by_base",
+          "to": "mods",
+          "field": "[class][tags].mods.{generation}.{type}.{id}",
+          "kind": "key",
+          "hit": 314800,
+          "total": 314800,
+          "miss": [],
+          "note": "Each value is the mod’s required level, not a spawn weight."
+        },
+        {
+          "from": "uniques",
+          "to": "item_classes",
+          "field": "item_class",
+          "kind": "key",
+          "hit": 1312,
+          "total": 1556,
+          "miss": [
+            "Axe",
+            "Sword",
+            "Mace"
+          ],
+          "note": "The rest use loose names such as Focii, Mace or Flask."
+        },
+        {
+          "from": "uniques",
+          "to": "unique_details",
+          "field": "same key",
+          "kind": "same",
+          "hit": 1556,
+          "total": 1556,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "base_items",
+          "field": "key",
+          "kind": "same",
+          "hit": 106,
+          "total": 106,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "mods",
+          "field": "mods[].mod, monster_mods[], display_mods, memory_lines[]",
+          "kind": "key",
+          "hit": 3680,
+          "total": 3680,
+          "miss": []
+        },
+        {
+          "from": "essences",
+          "to": "item_classes",
+          "field": "mods[].item_classes[]",
+          "kind": "key",
+          "hit": 2205,
+          "total": 2205,
+          "miss": []
+        },
+        {
+          "from": "crafting_bench_options",
+          "to": "mods",
+          "field": "mod, enchantment",
+          "kind": "key",
+          "hit": 806,
+          "total": 806,
+          "miss": []
+        },
+        {
+          "from": "crafting_bench_options",
+          "to": "base_items",
+          "field": "cost[].item",
+          "kind": "key",
+          "hit": 803,
+          "total": 803,
+          "miss": []
+        },
+        {
+          "from": "crafting_bench_options",
+          "to": "item_classes",
+          "field": "item_classes[]",
+          "kind": "key",
+          "hit": 4796,
+          "total": 4796,
+          "miss": []
+        },
+        {
+          "from": "base_items/",
+          "to": "base_items",
+          "field": "same records, one file per class",
+          "kind": "same",
+          "hit": 5461,
+          "total": 5461,
+          "miss": []
+        },
+        {
+          "from": "normalized/base_items",
+          "to": "base_items",
+          "field": "id",
+          "kind": "same",
+          "hit": 5041,
+          "total": 5041,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "stats",
+          "field": "stats[].id",
+          "kind": "key",
+          "hit": 60695,
+          "total": 60695,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "tags",
+          "field": "spawn_weights[].tag, generation_weights[].tag, adds_tags[], implicit_tags[]",
+          "kind": "key",
+          "hit": 150444,
+          "total": 150444,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "skills",
+          "field": "grants_effects[].granted_effect_id",
+          "kind": "key",
+          "hit": 1719,
+          "total": 1719,
+          "miss": []
+        },
+        {
+          "from": "mods",
+          "to": "keywords",
+          "field": "[Id|text] in text",
+          "kind": "text",
+          "hit": 104,
+          "total": 138,
+          "miss": [
+            "DNT"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "tag_details",
+          "to": "tags",
+          "field": "same key",
+          "kind": "same",
+          "hit": 1389,
+          "total": 1389,
+          "miss": []
+        },
+        {
+          "from": "stats",
+          "to": "skills",
+          "field": "active_skills[]",
+          "kind": "key",
+          "hit": 3129,
+          "total": 3149,
+          "miss": [
+            "vaal_righteous_fire_old",
+            "blade_vortex_old",
+            "punishment_old"
+          ],
+          "note": "These match skills[].active_skill.id, not the skills key."
+        },
+        {
+          "from": "stat_translations/",
+          "to": "stats",
+          "field": "ids[]",
+          "kind": "key",
+          "hit": 18537,
+          "total": 18537,
+          "miss": []
+        },
+        {
+          "from": "stat_translations/",
+          "to": "stat_value_handlers",
+          "field": "English[].index_handlers",
+          "kind": "key",
+          "hit": 7210,
+          "total": 7210,
+          "miss": []
+        },
+        {
+          "from": "stat_translations/",
+          "to": "keywords",
+          "field": "[Id|text] in English[].string",
+          "kind": "text",
+          "hit": 122,
+          "total": 251,
+          "miss": [
+            "DNT"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "stats_by_file",
+          "to": "stat_translations/",
+          "field": "files[]",
+          "kind": "key",
+          "hit": 26761,
+          "total": 26761,
+          "miss": []
+        },
+        {
+          "from": "stats_by_file",
+          "to": "stats",
+          "field": "tokens[].stat",
+          "kind": "key",
+          "hit": 19216,
+          "total": 19216,
+          "miss": []
+        },
+        {
+          "from": "enchantments",
+          "to": "mods",
+          "field": "{group}[].id",
+          "kind": "same",
+          "hit": 1656,
+          "total": 1656,
+          "miss": []
+        },
+        {
+          "from": "enchantments",
+          "to": "stats",
+          "field": "{group}[].stats[].id",
+          "kind": "key",
+          "hit": 1859,
+          "total": 1859,
+          "miss": []
+        },
+        {
+          "from": "enchantments",
+          "to": "tags",
+          "field": "{group}[].spawn_weights[].tag",
+          "kind": "key",
+          "hit": 3303,
+          "total": 3303,
+          "miss": []
+        },
+        {
+          "from": "enchantments",
+          "to": "skills",
+          "field": "{group}[].skills[]",
+          "kind": "key",
+          "hit": 3844,
+          "total": 3875,
+          "miss": [
+            "blade_vortex_old",
+            "charged_attack",
+            "lancing_steel"
+          ],
+          "note": "These match skills[].active_skill.id, not the skills key."
+        },
+        {
+          "from": "skills",
+          "to": "active_skill_types",
+          "field": "active_skill.types[], support_gem.allowed_types[], support_gem.added_types[]",
+          "kind": "key",
+          "hit": 69564,
+          "total": 69564,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "stats",
+          "field": "stat_sets[].static.stats[].id",
+          "kind": "key",
+          "hit": 61542,
+          "total": 61542,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "stat_translations/",
+          "field": "stat_sets[].translation_file",
+          "kind": "key",
+          "hit": 12879,
+          "total": 12879,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "item_classes",
+          "field": "active_skill.weapon_restrictions[]",
+          "kind": "key",
+          "hit": 9240,
+          "total": 9240,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "cost_types",
+          "field": "per_level.{n}.costs (keys)",
+          "kind": "key",
+          "hit": 28912,
+          "total": 28912,
+          "miss": []
+        },
+        {
+          "from": "skills",
+          "to": "keywords",
+          "field": "[Id|text] in active_skill.description",
+          "kind": "text",
+          "hit": 9,
+          "total": 41,
+          "miss": [
+            "DNT",
+            "UNUSED"
+          ],
+          "note": "Unmatched ids are placeholders such as DNT, or terms with no keyword entry."
+        },
+        {
+          "from": "cost_types",
+          "to": "stats",
+          "field": "stat",
+          "kind": "key",
+          "hit": 13,
+          "total": 13,
+          "miss": []
+        },
+        {
+          "from": "buffs",
+          "to": "stats",
+          "field": "stats[]",
+          "kind": "key",
+          "hit": 4488,
+          "total": 4488,
+          "miss": []
+        },
+        {
+          "from": "buffs",
+          "to": "buff_visuals",
+          "field": "visuals",
+          "kind": "key",
+          "hit": 2814,
+          "total": 2814,
+          "miss": []
+        },
+        {
+          "from": "buffs",
+          "to": "mods",
+          "field": "sources.Mods[].id",
+          "kind": "key",
+          "hit": 3145,
+          "total": 3145,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "stats",
+          "field": "passives.{hash}.stats (keys)",
+          "kind": "key",
+          "hit": 10991,
+          "total": 10991,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "ascendancies",
+          "field": "passives.{hash}.ascendancy",
+          "kind": "key",
+          "hit": 792,
+          "total": 792,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "skills",
+          "field": "passives.{hash}.granted_effect.id",
+          "kind": "key",
+          "hit": 58,
+          "total": 58,
+          "miss": []
+        },
+        {
+          "from": "passive_skill_trees/",
+          "to": "buffs",
+          "field": "passives.{hash}.buff_definitions[]",
+          "kind": "key",
+          "hit": 46,
+          "total": 46,
+          "miss": []
+        },
+        {
+          "from": "ascendancies",
+          "to": "characters",
+          "field": "character = characters[].metadata_id",
+          "kind": "key",
+          "hit": 21,
+          "total": 21,
+          "miss": []
+        },
+        {
+          "from": "jewel_slots",
+          "to": "passive_skill_trees/",
+          "field": "passive = passives.{hash}.id",
+          "kind": "key",
+          "hit": 60,
+          "total": 60,
+          "miss": []
+        },
+        {
+          "from": "timeless_jewels",
+          "to": "stats",
+          "field": "passives/additions .stats[].id",
+          "kind": "key",
+          "hit": 842,
+          "total": 842,
+          "miss": []
+        },
+        {
+          "from": "cluster_jewels",
+          "to": "base_items",
+          "field": "jewels key",
+          "kind": "same",
+          "hit": 3,
+          "total": 3,
+          "miss": []
+        },
+        {
+          "from": "cluster_jewels",
+          "to": "stats",
+          "field": "jewels.*.skills[].passive.stats, special_skills[].stat",
+          "kind": "key",
+          "hit": 370,
+          "total": 370,
+          "miss": []
+        },
+        {
+          "from": "cluster_jewels",
+          "to": "tags",
+          "field": "jewels.*.skills[].tag",
+          "kind": "key",
+          "hit": 55,
+          "total": 55,
+          "miss": []
+        },
+        {
+          "from": "tattoos",
+          "to": "stats",
+          "field": "stats (keys)",
+          "kind": "key",
+          "hit": 160,
+          "total": 160,
+          "miss": []
+        },
+        {
+          "from": "tattoos",
+          "to": "base_items",
+          "field": "tattoos[].item",
+          "kind": "key",
+          "hit": 136,
+          "total": 136,
+          "miss": []
+        },
+        {
+          "from": "tattoos",
+          "to": "passive_skill_trees/",
+          "field": "tattoo_blocking_passives[]",
+          "kind": "key",
+          "hit": 5,
+          "total": 5,
+          "miss": []
+        },
+        {
+          "from": "pantheons",
+          "to": "stats",
+          "field": "souls[].stats (keys)",
+          "kind": "key",
+          "hit": 41,
+          "total": 41,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "world_areas",
+          "field": "connections[], parent_town",
+          "kind": "key",
+          "hit": 1790,
+          "total": 1790,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "monsters",
+          "field": "bosses[], packs[].monsters.*.monster_variety, packs[].boss_monsters[]",
+          "kind": "key",
+          "hit": 21908,
+          "total": 21908,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "mods",
+          "field": "area_mods[]",
+          "kind": "key",
+          "hit": 855,
+          "total": 855,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 4734,
+          "total": 4734,
+          "miss": []
+        },
+        {
+          "from": "world_areas",
+          "to": "default_monster_stats",
+          "field": "area_level (by value)",
+          "kind": "value",
+          "hit": 1913,
+          "total": 1932,
+          "miss": [
+            "0"
+          ],
+          "note": "The misses are level-0 placeholder areas."
+        },
+        {
+          "from": "monsters",
+          "to": "mods",
+          "field": "mods[], special_mods[], endgame_mods[]",
+          "kind": "key",
+          "hit": 16806,
+          "total": 16806,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "skills",
+          "field": "granted_effects[]",
+          "kind": "key",
+          "hit": 34028,
+          "total": 34028,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "tags",
+          "field": "tags[]",
+          "kind": "key",
+          "hit": 125725,
+          "total": 125725,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "item_classes",
+          "field": "main_hand_item_class, off_hand_item_class",
+          "kind": "key",
+          "hit": 4741,
+          "total": 4741,
+          "miss": []
+        },
+        {
+          "from": "monsters",
+          "to": "monsters",
+          "field": "spectre_override",
+          "kind": "key",
+          "hit": 972,
+          "total": 972,
+          "miss": []
+        }
+      ],
+      "examples": [
+        {
+          "id": "item",
+          "title": "Item",
+          "subject": "Wicked War Hammer of the Bear · magic One Hand Mace · example rolls 10, 72, 20",
+          "tooltip": {
+            "frame": "magic",
+            "name": [
+              "Wicked War Hammer of the Bear"
+            ],
+            "nameColor": "magic",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "One Hand Mace",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Physical Damage: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "22-53",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Critical Strike Chance: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "5.00%",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Attacks per Second: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1.45",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Weapon Range: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1.1 metres",
+                      "color": "white"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 7,
+                  "parts": [
+                    {
+                      "text": "Requires ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "Level ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "20",
+                      "color": "white"
+                    },
+                    {
+                      "text": ", ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "71",
+                      "color": "white"
+                    },
+                    {
+                      "text": " Str",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 8,
+                  "parts": [
+                    {
+                      "text": "10% reduced Enemy Stun Threshold",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 9,
+                  "parts": [
+                    {
+                      "text": "72% increased Physical Damage",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 10,
+                  "parts": [
+                    {
+                      "text": "+20 to Strength",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                4,
+                1
+              ],
+              "code": "mods[prefix].name · base_items[id].name · mods[suffix].name",
+              "value": "\"Wicked\" · \"War Hammer\" · \"of the Bear\"",
+              "note": "A magic item’s name is prefix name, base name, suffix name."
+            },
+            {
+              "steps": [
+                2
+              ],
+              "code": "item_classes[\"One Hand Mace\"].category",
+              "value": "\"One Hand Mace\""
+            },
+            {
+              "steps": [
+                1,
+                5
+              ],
+              "code": "base_items[id].properties.physical_damage_min / _max",
+              "value": "13 / 31",
+              "note": "Scaled by the 72% roll, then rounded: 13 × 1.72 = 22, 31 × 1.72 = 53. The roll changes this line because `stats[\"local_physical_damage_+%\"].is_local` is true."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].properties.critical_strike_chance",
+              "value": "500",
+              "note": "Hundredths of a percent."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].properties.attack_time",
+              "value": "690",
+              "note": "Milliseconds per attack: 1000 ÷ 690."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].properties.range",
+              "value": "11",
+              "note": "Tenths of a metre."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "base_items[id].requirements",
+              "value": "{ level: 20, strength: 71 }"
+            },
+            {
+              "steps": [
+                1,
+                4,
+                6
+              ],
+              "code": "base_items[id].implicits[0]",
+              "value": "\"StunThresholdReductionImplicitMace1\"",
+              "note": "Its stat `base_stun_threshold_reduction_+%` is always 10. The text entry has 2 variants; the one whose condition fits the roll gives `\"{0}% reduced Enemy Stun Threshold\"`."
+            },
+            {
+              "steps": [
+                3,
+                4,
+                6
+              ],
+              "code": "mods[\"LocalIncreasedPhysicalDamagePercent3\"]",
+              "value": "prefix · 65–84 · level 23",
+              "note": "Its stat `local_physical_damage_+%` rolls 65 to 84. The text entry has 5 variants; the one whose condition fits the roll gives `\"{0}% increased Physical Damage\"`."
+            },
+            {
+              "steps": [
+                3,
+                4,
+                6
+              ],
+              "code": "mods[\"Strength3\"]",
+              "value": "suffix · 18–22 · level 22",
+              "note": "Its stat `additional_strength` rolls 18 to 22. The text entry gives `\"{0} to Strength\"` with format `\"+#\"`."
+            }
+          ],
+          "steps": [
+            {
+              "code": "base_items[id]",
+              "text": "Look up the base by item path, here `Metadata/Items/Weapons/OneHandWeapons/OneHandMaces/OneHandMace5`. It holds the name, class, properties, requirements, tags and implicit mod ids."
+            },
+            {
+              "code": "item_classes[base.item_class]",
+              "text": "Gives the class line and the plural name, “One Hand Maces”, which step 3 needs."
+            },
+            {
+              "code": "mods_by_base[class.name][base.tags.join(\",\")]",
+              "text": "The mod pool for this base, grouped by generation type and mod type. Each value is the mod’s required level. All 5,461 bases resolve this way."
+            },
+            {
+              "code": "mods[id]",
+              "text": "For the implicit and each rolled mod: affix name, generation type, required level and `stats[]` with min and max."
+            },
+            {
+              "code": "stats[stat.id]",
+              "text": "Flags such as `is_local`. A local stat changes the item’s own lines instead of the character."
+            },
+            {
+              "code": "stat_translations/stat_descriptions",
+              "text": "Find the entry whose `ids[]` holds the stat. Pick the `English[]` variant whose `condition` fits the value, then apply `format` and `index_handlers` from `stat_value_handlers`."
+            }
+          ],
+          "path": {
+            "links": [
+              "base_items>item_classes",
+              "mods_by_base>item_classes",
+              "mods_by_base>base_items",
+              "base_items>mods",
+              "mods_by_base>mods",
+              "mods>stats",
+              "stat_translations/>stats",
+              "stat_translations/>stat_value_handlers"
+            ],
+            "badges": {
+              "base_items": 1,
+              "item_classes": 2,
+              "mods_by_base": 3,
+              "mods": 4,
+              "stats": 5,
+              "stat_translations/": 6,
+              "stat_value_handlers": 6
+            }
+          },
+          "code": "const base  = base_items[id];\nconst cls   = item_classes[base.item_class];\nconst pool  = mods_by_base[cls.name][base.tags.join(\",\")];\nconst mod   = mods[\"Strength3\"];\nconst entry = stat_descriptions.find(e => e.ids.includes(mod.stats[0].id));\n// then pick entry.English[] by condition and fill {0}"
+        },
+        {
+          "id": "skill",
+          "title": "Skill gem",
+          "subject": "Fireball · level 1",
+          "tooltip": {
+            "frame": "gem",
+            "name": [
+              "Fireball"
+            ],
+            "nameColor": "gem",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "Projectile, Spell, AoE, Fire",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Level: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Cost: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "5 Mana",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Cast Time: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "0.75 sec",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Critical Strike Chance: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "5.00%",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 7,
+                  "parts": [
+                    {
+                      "text": "Effectiveness of Added Damage: ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "300%",
+                      "color": "white"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 8,
+                  "parts": [
+                    {
+                      "text": "Requires ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "Level ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "1",
+                      "color": "white"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 9,
+                  "parts": [
+                    {
+                      "text": "Unleashes a ball of fire towards a target which explodes, damaging nearby foes.",
+                      "color": "gem"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 10,
+                  "parts": [
+                    {
+                      "text": "Base radius is 1 metre\nDeals 9 to 14 Fire Damage",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 11,
+                  "parts": [
+                    {
+                      "text": "25% chance to Ignite enemies",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                1
+              ],
+              "code": "skill_gems[id].base_item.display_name",
+              "value": "\"Fireball\""
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "skill_gems[id].tags[] → gem_tags[tag]",
+              "value": "\"Projectile\", \"Spell\", \"AoE\", …",
+              "note": "`intelligence` and `grants_active_skill` have no `gem_tags` entry, so they stay hidden."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "skill_gems[id].requirements",
+              "value": "keys \"1\" to \"20\"",
+              "note": "One entry per gem level. `max_level` is 20."
+            },
+            {
+              "steps": [
+                4,
+                5
+              ],
+              "code": "skills[\"Fireball\"].per_level[\"1\"].costs",
+              "value": "{ Mana: 5 }",
+              "note": "`cost_types[\"Mana\"].format_text` is `\"{0} Mana\"`."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"Fireball\"].cast_time",
+              "value": "750",
+              "note": "Milliseconds."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"Fireball\"].stat_sets[0].static.crit_chance",
+              "value": "500",
+              "note": "Hundredths of a percent."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"Fireball\"].stat_sets[0].per_level[\"1\"].damage_effectiveness",
+              "value": "300"
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "skill_gems[id].requirements[\"1\"]",
+              "value": "{ level: 1 }",
+              "note": "Only the level is stored. The game works out attribute requirements from `requirement_weights`, and no file holds that formula."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"Fireball\"].active_skill.description"
+            },
+            {
+              "steps": [
+                4,
+                7
+              ],
+              "code": "skills[\"Fireball\"].stat_sets[0].per_level[\"1\"].stat_text",
+              "note": "Already rendered for each level. The raw values are in `stats[]`; the text rules are in `stat_translations/skill_stat_descriptions.json`."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "skills[\"Fireball\"].stat_sets[0].static.stat_text",
+              "note": "Lines that do not change with level."
+            }
+          ],
+          "steps": [
+            {
+              "code": "skill_gems[…]",
+              "text": "Keyed by gem id, here `\"Fireball\"`; join on `base_item.id`. Holds tags, requirements per level and `grants_skills`."
+            },
+            {
+              "code": "base_items[gem.base_item.id]",
+              "text": "Gives the item class, “Active Skill Gem”, and the socket limit."
+            },
+            {
+              "code": "gem_tags[tag]",
+              "text": "Display text for each tag. A tag with no entry is hidden."
+            },
+            {
+              "code": "skills[gem.grants_skills[0]]",
+              "text": "`\"Fireball\"`: name, description, skill types, cast time, costs per level and stat sets."
+            },
+            {
+              "code": "cost_types[key]",
+              "text": "Format text and the stat behind each cost. Per-minute costs divide by `divisor`."
+            },
+            {
+              "code": "active_skill_types",
+              "text": "The skill’s `types[]`. A support fits when its `support_gem.allowed_types` match them."
+            },
+            {
+              "code": "stat_translations/{translation_file}",
+              "text": "Each stat set names its own text file. 17 different files are used."
+            }
+          ],
+          "path": {
+            "links": [
+              "skill_gems>base_items",
+              "skill_gems>gem_tags",
+              "skill_gems>skills",
+              "skills>cost_types",
+              "skills>active_skill_types",
+              "skills>stat_translations/",
+              "skills>stats",
+              "stat_translations/>stats",
+              "skills>keywords"
+            ],
+            "badges": {
+              "skill_gems": 1,
+              "base_items": 2,
+              "gem_tags": 3,
+              "skills": 4,
+              "cost_types": 5,
+              "active_skill_types": 6,
+              "stat_translations/": 7,
+              "stats": 7,
+              "keywords": 8
+            }
+          }
+        },
+        {
+          "id": "passive",
+          "title": "Passive",
+          "subject": "Golem's Blood · notable in the Default tree",
+          "tooltip": {
+            "frame": "plain",
+            "name": [
+              "Golem's Blood"
+            ],
+            "nameColor": "white",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "10% increased maximum Life",
+                      "color": "affix"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Regenerate 1.6% of Life per second",
+                      "color": "affix"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Group 398 · orbit 2 · slot 12 of 16",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Linked to 2 Life nodes, Life Mastery",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Focal Point",
+                      "color": "white"
+                    },
+                    {
+                      "text": "\nDeadeye ascendancy · Ranger",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                1
+              ],
+              "code": "passive_skill_trees/Default.json → passives[\"1325\"].name",
+              "value": "is_notable: true"
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "passives[\"1325\"].stats",
+              "value": "{ \"maximum_life_+%\": 10 }",
+              "note": ""
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "passives[\"1325\"].stats",
+              "value": "{ \"life_regeneration_rate_per_minute_%\": 96 }",
+              "note": "Handler `per_minute_to_per_second_2dp_if_required` turns 96 into the shown number. `stat_text` holds these lines pre-rendered."
+            },
+            {
+              "steps": [
+                2
+              ],
+              "code": "groups[398]",
+              "value": "x -1059, y 6702 · radius 2 · position_clockwise 12",
+              "note": "The group whose `passives[]` holds hash 1325. `orbit_radii[2]` is 162 and `skills_per_orbit[2]` is 16."
+            },
+            {
+              "steps": [
+                2
+              ],
+              "code": "groups[398].passives[].connections",
+              "value": "[31471,62588]",
+              "note": "Each link is stored on one end only. One of these nodes lists 1325 in its own `connections`."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "passives[\"5443\"].ascendancy",
+              "value": "\"Deadeye\"",
+              "note": "A second node, for the ascendancy chain: `ascendancies[\"Deadeye\"].name` is Deadeye, and its `character`, `Metadata/Characters/Dex/Dex`, is the Ranger in `characters`."
+            }
+          ],
+          "steps": [
+            {
+              "code": "passive_skill_trees/Default.json → passives[hash]",
+              "text": "Name, icon, flags such as `is_notable` and `is_keystone`, `stats` and `stat_text`. The folder holds 7 trees."
+            },
+            {
+              "code": "groups[] in the same file",
+              "text": "The group that lists the hash gives its x and y, the orbit (`radius`), the slot (`position_clockwise`) and the node’s outgoing connections."
+            },
+            {
+              "code": "stats + stat_translations",
+              "text": "In the Default tree, 3,679 of 4,187 stat references find their text in `stat_descriptions` and 508 in `passive_skill_stat_descriptions`."
+            },
+            {
+              "code": "ascendancies[passive.ascendancy] → characters",
+              "text": "792 nodes belong to an ascendancy. `character` matches `characters[].metadata_id`."
+            },
+            {
+              "code": "skills, buffs, jewel_slots",
+              "text": "58 nodes grant a skill through `granted_effect.id`, a `skills` key. 44 carry `buff_definitions`. `jewel_slots` names socket nodes by id."
+            }
+          ],
+          "path": {
+            "links": [
+              "passive_skill_trees/>stats",
+              "stat_translations/>stats",
+              "passive_skill_trees/>ascendancies",
+              "ascendancies>characters",
+              "passive_skill_trees/>skills",
+              "passive_skill_trees/>buffs",
+              "jewel_slots>passive_skill_trees/"
+            ],
+            "badges": {
+              "passive_skill_trees/": 1,
+              "stats": 3,
+              "stat_translations/": 3,
+              "ascendancies": 4,
+              "characters": 4,
+              "skills": 5,
+              "buffs": 5,
+              "jewel_slots": 5
+            }
+          }
+        },
+        {
+          "id": "monster",
+          "title": "Monster",
+          "subject": "The Twilight Strand and its boss",
+          "tooltip": {
+            "frame": "plain",
+            "name": [
+              "The Twilight Strand"
+            ],
+            "nameColor": "white",
+            "nameRow": 1,
+            "blocks": [
+              [
+                {
+                  "row": 2,
+                  "parts": [
+                    {
+                      "text": "Act 1 · area level 1",
+                      "color": "grey"
+                    }
+                  ]
+                },
+                {
+                  "row": 3,
+                  "parts": [
+                    {
+                      "text": "Leads to Lioneye's Watch",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 4,
+                  "parts": [
+                    {
+                      "text": "Hillock",
+                      "color": "unique"
+                    }
+                  ]
+                },
+                {
+                  "row": 5,
+                  "parts": [
+                    {
+                      "text": "Life ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "22 × 180%",
+                      "color": "white"
+                    },
+                    {
+                      "text": " · Damage ",
+                      "color": "grey"
+                    },
+                    {
+                      "text": "4.99 × 101%",
+                      "color": "white"
+                    }
+                  ]
+                },
+                {
+                  "row": 6,
+                  "parts": [
+                    {
+                      "text": "Uses Default Attack",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "row": 7,
+                  "parts": [
+                    {
+                      "text": "Packs: Drowned (1–3), Sand Spitter (1–3)",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          "rows": [
+            {
+              "steps": [
+                1
+              ],
+              "code": "world_areas[\"1_1_1\"]",
+              "value": "name, act, area_level"
+            },
+            {
+              "steps": [
+                1,
+                3
+              ],
+              "code": "world_areas[\"1_1_1\"].area_level",
+              "value": "1",
+              "note": "Also the key into `default_monster_stats`, “1”."
+            },
+            {
+              "steps": [
+                1
+              ],
+              "code": "world_areas[\"1_1_1\"].connections",
+              "value": "[\"1_1_town\"]",
+              "note": "Each id is another `world_areas` key."
+            },
+            {
+              "steps": [
+                1,
+                2
+              ],
+              "code": "world_areas[\"1_1_1\"].bosses[0] → monsters[path].name",
+              "value": "\"Metadata/Monsters/ZombieBoss/ZombieBossHillockNormal\""
+            },
+            {
+              "steps": [
+                2,
+                3
+              ],
+              "code": "default_monster_stats[\"1\"] × monsters[path].life_multiplier, damage_multiplier",
+              "value": "life 22, physical_damage 4.99 · 180, 101",
+              "note": "The level baseline, picked by `area_level`, scaled by the monster’s multipliers. Rarity and boss scaling come on top."
+            },
+            {
+              "steps": [
+                4
+              ],
+              "code": "monsters[path].granted_effects[] → skills[id]",
+              "value": "2 skills",
+              "note": "Only one has a `display_name`. The others are helper skills."
+            },
+            {
+              "steps": [
+                1,
+                2
+              ],
+              "code": "world_areas[\"1_1_1\"].packs[].monsters.*.monster_variety",
+              "value": "weights 20, 20, 20, 15, 15, 15 in the first pack",
+              "note": "Each pack has `min_count`, `max_count` and weighted monster paths."
+            }
+          ],
+          "steps": [
+            {
+              "code": "world_areas[id]",
+              "text": "Name, act, level, waypoint, `connections`, `bosses`, `packs` and `area_mods`."
+            },
+            {
+              "code": "monsters[path]",
+              "text": "Name, tags, multipliers, resistances, weapon class and `granted_effects`."
+            },
+            {
+              "code": "default_monster_stats[String(area_level)]",
+              "text": "A value join: the key is the monster level, “1” to “100”."
+            },
+            {
+              "code": "skills[id]",
+              "text": "The same `skills` file that player gems use."
+            },
+            {
+              "code": "mods[id]",
+              "text": "`monsters.mods` and `special_mods`. This boss has none; 6,606 monsters do."
+            }
+          ],
+          "path": {
+            "links": [
+              "world_areas>monsters",
+              "world_areas>default_monster_stats",
+              "monsters>skills",
+              "monsters>mods",
+              "world_areas>world_areas"
+            ],
+            "badges": {
+              "world_areas": 1,
+              "monsters": 2,
+              "default_monster_stats": 3,
+              "skills": 4,
+              "mods": 5
+            }
+          }
+        }
+      ],
+      "gaps": [
+        {
+          "title": "Uniques have no mods or base type",
+          "text": "`uniques` and `unique_details` give the name, class, art and flavour text of 1,556 uniques. No file says which base or which mods a unique has. 15,886 mods have `generation_type: \"unique\"`, and `mods_by_base` lists them per class and tag set, not per unique."
+        },
+        {
+          "title": "inherits_from points at files that are not exported",
+          "text": "5,459 bases name an abstract parent such as `…/AbstractOneHandMace`. Use it as a group label."
+        },
+        {
+          "title": "Two spellings of item class",
+          "text": "Most files use the class id, such as “One Hand Mace”. `mods_by_base` uses the plural name, such as “One Hand Maces”. 244 of 1,556 uniques use loose names such as Axe or Sword."
+        },
+        {
+          "title": "skill_gems is keyed by gem id",
+          "text": "Its keys are gem ids such as `Fireball`, not item paths. Join it to `base_items` through `base_item.id`. `vaal_variant` holds item paths too."
+        },
+        {
+          "title": "Gem attribute requirements are not stored",
+          "text": "`requirements` holds only the level for each gem level. The game derives Strength, Dexterity and Intelligence from `requirement_weights`, and no file holds that formula."
+        },
+        {
+          "title": "Some skill references use the inner id",
+          "text": "`stats.active_skills` and `enchantments.skills` hold ids such as `fireball`. They match `skills[].active_skill.id`, not the `skills` key `Fireball`."
+        },
+        {
+          "title": "Hidden stats",
+          "text": "6,626 of 60,695 stat references in `mods` have no text in any `stat_translations` file, for example `buff_impl_stat`. The game does not show them."
+        },
+        {
+          "title": "mods_by_base values are levels",
+          "text": "Each number is the mod’s `required_level` (314,800 of 314,800 agree). The real odds are in each mod’s `spawn_weights`, matched against the base’s tags in order."
+        },
+        {
+          "title": "Text is often already rendered",
+          "text": "`mods.text`, `base_items.implicit_text`, skill `stat_text` and passive `stat_text` hold finished lines with ranges. You need `stat_translations` only to render a rolled value."
+        }
+      ]
+    }
+  }
+}
