@@ -10,6 +10,8 @@ const TYPES: Record<string, string> = {
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".woff2": "font/woff2",
+  ".png": "image/png",
+  ".ttf": "font/ttf",
   ".txt": "text/plain; charset=utf-8"
 };
 
@@ -51,7 +53,16 @@ async function dev(): Promise<void> {
     timer = setTimeout(() => build().catch((error) => console.error(error.message)), 100);
   };
   watch(PATHS.content, { recursive: true }, rebuild);
-  for (const file of [PATHS.docsCss, PATHS.baseCss, PATHS.openapi]) watch(file, rebuild);
+  for (const file of [
+    PATHS.docsCss,
+    PATHS.baseCss,
+    PATHS.openapi,
+    PATHS.fileMapJs,
+    PATHS.fileMapData
+  ]) {
+    watch(file, rebuild);
+  }
+  watch(PATHS.tooltip, { recursive: true }, rebuild);
 }
 
 const command = process.argv[2];

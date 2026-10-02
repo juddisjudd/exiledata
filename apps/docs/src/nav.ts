@@ -5,6 +5,8 @@ export interface NavPage {
   group: string;
   /** "api" is generated from the OpenAPI document; the rest come from `content/{slug}.md`. */
   source: "markdown" | "api";
+  /** A wider column, for pages built around a diagram. */
+  wide?: boolean;
 }
 
 export const NAV: NavPage[] = [
@@ -14,6 +16,7 @@ export const NAV: NavPage[] = [
   { slug: "schema", title: "Record format", group: "Data", source: "markdown" },
   { slug: "sources", title: "Data sources", group: "Data", source: "markdown" },
   { slug: "downloads", title: "Downloads", group: "Data", source: "markdown" },
+  { slug: "file-map", title: "File map", group: "Data", source: "markdown", wide: true },
   { slug: "api", title: "API reference", group: "Reference", source: "api" },
   { slug: "changelog", title: "Changelog", group: "Reference", source: "markdown" }
 ];

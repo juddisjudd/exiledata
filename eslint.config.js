@@ -31,5 +31,18 @@ export default tseslint.config(
       sourceType: "script",
       globals: { document: "readonly", location: "readonly" }
     }
+  },
+  {
+    files: ["apps/docs/public/**/*.js"],
+    languageOptions: {
+      sourceType: "script",
+      globals: {
+        document: "readonly",
+        window: "readonly",
+        FontFace: "readonly",
+        Image: "readonly",
+        MouseEvent: "readonly"
+      }
+    }
   }
 );

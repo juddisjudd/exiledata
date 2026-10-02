@@ -30,7 +30,7 @@ New patches are published within six hours. Some patches change how the game lay
 
 ## What each patch contains
 
-- **Game files.** The JSON exported from the game client, one file per kind of data, as described in [Data sources](./sources.md). Their fields follow the game files and can change between patches.
+- **Game files.** The JSON exported from the game client, one file per kind of data, as described in [Data sources](./sources.md). Their fields follow the game files and can change between patches. The [File map](./file-map.md) shows which fields join the files.
 - **`normalized/`.** ExileData records in the [record format](./schema.md). Today that is `base_items.json`, the same records `GET /v1/{game}/bases` serves.
 - **`pob_tree/`.** Path of Building's passive tree data, laid out like PoB's `src/TreeData`. There is one folder per tree, named as in PoB, such as `0_5`, `3_29` or `3_29_ruthless`. Each holds `tree.lua` and the tree images.
 - **`manifest.json`.** Every file with its size and SHA-256 checksum, plus the record count of each JSON file, so you can check a download or skip files you already have.

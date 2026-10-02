@@ -10,9 +10,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rimraf dist",
     "cf:dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "file-map": "tsx scripts/write-file-map.ts"
   },
   "devDependencies": {
+    "fflate": "^0.8.3",
     "marked": "^18.0.13",
     "rimraf": "^6.0.1",
     "takumi-js": "^2.14.0",

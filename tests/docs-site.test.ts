@@ -47,7 +47,12 @@ describe("docs site", () => {
       "docs.css",
       "openapi.json",
       "assets/fonts/geist-latin-wght-normal.woff2",
-      "assets/fonts/geist-mono-latin-wght-normal.woff2"
+      "assets/fonts/geist-mono-latin-wght-normal.woff2",
+      "file-map.js",
+      "tooltip/renderer.js",
+      "tooltip/fontin-smallcaps.ttf",
+      "tooltip/poe1/header-magic-left.png",
+      "tooltip/poe2/separator-gem.png"
     ]) {
       expect(existsSync(path.join(out, asset)), asset).toBe(true);
     }
