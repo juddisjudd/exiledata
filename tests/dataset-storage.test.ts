@@ -78,8 +78,18 @@ describe("datasetKey", () => {
 
 describe("compareGameVersions", () => {
   it("orders dotted versions numerically", () => {
-    const sorted = ["4.5.10.0", "4.5.5.3", "3.29.3.3", "4.5.9.12"].sort(compareGameVersions);
+    const sorted = ["3.29.10.0", "3.29.3.3", "3.28.5.1", "3.29.9.12"].sort((a, b) =>
+      compareGameVersions("poe1", a, b)
+    );
 
-    expect(sorted).toEqual(["3.29.3.3", "4.5.5.3", "4.5.9.12", "4.5.10.0"]);
+    expect(sorted).toEqual(["3.28.5.1", "3.29.3.3", "3.29.9.12", "3.29.10.0"]);
+  });
+
+  it("puts PoE 2's old 4.x patches before the 0.x and 1.x they became", () => {
+    const sorted = ["1.0.0.1", "0.5.10.0", "0.5.5.4", "4.5.5.4", "4.5.4.11", "4.4.0.13"].sort((a, b) =>
+      compareGameVersions("poe2", a, b)
+    );
+
+    expect(sorted).toEqual(["4.4.0.13", "4.5.4.11", "4.5.5.4", "0.5.5.4", "0.5.10.0", "1.0.0.1"]);
   });
 });

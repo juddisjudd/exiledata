@@ -287,7 +287,7 @@ export function mergeIndex(
   const versions = [
     ...(games[manifest.game]?.versions ?? []).filter((v) => v.gameVersion !== manifest.gameVersion),
     entry
-  ].sort((a, b) => compareGameVersions(b.gameVersion, a.gameVersion));
+  ].sort((a, b) => compareGameVersions(manifest.game, b.gameVersion, a.gameVersion));
 
   games[manifest.game] = { latest: versions[0]!.gameVersion, versions };
   return { updatedAt: now.toISOString(), games };

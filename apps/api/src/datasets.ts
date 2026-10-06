@@ -42,7 +42,7 @@ export class DatasetReader {
     if (cached && cached.expires > this.now()) return cached.entries;
 
     const entries = (await this.storage.list(game)).sort((a, b) =>
-      compareGameVersions(a.gameVersion, b.gameVersion)
+      compareGameVersions(game, a.gameVersion, b.gameVersion)
     );
     this.listings.set(game, { expires: this.now() + this.listingTtlMs, entries });
 

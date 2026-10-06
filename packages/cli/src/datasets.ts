@@ -20,7 +20,7 @@ export async function listDatasets(options: { game?: string }): Promise<void> {
   const datasets: StoredDataset[] = [];
   for (const game of games) {
     const entries = await storage.list(game);
-    datasets.push(...entries.sort((a, b) => compareGameVersions(a.gameVersion, b.gameVersion)));
+    datasets.push(...entries.sort((a, b) => compareGameVersions(game, a.gameVersion, b.gameVersion)));
   }
 
   console.log(`Datasets in ${where}:`);

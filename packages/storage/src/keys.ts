@@ -14,8 +14,18 @@ export function datasetKey(game: Game, gameVersion: string): string {
   return `${game}/${gameVersion}/dataset.json`;
 }
 
-/** Compares dotted versions numerically, so "4.5.10.0" sorts after "4.5.9.3". */
-export function compareGameVersions(a: string, b: string): number {
+/** Orders a game's patches; PoE 2's old 4.x numbers sort as the 0.x GGG renumbered them to, just before it. */
+export function compareGameVersions(game: Game, a: string, b: string): number {
+  if (game !== "poe2") return compareDotted(a, b);
+  const renumbered = (v: string) => (v.startsWith("4.") ? `0.${v.slice(2)}` : v);
+  return (
+    compareDotted(renumbered(a), renumbered(b)) ||
+    Number(b.startsWith("4.")) - Number(a.startsWith("4."))
+  );
+}
+
+/** Compares dotted versions numerically, so "0.5.10.0" sorts after "0.5.9.3". */
+function compareDotted(a: string, b: string): number {
   const left = a.split(".");
   const right = b.split(".");
   for (let i = 0; i < Math.max(left.length, right.length); i++) {
