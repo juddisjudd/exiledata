@@ -11,7 +11,7 @@ import { LocalDatasetStorage } from "../packages/storage/src/local.js";
 import { LocalObjectStorage } from "../packages/storage/src/objects.js";
 import { SCHEMA_VERSION } from "../packages/schema/src/common/version.js";
 
-const CDN = "https://patch-poe2.poecdn.com/4.5.5.3/";
+const CDN = "https://patch-poe2.poecdn.com/0.5.5.4/";
 
 /** A patch server reply: protocol byte, 32 bytes, then two length-prefixed UTF-16LE strings. */
 function reply(second = CDN, protocol = 2): Buffer {
@@ -28,13 +28,13 @@ function reply(second = CDN, protocol = 2): Buffer {
 
 describe("parsePatchReply", () => {
   it("reads the patch from the CDN address", () => {
-    expect(parsePatchReply(reply())).toBe("4.5.5.3");
+    expect(parsePatchReply(reply())).toBe("0.5.5.4");
     expect(parsePatchReply(reply("https://patch.poecdn.com/3.29.3.3"))).toBe("3.29.3.3");
   });
 
   it("reads a reply that does not start at the beginning of its buffer", () => {
     const padded = Buffer.concat([Buffer.from([9, 9, 9]), reply()]);
-    expect(parsePatchReply(padded.subarray(3))).toBe("4.5.5.3");
+    expect(parsePatchReply(padded.subarray(3))).toBe("0.5.5.4");
   });
 
   it("rejects another protocol, a cut-off reply and an address without a patch", () => {
@@ -68,7 +68,7 @@ describe("patchVersion", () => {
 
     await expect(
       patchVersion("poe2", { ...PATCH_SERVERS.poe2, host: "127.0.0.1", port })
-    ).resolves.toBe("4.5.5.3");
+    ).resolves.toBe("0.5.5.4");
     expect(received).toEqual([1, 7]);
   });
 
@@ -77,7 +77,18 @@ describe("patchVersion", () => {
 
     await expect(
       patchVersion("poe1", { ...PATCH_SERVERS.poe1, host: "127.0.0.1", port })
-    ).rejects.toThrow(/unexpected poe1 version 4\.5\.5\.3/);
+    ).rejects.toThrow(/unexpected poe1 version 0\.5\.5\.4/);
+  });
+
+  it("takes 4.x as PoE 1 now that PoE 2 has moved to 0.x", async () => {
+    const port = await serve(reply("https://patch.poecdn.com/4.0.0.1/"));
+
+    await expect(
+      patchVersion("poe1", { ...PATCH_SERVERS.poe1, host: "127.0.0.1", port })
+    ).resolves.toBe("4.0.0.1");
+    await expect(
+      patchVersion("poe2", { ...PATCH_SERVERS.poe2, host: "127.0.0.1", port })
+    ).rejects.toThrow(/unexpected poe2 version 4\.0\.0\.1/);
   });
 
   it("fails when the server hangs up before the reply is complete", async () => {
