@@ -36,15 +36,15 @@ const basesSchema = {
   summary: "List base items",
   description:
     "Base items from one game patch, in the order the game files list them. Without " +
-    "`version`, the highest published patch answers, and `meta.gameVersion` names it.",
+    "`version`, the newest published patch answers, and `meta.gameVersion` names it.",
   params: gameParam,
   querystring: {
     type: "object",
     properties: {
       version: {
         type: "string",
-        description: "Game patch to read, e.g. `4.5.5.3`. Default: the highest published patch.",
-        examples: ["4.5.5.3"]
+        description: "Game patch to read, e.g. `0.5.5.4`. Default: the newest published patch.",
+        examples: ["0.5.5.4"]
       },
       itemClass: {
         type: "string",
@@ -83,12 +83,12 @@ const basesSchema = {
               id: "Metadata/Items/Amulets/FourAmulet1",
               name: "Crimson Amulet",
               itemClass: "Amulet",
-              version: { schemaVersion: "0.2.0", game: "poe2", gameVersion: "4.5.5.3" },
+              version: { schemaVersion: "0.2.0", game: "poe2", gameVersion: "0.5.5.4" },
               source: [
                 {
                   name: "poe2-ggpk-extract",
-                  version: "4.5.5.3",
-                  retrievedAt: "2026-09-18T16:14:26.910Z",
+                  version: "0.5.5.4",
+                  retrievedAt: "2026-10-06T02:30:14.967Z",
                   locator: "base_items.json#Metadata/Items/Amulets/FourAmulet1"
                 }
               ],
@@ -100,7 +100,7 @@ const basesSchema = {
               }
             }
           ],
-          meta: { game: "poe2", gameVersion: "4.5.5.3", total: 25 }
+          meta: { game: "poe2", gameVersion: "0.5.5.4", total: 25 }
         }
       ]
     },

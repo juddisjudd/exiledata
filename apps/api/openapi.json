@@ -62,7 +62,7 @@
           },
           "gameVersion": {
             "type": "string",
-            "description": "Game patch, e.g. `4.5.5.3`."
+            "description": "Game patch, e.g. `0.5.5.4`."
           }
         }
       },
@@ -156,7 +156,7 @@
           },
           "gameVersion": {
             "type": "string",
-            "description": "Game patch, e.g. `4.5.5.3`."
+            "description": "Game patch, e.g. `0.5.5.4`."
           },
           "generatedAt": {
             "type": "string",
@@ -466,17 +466,17 @@
         "tags": [
           "Game data"
         ],
-        "description": "Base items from one game patch, in the order the game files list them. Without `version`, the highest published patch answers, and `meta.gameVersion` names it.",
+        "description": "Base items from one game patch, in the order the game files list them. Without `version`, the newest published patch answers, and `meta.gameVersion` names it.",
         "parameters": [
           {
             "schema": {
               "type": "string"
             },
-            "example": "4.5.5.3",
+            "example": "0.5.5.4",
             "in": "query",
             "name": "version",
             "required": false,
-            "description": "Game patch to read, e.g. `4.5.5.3`. Default: the highest published patch."
+            "description": "Game patch to read, e.g. `0.5.5.4`. Default: the newest published patch."
           },
           {
             "schema": {
@@ -556,13 +556,13 @@
                       "version": {
                         "schemaVersion": "0.2.0",
                         "game": "poe2",
-                        "gameVersion": "4.5.5.3"
+                        "gameVersion": "0.5.5.4"
                       },
                       "source": [
                         {
                           "name": "poe2-ggpk-extract",
-                          "version": "4.5.5.3",
-                          "retrievedAt": "2026-09-18T16:14:26.910Z",
+                          "version": "0.5.5.4",
+                          "retrievedAt": "2026-10-06T02:30:14.967Z",
                           "locator": "base_items.json#Metadata/Items/Amulets/FourAmulet1"
                         }
                       ],
@@ -581,7 +581,7 @@
                   ],
                   "meta": {
                     "game": "poe2",
-                    "gameVersion": "4.5.5.3",
+                    "gameVersion": "0.5.5.4",
                     "total": 25
                   }
                 }

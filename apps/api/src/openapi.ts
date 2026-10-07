@@ -36,7 +36,7 @@ const SCHEMAS = [
     properties: {
       schemaVersion: { type: "string", description: "ExileData schema version, e.g. `0.2.0`." },
       game: { type: "string", enum: ["poe1", "poe2"], description: "Game the record belongs to." },
-      gameVersion: { type: "string", description: "Game patch, e.g. `4.5.5.3`." }
+      gameVersion: { type: "string", description: "Game patch, e.g. `0.5.5.4`." }
     }
   },
   {
@@ -92,7 +92,7 @@ const SCHEMAS = [
     required: ["game", "gameVersion", "generatedAt", "schemaVersion", "sources"],
     properties: {
       game: { type: "string", enum: ["poe1", "poe2"] },
-      gameVersion: { type: "string", description: "Game patch, e.g. `4.5.5.3`." },
+      gameVersion: { type: "string", description: "Game patch, e.g. `0.5.5.4`." },
       generatedAt: {
         type: "string",
         format: "date-time",

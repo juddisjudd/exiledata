@@ -113,13 +113,14 @@ There is one dataset per game patch, stored as:
 {game}/{gameVersion}/dataset.json
 ```
 
-e.g. `poe2/4.5.5.3/dataset.json`. The patch comes from the extract's `version.txt`. Every
+e.g. `poe2/0.5.5.4/dataset.json`. The patch comes from the extract's `version.txt`. Every
 dataset carries metadata: `game`, `gameVersion`, `generatedAt`, `schemaVersion`, and source
 information (see `DatasetMetadata` in `packages/schema`).
 
 Re-ingesting a patch replaces its dataset (`exiledata ingest --overwrite`), and `generatedAt`
 tells the builds apart. The API notices a replaced dataset through the storage ETag within a
-minute, without a restart. "Latest" means the highest patch, compared numerically.
+minute, without a restart. "Latest" means the highest patch, compared numerically, except that
+PoE 2's old 4.x patches sort before its 0.x ones (`compareGameVersions` in `packages/storage`).
 
 ### Downloads
 
@@ -238,7 +239,7 @@ A test fails while the committed file is stale.
 ### Ingest a dataset
 
 ```sh
-pnpm exiledata ingest --game poe2 --extract-dir S:/POE2-Extracted/4.5.5.3-stripped
+pnpm exiledata ingest --game poe2 --extract-dir S:/POE2-Extracted/0.5.5.4-stripped
 pnpm exiledata datasets list
 ```
 
@@ -248,7 +249,7 @@ publish to production, e.g. `DATASET_STORAGE_DRIVER=r2 pnpm exiledata ingest ...
 ### Publish downloads
 
 ```sh
-pnpm exiledata downloads publish --game poe2 --extract-dir S:/POE2-Extracted/4.5.5.3-stripped
+pnpm exiledata downloads publish --game poe2 --extract-dir S:/POE2-Extracted/0.5.5.4-stripped
 pnpm exiledata downloads list
 ```
 

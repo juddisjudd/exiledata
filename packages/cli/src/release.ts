@@ -270,7 +270,7 @@ export async function buildRelease(options: {
   return { manifest, objects };
 }
 
-/** Adds or replaces one patch in the index; "latest" is the highest patch, compared numerically. */
+/** Adds or replaces one patch in the index; "latest" is the newest patch by `compareGameVersions`. */
 export function mergeIndex(
   index: DownloadIndex | undefined,
   manifest: Manifest,

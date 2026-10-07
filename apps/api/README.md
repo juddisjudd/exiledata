@@ -17,7 +17,7 @@ API key required (`x-api-key: exd_...` or `Authorization: Bearer exd_...`):
 
 - `GET /v1/games`: supported games.
 - `GET /v1/versions`: metadata of every published dataset, in patch order.
-- `GET /v1/{game}/bases`: base items. `?version=4.5.5.3` picks a patch (default: highest),
+- `GET /v1/{game}/bases`: base items. `?version=0.5.5.4` picks a patch (default: newest),
   plus `?itemClass=`, `?limit=` (1 to 1000) and `?offset=`. `meta.gameVersion` says which patch
   answered.
 - `GET /v1/{game}/items|mods|gems|skills`: `501 Not Implemented` until ingestion produces them.

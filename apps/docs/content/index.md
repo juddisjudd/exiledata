@@ -32,12 +32,12 @@ $ curl -H "x-api-key: $EXILEDATA_KEY" \
       "id": "Metadata/Items/Amulets/FourAmulet1",
       "name": "Crimson Amulet",
       "itemClass": "Amulet",
-      "version": { "schemaVersion": "0.2.0", "game": "poe2", "gameVersion": "4.5.5.3" },
+      "version": { "schemaVersion": "0.2.0", "game": "poe2", "gameVersion": "0.5.5.4" },
       "source": [ … ],
       "ext": { "drop_level": 1, "implicit_text": ["(2-4) Life Regeneration per second"], … }
     }
   ],
-  "meta": { "game": "poe2", "gameVersion": "4.5.5.3", "total": 25 }
+  "meta": { "game": "poe2", "gameVersion": "0.5.5.4", "total": 25 }
 }
 ```
 
@@ -47,7 +47,7 @@ $ curl -H "x-api-key: $EXILEDATA_KEY" \
 
 ```sh
 $ curl -H "x-api-key: $EXILEDATA_KEY" \
-    "https://api.exiledata.dev/v1/poe2/bases?version=4.5.5.3&itemClass=Amulet"
+    "https://api.exiledata.dev/v1/poe2/bases?version=0.5.5.4&itemClass=Amulet"
 ```
 
 [Datasets and versions](./datasets.md) explains how patches are published and replaced.

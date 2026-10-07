@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-02T21:18:45.961Z",
+  "generatedAt": "2026-10-07T23:16:40.570Z",
   "games": {
     "poe2": {
       "game": "poe2",
-      "patch": "4.5.5.4",
+      "patch": "0.5.5.4",
       "nodes": {
         "active_skill_types": {
           "id": "active_skill_types",
@@ -58,8 +58,8 @@
           "description": "Visual effects attached to buffs.",
           "shape": "object",
           "sample": "invisible",
-          "count": 2930,
-          "bytes": 561392
+          "count": 2934,
+          "bytes": 561512
         },
         "buffs": {
           "id": "buffs",
@@ -218,8 +218,8 @@
           "description": "Monster types: name, category, tags and stat multipliers.",
           "shape": "object",
           "sample": "Any",
-          "count": 2793,
-          "bytes": 5198549
+          "count": 2794,
+          "bytes": 5200152
         },
         "skill_gems": {
           "id": "skill_gems",
@@ -991,8 +991,8 @@
           "to": "tags",
           "field": "tags[]",
           "kind": "key",
-          "hit": 21595,
-          "total": 21595,
+          "hit": 21602,
+          "total": 21602,
           "miss": []
         },
         {

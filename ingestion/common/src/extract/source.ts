@@ -28,7 +28,7 @@ export interface RawBaseItem {
 }
 
 export interface ExtractRaw {
-  /** Game version from the extract's `version.txt`, e.g. "4.5.5.3". */
+  /** Game version from the extract's `version.txt`, e.g. "0.5.5.4". */
   gameVersion: string;
   baseItems: Record<string, RawBaseItem>;
 }

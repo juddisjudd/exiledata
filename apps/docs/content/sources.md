@@ -18,8 +18,8 @@ Every record says where it came from in its `source` field:
 ```json
 {
   "name": "poe2-ggpk-extract",
-  "version": "4.5.5.3",
-  "retrievedAt": "2026-09-18T16:14:26.910Z",
+  "version": "0.5.5.4",
+  "retrievedAt": "2026-10-06T02:30:14.967Z",
   "locator": "base_items.json#Metadata/Items/Amulets/FourAmulet1"
 }
 ```

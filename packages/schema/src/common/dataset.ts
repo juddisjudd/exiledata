@@ -10,7 +10,7 @@ import type { Game } from "./entity.js";
  */
 export interface DatasetMetadata {
   game: Game;
-  /** Game patch this dataset was generated from, e.g. "4.5.5.3". Also its storage key. */
+  /** Game patch this dataset was generated from, e.g. "0.5.5.4". Also its storage key. */
   gameVersion: string;
   /** ISO timestamp of when this dataset was generated. */
   generatedAt: string;

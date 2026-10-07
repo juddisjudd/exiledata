@@ -2,6 +2,16 @@
 
 Changes to the API, the record format and the published datasets, newest first.
 
+## 2026-10-05
+
+### Breaking changes
+
+- **Path of Exile 2 patches are numbered `0.x`.** Grinding Gear Games renumbered them from `4.x`, and the patch after `4.5.5.4` is `0.5.5.4`. The old `4.x` patches stay published and sort before the `0.x` ones, so `latest` and requests without `?version=` get `0.5.5.4`. If you sort patch numbers yourself, see [Path of Exile 2 patch numbers](./datasets.md#path-of-exile-2-patch-numbers).
+
+### Datasets
+
+- Published `poe2` `0.5.5.4`: 5,075 base items.
+
 ## 2026-09-30
 
 ### Added

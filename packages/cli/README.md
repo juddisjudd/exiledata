@@ -8,7 +8,7 @@ which loads `.env`. It runs against the built workspace packages, so run `pnpm b
 ```
 exiledata ingest --game poe1|poe2 --extract-dir <path> [--dry-run] [--overwrite]
 exiledata datasets list [--game poe2]
-exiledata datasets delete --game poe2 --patch 4.5.5.3 --yes
+exiledata datasets delete --game poe2 --patch 0.5.5.4 --yes
 ```
 
 `ingest` normalizes a GGPK extract's base items and writes `{game}/{patch}/dataset.json`, taking

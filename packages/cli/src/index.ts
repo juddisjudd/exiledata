@@ -43,7 +43,7 @@ datasets
   .command("delete")
   .description("Delete one published dataset")
   .requiredOption("--game <game>", "poe1 or poe2")
-  .requiredOption("--patch <version>", "game patch, e.g. 4.5.5.3")
+  .requiredOption("--patch <version>", "game patch, e.g. 0.5.5.4")
   .option("--yes", "confirm the deletion")
   .action(deleteDataset);
 
