@@ -5,6 +5,7 @@ import { deleteDataset, listDatasets } from "./datasets.js";
 import { listDownloads, publishDownloads } from "./downloads.js";
 import { parseGames } from "./games.js";
 import { patchVersion } from "./patch.js";
+import { publishCurrentPatch } from "./current.js";
 import { update } from "./update.js";
 import { runMigrations } from "./db.js";
 import { createKey, listKeys, revokeKey, setRateLimit } from "./keys.js";
@@ -71,7 +72,12 @@ program
   .command("patch")
   .description("Print each game's current patch, as GGG's patch servers report it")
   .argument("[games...]", "poe1 and/or poe2 (default: both)")
-  .action(async (games: string[]) => {
+  .option("--publish", "also publish downloads/current.json (data.exiledata.dev)")
+  .action(async (games: string[], options) => {
+    if (options.publish) {
+      await publishCurrentPatch({ games });
+      return;
+    }
     for (const game of parseGames(games)) console.log(`${game} ${await patchVersion(game)}`);
   });
 

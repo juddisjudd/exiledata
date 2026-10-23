@@ -133,6 +133,22 @@ describe("data.exiledata.dev worker", () => {
     expect((await res.json()).games.poe2.state).toBe("waiting");
   });
 
+  it("serves the current patch", async () => {
+    expect((await get("/current.json")).status).toBe(404);
+
+    bucket.set(
+      "downloads/current.json",
+      { checkedAt: "2026-10-23T12:00:00.000Z", games: { poe1: "3.29.3.3", poe2: "0.5.5.4" } },
+      "application/json",
+      "public, max-age=60"
+    );
+    const res = await get("/current.json");
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toBe("public, max-age=60");
+    expect((await res.json()).games.poe2).toBe("0.5.5.4");
+  });
+
   it("answers If-None-Match with 304 and a byte range with 206", async () => {
     const first = await get("/poe2/4.5.5.3/mods.min.json");
     const etag = first.headers.get("etag")!;

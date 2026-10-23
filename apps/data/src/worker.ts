@@ -6,6 +6,7 @@
  *   /                              -> the Downloads page in the docs
  *   /index.json                    -> every published patch, per game
  *   /status.json                   -> a game whose newest patch could not be published yet
+ *   /current.json                  -> each game's current patch, as its patch server reports it
  *   /{game}/latest/{file}          -> 302 to the same file in the newest patch
  *   /{game}/{patch}/{file}         -> the file (immutable, cached at the edge)
  *   /{game}/ and /{game}/{patch}/  -> the Downloads page, opened at that game and patch
@@ -114,7 +115,10 @@ export async function handle(request: Request, env: Env, now = Date.now()): Prom
   if (segments.some((s) => s === "." || s === ".." || s.includes("\\"))) return notFound();
 
   if (segments.length === 0) return redirect(DOCS_PAGE);
-  if (segments.length === 1 && (segments[0] === "index.json" || segments[0] === "status.json")) {
+  if (
+    segments.length === 1 &&
+    (segments[0] === "index.json" || segments[0] === "status.json" || segments[0] === "current.json")
+  ) {
     return serve(request, env, `${PREFIX}/${segments[0]}`);
   }
 

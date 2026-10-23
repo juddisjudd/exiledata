@@ -21,8 +21,11 @@ To follow the newest patch, write `latest` instead of the patch. `latest` redire
 | One patch's JSON, zipped | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}.zip`                     |
 | One PoB tree, zipped     | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}-pob-tree-{tree}.zip`     |
 | Patches not out yet      | [`https://data.exiledata.dev/status.json`](https://data.exiledata.dev/status.json) |
+| Each game's live patch   | [`https://data.exiledata.dev/current.json`](https://data.exiledata.dev/current.json) |
 
 The files allow cross-origin requests, so a browser tool can fetch them directly.
+
+`current.json` is the patch each game's own patch server reports right now, checked every few minutes — it says what is live, not what ExileData has published yet. `index.json`'s `latest` is the newest patch ExileData has exported and published, which can lag `current.json` by up to six hours.
 
 ## When a new patch is late
 

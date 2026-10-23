@@ -260,6 +260,7 @@ data is published when the extract has a `pob_tree/` folder, as `update` writes 
 
 ```sh
 pnpm exiledata patch                          # each game's current patch
+pnpm exiledata patch --publish                # publish current.json too (data.exiledata.dev)
 pnpm exiledata update --check                 # which games are behind the published downloads
 pnpm exiledata update                         # export, ingest and publish every game that is behind
 pnpm exiledata update poe2 --force --dry-run  # rebuild one game without writing to storage
