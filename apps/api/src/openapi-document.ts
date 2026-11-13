@@ -1,10 +1,7 @@
 import { buildApp } from "./app.js";
 import { loadConfig } from "./config.js";
 
-/**
- * Builds the OpenAPI document from the real route definitions. No request is served, so the
- * database and dataset storage are never touched; the stub below only satisfies `buildApp`.
- */
+/** Serves no requests, so the stub dependencies below are never called. */
 export async function generateOpenApiDocument(): Promise<unknown> {
   const app = buildApp({
     config: { ...loadConfig({}), apiKeySecret: "openapi-generation" },

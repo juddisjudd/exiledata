@@ -1,7 +1,4 @@
-/**
- * The file browser on the Downloads page. It renders client-side from data.exiledata.dev's
- * index and manifests, so a newly published patch shows up without rebuilding the docs.
- */
+// Renders in the browser, so a newly published patch shows up without a docs deploy.
 export const DATA_ORIGIN = "https://data.exiledata.dev";
 
 export const DOWNLOADS_PLACEHOLDER = "<!-- downloads-browser -->";

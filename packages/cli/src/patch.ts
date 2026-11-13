@@ -16,10 +16,7 @@ export const PATCH_SERVERS: Record<Game, PatchServer> = {
   poe2: { host: "patch.pathofexile2.com", port: 13060, hello: [1, 7], version: /^[01]\./ }
 };
 
-/**
- * Reads the patch from a patch server reply: protocol byte 2, then after 33 bytes two
- * length-prefixed UTF-16LE strings, the second being the CDN folder of the current patch.
- */
+/** The second length-prefixed UTF-16LE string is the CDN folder of the current patch. */
 export function parsePatchReply(data: Uint8Array): string {
   const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
   if (data[0] !== 2) throw new Error(`unexpected patch protocol version ${data[0]}`);

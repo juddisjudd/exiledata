@@ -10,12 +10,7 @@ export interface R2DatasetStorageConfig {
   bucketName: string;
 }
 
-/**
- * R2-backed dataset storage using R2's S3-compatible API. Uses `aws4fetch` (a minimal SigV4
- * signer) rather than the full AWS SDK — R2 access doesn't need most of what the AWS SDK offers.
- *
- * Object key layout: `{game}/{gameVersion}/dataset.json`, matching the local driver.
- */
+/** Signs requests with aws4fetch; the full AWS SDK is far more than R2 needs. */
 export class R2DatasetStorage implements DatasetStorage {
   private readonly client: AwsClient;
   private readonly endpoint: string;

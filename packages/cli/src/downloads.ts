@@ -36,11 +36,7 @@ export async function readJson<T>(store: ObjectStorage, key: string): Promise<T 
   return data ? (JSON.parse(Buffer.from(data).toString("utf8")) as T) : undefined;
 }
 
-/**
- * Publishes one extract as public downloads under `downloads/{game}/{patch}/`, then adds the
- * patch to `downloads/index.json`. The index is written last, so a failed upload never
- * advertises a half-published patch.
- */
+/** Writes the index last, so a failed upload never lists a half-published patch. */
 export async function publishDownloads(options: {
   game: string;
   extractDir: string;

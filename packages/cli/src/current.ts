@@ -15,20 +15,17 @@ export interface CurrentPatch {
   games: Partial<Record<Game, string>>;
 }
 
-/**
- * Publishes `downloads/current.json`: each game's current patch, straight from its patch
- * server, regardless of whether that patch has been exported and published yet. A game whose
- * patch server does not answer keeps the value already published, so one flaky check does not
- * blank it out.
- */
-export async function publishCurrentPatch(options: {
-  games?: string[];
-  store?: ObjectStorage;
-  env?: NodeJS.ProcessEnv;
-  currentPatch?: (game: Game) => Promise<string>;
-  log?: (line: string) => void;
-  now?: () => Date;
-} = {}): Promise<CurrentPatch> {
+/** A patch server that does not answer leaves that game's published value in place. */
+export async function publishCurrentPatch(
+  options: {
+    games?: string[];
+    store?: ObjectStorage;
+    env?: NodeJS.ProcessEnv;
+    currentPatch?: (game: Game) => Promise<string>;
+    log?: (line: string) => void;
+    now?: () => Date;
+  } = {}
+): Promise<CurrentPatch> {
   const log = options.log ?? console.log;
   const now = options.now ?? (() => new Date());
   const config = datasetStorageConfigFromEnv(options.env ?? process.env);

@@ -1,9 +1,10 @@
 # docker/
 
-Local development infrastructure. Currently just PostgreSQL, which holds application/service
-state (API clients, keys, dataset metadata, usage) — not game data itself (see root README's
-"Database" section).
+`docker-compose.yml` runs PostgreSQL for local development. It holds API clients, keys and usage
+counts, never game data.
 
 ```
 docker compose -f docker/docker-compose.yml up -d
 ```
+
+`api.Dockerfile` builds the API image.

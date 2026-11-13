@@ -12,14 +12,7 @@ import { createKey, listKeys, revokeKey, setRateLimit } from "./keys.js";
 
 const program = new Command();
 
-program.name("exiledata").description("ExileData developer/data operations CLI").version("0.0.0");
-
-function stub(commandName: string) {
-  return () => {
-    console.log(`"${commandName}" is not implemented yet.`);
-    process.exitCode = 1;
-  };
-}
+program.name("exiledata").description("ExileData operations CLI").version("0.0.0");
 
 program
   .command("ingest")
@@ -135,26 +128,6 @@ keys
   .action((id: string, limit: string, _options, command: Command) =>
     setRateLimit({ ...command.optsWithGlobals(), id, limit })
   );
-
-program
-  .command("validate")
-  .description("Validate normalized entities against the canonical schema (not implemented)")
-  .action(stub("validate"));
-
-program
-  .command("build")
-  .description("Build a dataset from validated entities (not implemented)")
-  .action(stub("build"));
-
-program
-  .command("diff")
-  .description("Compare two dataset versions (not implemented)")
-  .action(stub("diff"));
-
-program
-  .command("inspect")
-  .description("Inspect a dataset or entity (not implemented)")
-  .action(stub("inspect"));
 
 program.parseAsync().catch((error: Error) => {
   console.error(error.message);

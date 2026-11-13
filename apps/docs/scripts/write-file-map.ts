@@ -11,10 +11,7 @@ import {
   type Manifest
 } from "../src/file-map-data.js";
 
-/**
- * Writes data/file-map.json from the newest published patch of each game. `--dir poe2=<folder>`
- * reads an unpacked patch folder instead of downloading the zip.
- */
+// `--dir poe2=<folder>` reads an unpacked patch folder instead of downloading the zip.
 const target = new URL("../data/file-map.json", import.meta.url);
 const GAMES: Game[] = ["poe2", "poe1"];
 

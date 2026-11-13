@@ -1,9 +1,4 @@
-/**
- * Builds the File map page's data from one published patch: which field of each exported file
- * points at which other file, how many of its values resolve, the worked examples that join the
- * files back into what the game shows, and the joins that do not work. Runs offline through
- * `scripts/write-file-map.ts`; the page only reads the result.
- */
+// Builds the File map data from one published patch, offline, via scripts/write-file-map.ts.
 
 export type Game = "poe1" | "poe2";
 
@@ -1250,11 +1245,7 @@ function matches(cond: J, value: number): boolean {
 
 const num = (v: number) => (Number.isInteger(v) ? String(v) : String(Number(v.toFixed(2))));
 
-/**
- * Renders stats the way the game does: for each stat_translations entry that names one of the
- * stats, take the first English variant whose conditions fit the values, run each value through
- * its index_handlers, and fill the string. Stats with no entry are hidden, as in game.
- */
+/** Renders stats the way the game does; stats with no translation entry stay hidden. */
 export function renderStats(entries: J[], handlers: J, stats: Record<string, number>): StatLine[] {
   const lines: StatLine[] = [];
   const done = new Set<string>();

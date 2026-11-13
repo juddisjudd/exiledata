@@ -40,11 +40,6 @@ const DASHBOARD_CSP = [
 
 const FONTS = ["geist-latin-wght-normal.woff2", "geist-mono-latin-wght-normal.woff2"];
 
-/**
- * `GET /admin` serves the dashboard page, which holds no data until the operator enters the
- * admin token. `/admin/api/*` is the JSON API behind it and the CLI's `keys` commands, guarded
- * by `ADMIN_TOKEN` as a bearer token.
- */
 export function createAdminRoutes(deps: AdminRoutesDeps): FastifyPluginAsync {
   const publicDir = new URL("../../public/", import.meta.url);
   const page = readFileSync(new URL("admin.html", publicDir), "utf8");

@@ -3,11 +3,7 @@ import path from "node:path";
 import type { Game } from "@exiledata/schema";
 import type { IngestionSource } from "../source.js";
 
-/**
- * A base item as it appears in a GGPK extract's `base_items.json`, keyed by metadata path.
- * Field names are the extract's own — mapping into the canonical schema is the normalizer's job.
- * Fields beyond the ones typed here vary by game and pass through untouched.
- */
+/** Fields beyond the typed ones vary by game and pass through to `ext` untouched. */
 export interface RawBaseItem {
   name: string;
   item_class: string;
@@ -33,13 +29,6 @@ export interface ExtractRaw {
   baseItems: Record<string, RawBaseItem>;
 }
 
-/**
- * Reads a local GGPK extract directory, as produced by ggpk-explorer for either game. Unlike a
- * scraped source this is offline and deterministic — the extract is produced ahead of time, so
- * an ingestion run never depends on a third-party site being up.
- *
- * Only the files the implemented stages need are read; add to `ExtractRaw` as more land.
- */
 export function createExtractSource(game: Game, extractDir: string): IngestionSource<ExtractRaw> {
   return {
     name: `${game}-ggpk-extract`,

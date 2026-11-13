@@ -1,7 +1,4 @@
-/**
- * One line per extract file for the downloads page and manifest, written from each file's actual
- * structure. Files missing here still publish, just without a description.
- */
+// Files missing here still publish, without a description.
 export const FILE_DESCRIPTIONS: Record<string, string> = {
   active_skill_types: "Skill type ids that skills and supports use to match each other.",
   ascendancies: "Ascendancy classes with their parent class, art and flavour text.",

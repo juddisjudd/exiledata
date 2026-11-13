@@ -8,10 +8,7 @@ export interface PutOptions {
   cacheControl?: string;
 }
 
-/**
- * Plain object storage for the public download files (`downloads/...`), next to the private
- * datasets that `DatasetStorage` manages in the same bucket. Keys are relative, `/`-separated.
- */
+/** Public download files under `downloads/`, in the same bucket as the private datasets. */
 export interface ObjectStorage {
   put(key: string, body: Uint8Array | string, options: PutOptions): Promise<void>;
   get(key: string): Promise<Uint8Array | undefined>;

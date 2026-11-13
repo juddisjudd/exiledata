@@ -2,7 +2,7 @@
   "name": "@exiledata/web",
   "version": "0.0.0",
   "private": true,
-  "description": "Placeholder marketing site for exiledata.dev",
+  "description": "Landing page for exiledata.dev",
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",

@@ -13,14 +13,7 @@ export interface DatasetReaderOptions {
   now?: () => number;
 }
 
-/**
- * Reads datasets from storage and keeps parsed ones in memory.
- *
- * A patch can be re-ingested in place, so a parsed dataset is reused only while the listing
- * still reports the same etag for it. Listings are cached for a short TTL, which bounds both
- * the storage calls per request and how long a newly published or replaced dataset takes to
- * appear.
- */
+/** Reuses a parsed dataset until its etag changes, so a re-ingested patch shows within the TTL. */
 export class DatasetReader {
   private readonly listings = new Map<Game, { expires: number; entries: StoredDataset[] }>();
   private readonly cache = new Map<string, { etag: string; dataset: Dataset }>();

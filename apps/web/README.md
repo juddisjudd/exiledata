@@ -11,18 +11,19 @@ tokens.
 
 ## Shared with the docs
 
-The landing page and docs.exiledata.dev look like one site, and three things keep it that way:
+The landing page and docs.exiledata.dev look like one site.
 
-- **Header and footer.** `public/index.html` is their only source. The docs build copies both
-  blocks from it, and `public/404.html` repeats them; `tests/docs-site.test.ts` fails if either
-  copy drifts. Links in them are absolute (`https://docs.exiledata.dev/...`) so they work from
-  both sites.
-- **`public/base.css`.** Tokens, title bar, buttons and footer. The docs build copies it;
-  `public/style.css` holds landing-only layout.
-- **Fonts.** Both sites load them from `https://exiledata.dev/assets/fonts/`, so the docs reuse
-  the copy the browser cached on the landing page and text does not re-flow on the way over.
-  `public/_headers` adds the CORS header that cross-origin font loading needs, and a year of
-  caching; give a changed font file a new name. Each site's own copy is the fallback.
+The header and footer come only from `public/index.html`. The docs build copies both blocks from
+it, and `public/404.html` repeats them; `tests/docs-site.test.ts` fails if either copy drifts.
+Their links are absolute (`https://docs.exiledata.dev/...`) so they work from both sites.
+
+`public/base.css` holds the tokens, title bar, buttons and footer, and the docs build copies it.
+`public/style.css` holds the landing-only layout.
+
+Both sites load the fonts from `https://exiledata.dev/assets/fonts/`, so the docs reuse the copy
+the browser cached on the landing page and text does not re-flow on the way over.
+`public/_headers` adds the CORS header that cross-origin font loading needs, and a year of
+caching; give a changed font file a new name. Each site's own copy is the fallback.
 
 ## Themes
 
@@ -30,9 +31,9 @@ System (the default), Light and Dark, chosen from the switch in the shared heade
 
 - Every color token in `public/base.css` is `light-dark(light, dark)`. With no `data-theme` on
   `<html>` the page follows the OS; `data-theme="light"` or `"dark"` forces one.
-- The light theme is designed on its own terms, not the dark one flipped: white surfaces raised
-  above a tinted page with a soft shadow, white table bodies, an ink primary button. The admin
-  usage grid is blue in light and white in dark (`--heat`).
+- The light theme has its own palette: white surfaces raised above a tinted page with a soft
+  shadow, white table bodies and an ink primary button. The admin usage grid is blue in light and
+  white in dark (`--heat`).
 - The choice is stored in the `exiledata_theme` cookie on `.exiledata.dev`, so it carries between
   the landing page, the docs and the admin panel. System means no cookie. An inline script in each
   page's `<head>` applies it before first paint; `public/theme.js` handles the switch and is

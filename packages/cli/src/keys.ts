@@ -12,10 +12,7 @@ export interface AdminOptions {
 
 const DEFAULT_API_URL = "https://api.exiledata.dev";
 
-/**
- * Calls the admin API rather than Postgres, so the server's hashing secret never has to leave
- * the server and the commands keep working once the database port is closed.
- */
+/** Goes through the admin API so the key hashing secret stays on the server. */
 async function admin<T>(options: AdminOptions, method: string, path: string, body?: unknown) {
   const token = process.env.ADMIN_TOKEN;
   if (!token) throw new Error("ADMIN_TOKEN is not set.");

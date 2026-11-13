@@ -114,11 +114,7 @@
     return rows;
   }
 
-  /**
-   * Draws `tooltip` into `canvas` and returns where each explained line landed, in CSS pixels:
-   * `[{ row, top, height }]`. `options.base` is the folder holding the art, `options.game` picks
-   * the game's art.
-   */
+  /** Returns where each explained line landed, in CSS pixels: `[{ row, top, height }]`. */
   async function render(canvas, tooltip, options) {
     const base = options.base || "/tooltip";
     const plain = tooltip.frame === "plain";

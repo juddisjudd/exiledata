@@ -8,10 +8,7 @@ export interface RateLimitResult {
 const WINDOW_MS = 60_000;
 const MAX_TRACKED = 10_000;
 
-/**
- * Fixed one-minute windows per key, held in memory. That is correct only while the API runs as
- * a single process; a second replica would need a shared counter.
- */
+/** In-memory one-minute windows: correct only while the API runs as a single process. */
 export class RateLimiter {
   private readonly windows = new Map<string, { start: number; count: number }>();
 

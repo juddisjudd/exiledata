@@ -85,10 +85,6 @@ function siteHref(href: string): string {
   return path + (match[2] ?? "");
 }
 
-/**
- * Markdown to HTML for one page. The first `# heading` becomes the page title. `##` headings get
- * ids and anchor links, and are returned for the sidebar.
- */
 export function renderMarkdown(source: string): RenderedMarkdown {
   let title = "";
   const headings: Heading[] = [];

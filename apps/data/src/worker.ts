@@ -1,16 +1,4 @@
-/**
- * data.exiledata.dev: public, key-free downloads of every published patch. Serves objects under
- * `downloads/` in the dataset bucket and nothing else, so the private datasets the API reads
- * from the same bucket stay unreachable here.
- *
- *   /                              -> the Downloads page in the docs
- *   /index.json                    -> every published patch, per game
- *   /status.json                   -> a game whose newest patch could not be published yet
- *   /current.json                  -> each game's current patch, as its patch server reports it
- *   /{game}/latest/{file}          -> 302 to the same file in the newest patch
- *   /{game}/{patch}/{file}         -> the file (immutable, cached at the edge)
- *   /{game}/ and /{game}/{patch}/  -> the Downloads page, opened at that game and patch
- */
+/** Serves only `downloads/`, so the API's private datasets in the same bucket stay unreachable. */
 export interface Env {
   DATA: R2Bucket;
 }
@@ -117,7 +105,9 @@ export async function handle(request: Request, env: Env, now = Date.now()): Prom
   if (segments.length === 0) return redirect(DOCS_PAGE);
   if (
     segments.length === 1 &&
-    (segments[0] === "index.json" || segments[0] === "status.json" || segments[0] === "current.json")
+    (segments[0] === "index.json" ||
+      segments[0] === "status.json" ||
+      segments[0] === "current.json")
   ) {
     return serve(request, env, `${PREFIX}/${segments[0]}`);
   }

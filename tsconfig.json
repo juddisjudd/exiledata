@@ -11,9 +11,6 @@
       "path": "packages/types"
     },
     {
-      "path": "packages/client"
-    },
-    {
       "path": "packages/cli"
     },
     {

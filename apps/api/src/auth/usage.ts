@@ -1,10 +1,6 @@
 import { floorToHour, type KeyStore, type UsageEntry } from "./key-store.js";
 
-/**
- * Counts requests per key per hour in memory and writes them in batches, so serving a request
- * never waits on a usage insert. Counts not yet flushed are lost if the process is killed
- * without a clean shutdown; a SIGTERM flushes them.
- */
+/** Unflushed counts are lost on a hard kill; SIGTERM flushes them. */
 export class UsageRecorder {
   private pending = new Map<string, UsageEntry>();
   private timer: NodeJS.Timeout | undefined;

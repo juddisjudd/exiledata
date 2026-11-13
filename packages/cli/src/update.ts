@@ -46,10 +46,7 @@ const run: Spawn = (command, args, env) =>
 
 const tail = (text: string, lines = 20) => text.trimEnd().split("\n").slice(-lines).join("\n");
 
-/**
- * Each published patch's tables, kept to re-fit the next patch against: GGG's CDN drops a patch
- * once the next one ships. Private: the download server serves only `downloads/`.
- */
+/** Kept to re-fit the next patch against, since GGG's CDN drops a patch once the next ships. */
 export const TABLES_PREFIX = "refit";
 const tablesKey = (game: Game, patch: string, file: string) =>
   `${TABLES_PREFIX}/${game}/${patch}/${file}`;
@@ -103,13 +100,6 @@ export interface UpdateOptions {
   now?: () => Date;
 }
 
-/**
- * Brings the downloads up to each game's current patch. Asks the patch servers which patch is
- * current, compares it with `downloads/index.json`, and for each game that is behind exports
- * the patch from the CDN with ggpk-explorer, ingests it and publishes it. A patch that moved
- * tables is re-fitted against the previous patch's saved tables; one that still cannot be
- * published is posted in `downloads/status.json`. Returns the games that needed work.
- */
 export async function update(options: UpdateOptions = {}): Promise<Game[]> {
   const log = options.log ?? console.log;
   const env = options.env ?? process.env;
@@ -192,11 +182,7 @@ export async function update(options: UpdateOptions = {}): Promise<Game[]> {
       log(`${game}: saved ${names.length} tables of ${patch} to re-fit the next patch against`);
     };
 
-    /**
-     * Re-fits the tables the patch moved from the published patch's saved copy, carrying over
-     * the layouts that patch was itself published with for those tables. Throws `SchemaDrift`
-     * when there is nothing to re-fit from or a table does not re-fit in full.
-     */
+    /** Throws `SchemaDrift` when there is nothing to re-fit from or a table does not fit. */
     const refit = async (tables: string[]) => {
       if (!published || published === patch) throw new SchemaDrift(tables);
       const saved = await store.get(tablesKey(game, published, "tables.zip"));
@@ -358,10 +344,7 @@ export async function update(options: UpdateOptions = {}): Promise<Game[]> {
   return games;
 }
 
-/**
- * Sets or clears one game's entry in `downloads/status.json`. A patch that keeps failing keeps
- * the time it first failed.
- */
+/** A patch that keeps failing keeps the time it first failed. */
 async function setStatus(
   store: ObjectStorage,
   game: Game,

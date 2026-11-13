@@ -111,5 +111,3 @@ exiledata keys revoke <key-id>
 
 These call the admin API with `ADMIN_TOKEN`, so the hashing secret stays on the server. They
 target `https://api.exiledata.dev` unless `EXILEDATA_API_URL` or `--api-url` names another API.
-
-`validate`, `build`, `diff` and `inspect` are placeholders.

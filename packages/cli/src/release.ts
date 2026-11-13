@@ -10,14 +10,11 @@ import {
   NORMALIZED_DESCRIPTIONS
 } from "./file-descriptions.js";
 
-/** Extract folders that hold JSON worth publishing. `Art/` (images) is left out for now. */
+/** Extract folders that hold JSON worth publishing. `Art/` holds images and is left out. */
 const FOLDERS = ["base_items", "passive_skill_trees", "stat_translations"];
 /** The extractor's own run report, not game data. */
 const SKIPPED = new Set(["export_report"]);
-/**
- * Path of Building's `src/TreeData`, one folder per tree, published file for file. The exporter's
- * own files (version.txt, its report) sit at the folder's root and are left out.
- */
+/** Path of Building's `src/TreeData`; the exporter's own files at its root are left out. */
 const POB_TREE = "pob_tree";
 const TREE_VERSION = /^\d+_\d+(_[a-z]+)*$/;
 /** Already compressed, so the tree zips store them as they are. */
@@ -29,10 +26,7 @@ export interface FileVariant {
   sha256: string;
 }
 
-/**
- * One logical file. JSON is published pretty-printed (`path`) and minified (`min`) with a record
- * count; `pob_tree/` files are published once, as they are, and have neither.
- */
+/** `pob_tree/` files are published once, as they are, so they have no `min` or record count. */
 export interface ManifestFile extends FileVariant {
   kind: "raw" | "normalized";
   folder: string | null;
@@ -99,10 +93,7 @@ function pairsIn(names: string[]): string[] {
     .sort();
 }
 
-/**
- * Every pair under `dir` as `[relative directory, base name]`. Recurses only when asked: the
- * extract's top level holds folders (Art) that are deliberately left out.
- */
+/** Recurses only when asked: top-level folders such as Art are left out. */
 async function walkPairs(
   dir: string,
   relDir: string,
@@ -144,11 +135,6 @@ async function walkFiles(dir: string): Promise<string[]> {
     .sort();
 }
 
-/**
- * Builds one patch's download: the extract's JSON files as they are, the normalized records,
- * Path of Building's tree files, a manifest with sizes, checksums and record counts, a zip of
- * every minified file, and a zip per tree.
- */
 export async function buildRelease(options: {
   game: Game;
   extractDir: string;

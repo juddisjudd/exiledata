@@ -11,10 +11,6 @@ import { OG_HEIGHT, OG_WIDTH, loadOgFonts, renderOgImage, type OgCard } from "./
 
 const docsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-/**
- * Inputs outside apps/docs: the landing page (source of the shared header and footer), the
- * shared stylesheet and fonts, and the API's OpenAPI document.
- */
 export const PATHS = {
   content: path.join(docsDir, "content"),
   docsCss: path.join(docsDir, "public", "docs.css"),
@@ -39,10 +35,7 @@ export interface Shell {
   footer: string;
 }
 
-/**
- * The header and footer, taken verbatim from the landing page so the two sites cannot drift.
- * Links to the docs become site paths, which keeps local builds on the local server.
- */
+/** Copies the header and footer from the landing page, so the two sites cannot drift. */
 export async function loadShell(): Promise<Shell> {
   const landing = await readFile(PATHS.landing, "utf8");
   const header = /<header class="top">[\s\S]*?<\/header>/.exec(landing)?.[0];

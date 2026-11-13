@@ -112,11 +112,7 @@ const basesSchema = {
   }
 };
 
-/**
- * Per-game data endpoints. Only `bases` is served today — it is backed by the base-item dataset
- * produced by `exiledata ingest`. The rest stay 501 rather than returning fabricated data, and
- * are left out of the OpenAPI document until they exist.
- */
+/** Only `bases` has data; the rest answer 501 and stay out of the OpenAPI document. */
 export function createGameDataRoutes(reader: DatasetReader): FastifyPluginAsync {
   return async (app) => {
     app.get<{ Params: GameParam; Querystring: BasesQuery; Reply: ListResponse<BaseItem> | object }>(

@@ -1,13 +1,6 @@
 import type { Example, FileLink, FileMapData, Game, GameMap, Row } from "./file-map-data.js";
 import { escapeHtml, renderCodeBlock } from "./markdown.js";
 
-/**
- * The File map page: for each game, a diagram of how the exported files point at each other, the
- * worked examples that join them back into tooltips, and the joins that do not work. The diagram
- * is drawn here as SVG; `public/file-map.js` adds selection and the detail panel, and
- * `public/tooltip/renderer.js` draws the tooltips. The data comes from `data/file-map.json`,
- * written by `pnpm --filter @exiledata/docs file-map`.
- */
 export const FILE_MAP_MARKER = /<!-- file-map (poe1|poe2) -->/g;
 
 const VIEW = { w: 1120, h: 760 };

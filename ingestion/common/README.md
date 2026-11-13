@@ -1,24 +1,20 @@
 # @exiledata/ingestion-common
 
-Shared ingestion pipeline used by `ingestion/poe1` and `ingestion/poe2`.
-
-## Conceptual flow
+The ingestion pipeline shared by `ingestion/poe1` and `ingestion/poe2`. A stage reads one entity
+type through four steps:
 
 ```
-source → parser → normalized model → validator → dataset
+source → parser → normalizer → validator → dataset
 ```
 
-- **`IngestionSource`** — fetches raw upstream data. No parsing.
-- **`Parser`** — turns raw data into a source-shaped intermediate representation.
-- **`Normalizer`** — maps parsed data into canonical `@exiledata/schema` entities, populating
-  `source`, `ext`, and `derived` per the schema's conventions.
-- **`Validator`** — validates normalized entities before they're included in a dataset.
-- **`IngestionStage`** / **`runStage`** — ties the above together for a single entity type and
-  reports structured errors and warnings per stage.
+The source fetches raw data and does no parsing. The parser turns it into a source-shaped list.
+The normalizer maps that into `@exiledata/schema` records, filling `source` and `ext`. The
+validator checks the records before they go into a dataset. `runStage` runs all four and collects
+errors and warnings per step instead of throwing.
 
 ## GGPK extracts
 
-`src/extract/` reads the directories ggpk-explorer exports. PoE 1 and PoE 2 extracts share one
+`src/extract/` reads the folders ggpk-explorer exports. PoE 1 and PoE 2 extracts share one
 format, so the base-item stage is written once here and takes the game as a parameter. Each game
-package binds it (`createBaseItemsStage(extractDir)`), which is where game-specific handling goes
-when the formats diverge.
+package binds it (`createBaseItemsStage(extractDir)`), and game-specific handling goes there when
+the formats diverge.

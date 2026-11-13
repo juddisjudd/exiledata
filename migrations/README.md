@@ -1,7 +1,7 @@
 # migrations/
 
-Plain SQL migrations for PostgreSQL application/service state (API clients, keys, usage). Not
-for game data — see the root README.
+Plain SQL migrations for PostgreSQL: API clients, keys and usage. Game data does not live in the
+database.
 
 Apply them with the CLI, which reads `DATABASE_URL`:
 

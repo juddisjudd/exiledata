@@ -9,10 +9,7 @@ export function generateApiKey(): string {
   return API_KEY_PREFIX + randomBytes(24).toString("base64url");
 }
 
-/**
- * Keys are stored as an HMAC rather than a plain hash, so a leaked `api_keys` table cannot be
- * checked against guesses without the server's secret too.
- */
+/** An HMAC, so a leaked key table cannot be checked against guesses without the secret. */
 export function hashApiKey(secret: string, key: string): string {
   return createHmac("sha256", secret).update(key).digest("hex");
 }

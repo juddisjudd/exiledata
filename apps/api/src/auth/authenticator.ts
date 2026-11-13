@@ -3,14 +3,7 @@ import { hashApiKey, looksLikeApiKey } from "./keys.js";
 
 const MAX_CACHED = 10_000;
 
-/**
- * Resolves a presented API key to an active key record, caching the answer briefly so a busy
- * client costs one database lookup per TTL rather than one per request. Misses are cached too,
- * so repeated bad keys do not reach the database either.
- *
- * Admin changes made through this process call `invalidate()` and apply at once. A change made
- * some other way (e.g. SQL by hand) applies within the TTL.
- */
+/** Caches hits and misses for a short TTL; changes made outside this process apply within it. */
 export class Authenticator {
   private readonly cache = new Map<string, { key: ActiveKey | null; expires: number }>();
 

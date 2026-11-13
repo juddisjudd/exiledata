@@ -1,7 +1,4 @@
-/**
- * Wire types for the admin API (`/admin/api/*`), shared by apps/api, the CLI's `keys`
- * commands, and the admin dashboard. Timestamps are ISO strings.
- */
+/** Admin API wire types. Timestamps are ISO strings. */
 export interface AdminKey {
   id: string;
   clientId: string;

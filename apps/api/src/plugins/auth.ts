@@ -16,11 +16,7 @@ export interface ApiKeyAuthDeps {
   usage: UsageRecorder;
 }
 
-/**
- * Requires a valid API key on every route in `scope`, applies the key's per-minute limit, and
- * counts the request against the key. Hooks are added to the scope directly, so they cover
- * exactly the routes registered in it — `/health`, `/status` and `/admin` stay outside.
- */
+/** Hooks attach to `scope` only, so /health, /status and /admin stay keyless. */
 export function requireApiKey(scope: FastifyInstance, deps: ApiKeyAuthDeps): void {
   scope.addHook("onRequest", async (request, reply) => {
     const presented = presentedKey(request);

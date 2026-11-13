@@ -18,11 +18,9 @@ describe("package boundaries", () => {
     ).toBe(false);
   });
 
-  it("ingestion/common does not depend on apps or the client SDK", () => {
+  it("ingestion/common does not depend on apps", () => {
     const pkg = readPackageJson("ingestion/common/package.json");
     const deps = Object.keys(pkg.dependencies ?? {});
-    expect(
-      deps.some((d: string) => d.includes("@exiledata/client") || d.includes("@exiledata/api"))
-    ).toBe(false);
+    expect(deps.some((d: string) => d.startsWith("@exiledata/api"))).toBe(false);
   });
 });

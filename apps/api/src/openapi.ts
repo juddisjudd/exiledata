@@ -8,11 +8,7 @@ export const TAG = {
   service: "Service"
 } as const;
 
-/**
- * Shared JSON schemas for public responses. Fastify serializes responses through them, so a
- * field missing here is dropped from the response; free-form objects (`ext`, `derived`) must
- * keep `additionalProperties: true`.
- */
+/** Responses serialize through these, so a field missing here is dropped from the response. */
 const SCHEMAS = [
   {
     $id: "Error",

@@ -28,11 +28,7 @@ export function createHealthRoutes(config: AppConfig, store: KeyStore): FastifyP
       async () => ({ status: "ok" })
     );
 
-    /**
-     * Reports which dataset storage the process actually resolved, and whether Postgres answers.
-     * A deployment reading the wrong driver otherwise looks identical to one with no datasets
-     * published, and a lost database shows up only as 500s on keyed routes.
-     */
+    /** Names the resolved storage driver: a wrong one otherwise looks like an empty bucket. */
     app.get(
       "/status",
       {

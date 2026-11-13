@@ -4,10 +4,6 @@ import type { DatasetMetadata, Game } from "@exiledata/schema";
 import { datasetKey } from "./keys.js";
 import type { DatasetStorage, StoredDataset } from "./types.js";
 
-/**
- * Filesystem-backed dataset storage for local development, mirroring the
- * `{game}/{gameVersion}/dataset.json` layout described in the root README.
- */
 export class LocalDatasetStorage implements DatasetStorage {
   constructor(private readonly rootDir: string) {}
 

@@ -1,10 +1,6 @@
 import type { Game, DatasetMetadata } from "@exiledata/schema";
 
-/**
- * Generic paginated list response envelope used by list endpoints
- * (e.g. `GET /v1/{game}/bases`). `meta.gameVersion` is the patch the data was read from, so a
- * client that did not ask for a version can pin to the one it got.
- */
+/** `meta.gameVersion` is the patch that answered, so a client can pin to it. */
 export interface ListResponse<T> {
   data: T[];
   meta: {

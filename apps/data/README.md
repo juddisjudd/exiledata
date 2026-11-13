@@ -13,6 +13,8 @@ the same bucket stay unreachable, and a test checks that path tricks cannot reac
 | ------------------------------ | ----------------------------------------------------- |
 | `/`                            | Redirect to the Downloads page in the docs            |
 | `/index.json`                  | Every published patch, per game                       |
+| `/status.json`                 | A game whose newest patch could not be published yet  |
+| `/current.json`                | Each game's current patch, as its patch server says   |
 | `/{game}/{patch}/{file}`       | The file, cached for a year as immutable              |
 | `/{game}/latest/{file}`        | 302 to the same file in the newest patch              |
 | `/{game}/`, `/{game}/{patch}/` | Redirect to the Downloads page at that game and patch |

@@ -1,9 +1,5 @@
 import { datasetStorageConfigFromEnv, type DatasetStorageConfig } from "@exiledata/storage";
 
-/**
- * Centralized environment configuration. Reads process.env once so the rest of the app doesn't
- * scatter `process.env.X` access (and so missing/invalid config fails fast at startup).
- */
 export interface AppConfig {
   nodeEnv: string;
   port: number;

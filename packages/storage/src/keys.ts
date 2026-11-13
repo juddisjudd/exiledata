@@ -2,11 +2,7 @@ import type { Game } from "@exiledata/schema";
 
 const VERSION_SEGMENT = /^[0-9A-Za-z][0-9A-Za-z._-]*$/;
 
-/**
- * Object key for a dataset. The version becomes a path segment, so it is checked here rather
- * than trusted — a value such as `../x` from a malformed `version.txt` must not escape the
- * game's prefix.
- */
+/** The version becomes a path segment, so a value such as `../x` must not escape the prefix. */
 export function datasetKey(game: Game, gameVersion: string): string {
   if (!VERSION_SEGMENT.test(gameVersion) || gameVersion.includes("..")) {
     throw new Error(`Invalid game version "${gameVersion}"`);

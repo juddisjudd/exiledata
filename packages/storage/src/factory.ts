@@ -12,7 +12,6 @@ export type DatasetStorageConfig =
       bucketName: string;
     };
 
-/** Selects a `DatasetStorage` implementation from config (see `.env.example`'s DATASET_STORAGE_* vars). */
 export function createDatasetStorage(config: DatasetStorageConfig): DatasetStorage {
   if (config.driver === "r2") {
     return new R2DatasetStorage(config);
@@ -20,12 +19,7 @@ export function createDatasetStorage(config: DatasetStorageConfig): DatasetStora
   return new LocalDatasetStorage(config.path);
 }
 
-/**
- * Reads `DATASET_STORAGE_*` / `R2_*` variables. Shared by the API and the CLI so both resolve
- * the same driver. An unrecognized driver throws rather than falling back to local — a
- * deployment that means to read R2 but quietly serves an empty local directory is worse than
- * one that refuses to start.
- */
+/** An unknown driver throws: quietly serving an empty local folder is worse than not starting. */
 export function datasetStorageConfigFromEnv(env: NodeJS.ProcessEnv): DatasetStorageConfig {
   const driver = (env.DATASET_STORAGE_DRIVER ?? "local").trim().toLowerCase();
 

@@ -9,22 +9,14 @@ export interface MigrationDb {
 }
 
 export interface MigrateOptions {
-  /**
-   * Marks every migration up to and including this file as applied without running it. For a
-   * database whose earlier migrations were applied by hand before the runner existed.
-   */
+  /** Marks migrations up to this file as applied without running them (hand-built databases). */
   baseline?: string;
   log?: (message: string) => void;
 }
 
 const MIGRATION_FILE = /^\d{4}_[a-z0-9_]+\.sql$/;
 
-/**
- * Applies pending `migrations/*.sql` files in name order, each in its own transaction, and
- * records them in `schema_migrations`. Returns the names it applied.
- *
- * Needs a single connection (not a pool), since BEGIN and COMMIT must reach the same session.
- */
+/** Needs one connection, not a pool, since BEGIN and COMMIT must reach the same session. */
 export async function migrate(
   db: MigrationDb,
   dir: string,

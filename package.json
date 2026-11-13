@@ -2,8 +2,8 @@
   "name": "exiledata",
   "private": true,
   "version": "0.0.0",
-  "description": "ExileData monorepo — versioned, normalized data platform for Path of Exile 1 & 2 tooling",
-  "license": "UNLICENSED",
+  "description": "Path of Exile 1 and 2 game data, one dataset per patch, served over an HTTP API and as JSON downloads",
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=22.13"

@@ -3,11 +3,7 @@ import type { Normalizer, Parser, Validator, ValidationError } from "../pipeline
 import type { IngestionStage } from "../stage.js";
 import { createExtractSource, type ExtractRaw, type RawBaseItem } from "./source.js";
 
-/**
- * A base item paired with the metadata path it was keyed by. The extract stores that path only
- * as an object key, so it is lifted here — it is the one field stable enough to build a
- * canonical id from.
- */
+/** The extract keys items by metadata path, the only field stable enough to build an id from. */
 export interface ParsedBaseItem {
   metadataPath: string;
   raw: RawBaseItem;
@@ -20,14 +16,7 @@ export interface ParsedBaseItems {
   skipped: Array<{ metadataPath: string; reason: string }>;
 }
 
-/**
- * Flattens `base_items.json` into a list.
- *
- * Both games' extracts contain entries with an empty `name` — internal placeholders such as the
- * `RandomFossilOutcome*` currency series. They have no name and no properties, so they are
- * excluded rather than published as unnamed records, and reported through the stage's `warn`
- * hook so the exclusion is visible in an ingestion run.
- */
+/** Drops nameless internal entries such as `RandomFossilOutcome*` and reports them via `warn`. */
 export const baseItemsParser: Parser<ExtractRaw, ParsedBaseItems> = {
   parse(raw) {
     const items: ParsedBaseItem[] = [];
@@ -48,13 +37,7 @@ export const baseItemsParser: Parser<ExtractRaw, ParsedBaseItems> = {
   }
 };
 
-/**
- * Maps extract-shaped base items into canonical `BaseItem` records.
- *
- * `name` and `itemClass` are the only fields promoted to the stable contract today; every other
- * field stays in `ext` under the extract's own key name, so it remains traceable back to the
- * source and can be promoted deliberately rather than by accident.
- */
+/** Promotes only `name` and `itemClass`; every other field stays in `ext` under its own key. */
 export function createBaseItemsNormalizer(
   game: Game,
   retrievedAt: string
@@ -83,10 +66,6 @@ export function createBaseItemsNormalizer(
   };
 }
 
-/**
- * Checks the invariants a dataset consumer relies on: every record is addressable by a unique
- * id, carries a name, and declares the game and schema version it was built against.
- */
 export function createBaseItemsValidator(game: Game): Validator<BaseItem> {
   return {
     validate(entities) {

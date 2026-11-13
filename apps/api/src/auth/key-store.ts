@@ -102,10 +102,7 @@ export class KeyStore {
     return rows.length ? this.getKey(id) : undefined;
   }
 
-  /**
-   * Adds counts to the hourly rollups and advances each key's `last_used_at`. Counts for keys
-   * deleted since the request are dropped; otherwise one deleted key would fail every batch.
-   */
+  /** Skips keys deleted since the request; one deleted key would otherwise fail the batch. */
   async recordUsage(entries: UsageEntry[]): Promise<void> {
     if (entries.length === 0) return;
 

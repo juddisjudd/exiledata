@@ -9,9 +9,6 @@ coverage/
 .DS_Store
 Thumbs.db
 desktop.ini
-.turbo/
-.next/
-data/fixtures/generated/
 data/datasets/
 *.tsbuildinfo
 pnpm-lock.yaml.bak
@@ -19,8 +16,4 @@ pnpm-lock.yaml.bak
 .dev.vars
 .dev.vars.*
 secrets.json
-DEPLOYMENT.md
-CLAUDE.md
-.claude
-.remember
 /work/

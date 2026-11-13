@@ -46,11 +46,7 @@ export interface OpenApiDocument {
   components?: { schemas?: Record<string, Schema> };
 }
 
-/**
- * Error codes of the public API. Kept here rather than in the OpenAPI document because the
- * document describes shapes, not the set of codes; a test compares this list with the codes
- * the API source can send.
- */
+/** A test checks this list against the codes the API source can send. */
 export const ERROR_CODES: Array<[code: string, status: number, meaning: string]> = [
   ["invalid_request", 400, "A parameter is malformed or out of range. `message` says which."],
   ["missing_api_key", 401, "No key was sent. Send it in `x-api-key`."],

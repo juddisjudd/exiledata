@@ -1,9 +1,6 @@
 import pg from "pg";
 
-/**
- * The slice of a Postgres client the API uses. `pg.Pool` is adapted to it in production;
- * tests pass PGlite, which satisfies it directly, so the same SQL runs in both.
- */
+/** The slice of a Postgres client the API uses, so tests can pass PGlite in place of pg.Pool. */
 export interface Db {
   query<T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<{ rows: T[] }>;
   close?(): Promise<void>;

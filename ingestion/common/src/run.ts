@@ -1,10 +1,6 @@
 import type { IngestionError, IngestionRunResult, IngestionStage } from "./stage.js";
 
-/**
- * Runs a single stage end to end: fetch -> parse -> normalize -> validate. Failures are
- * collected into `errors` rather than thrown, so a caller can report every problem in one pass;
- * a stage that fails before normalization returns no entities.
- */
+/** Collects failures into `errors` instead of throwing, so one run reports every problem. */
 export async function runStage<TRaw, TParsed, TEntity>(
   stage: IngestionStage<TRaw, TParsed, TEntity>
 ): Promise<IngestionRunResult<TEntity>> {
