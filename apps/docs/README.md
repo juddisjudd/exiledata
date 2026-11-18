@@ -19,7 +19,10 @@ HTML in `dist/site`, which Cloudflare serves as static assets. There is no Worke
 - `src/downloads.ts`: the file browser on `/downloads`, which replaces the
   `<!-- downloads-browser -->` marker in `content/downloads.md`. It runs in the browser and reads
   `https://data.exiledata.dev/index.json` and each patch's manifest, so a newly published patch
-  shows up without a docs deploy.
+  shows up without a docs deploy. Clicking a JSON file's name opens it in `public/json-viewer.js`,
+  which streams the file and draws only the lines in view, so the largest files stay responsive.
+  Because the browser's own find sees only those lines, the viewer has its own search box, which
+  Ctrl+F focuses. The size links download the file, through the data server's `?download`.
 - `src/file-map.ts`: the diagrams and worked examples on `/file-map`, which replace the
   `<!-- file-map poe2 -->` and `<!-- file-map poe1 -->` markers in `content/file-map.md`. The
   diagrams are drawn as SVG at build time; `public/file-map.js` adds selection and the detail

@@ -699,6 +699,294 @@
   border-color: var(--err);
 }
 
+.prose .dl-get {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dl-get::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  background: currentColor;
+  opacity: 0.6;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 1.5v7M3 5.5l3 3 3-3M2 10.5h8'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+/* JSON viewer */
+.jv {
+  --jv-str: light-dark(#1d7a45, #86d39c);
+  --jv-num: light-dark(#3558d6, #8fa8ff);
+  --jv-lit: light-dark(#a14a12, #e7a46b);
+
+  width: min(1320px, 100vw - 32px);
+  height: calc(100dvh - 32px);
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-2);
+  background: var(--bg-1);
+  color: var(--fg-0);
+  box-shadow: var(--shadow-pop);
+}
+
+.jv[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.jv::backdrop {
+  background: rgba(8, 8, 10, 0.55);
+}
+
+:root:has(.jv[open]) {
+  overflow: hidden;
+}
+
+.jv-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 12px 10px 16px;
+  border-bottom: 1px solid var(--line-0);
+  background: var(--chrome);
+}
+
+.jv-head {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.jv-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--fg-0);
+  overflow-wrap: anywhere;
+}
+
+.jv-meta {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-2);
+}
+
+.jv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.jv-find {
+  display: flex;
+  flex: 0 1 300px;
+  align-items: center;
+  min-width: 200px;
+  height: 26px;
+  overflow: hidden;
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-1);
+  background: var(--bg-1);
+}
+
+.jv-find:focus-within {
+  border-color: var(--focus);
+}
+
+.jv-find input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 8px;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--fg-0);
+  font: inherit;
+  font-size: var(--fs-sm);
+}
+
+.jv-find input::placeholder {
+  color: var(--fg-3);
+}
+
+.jv-find input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.jv-count {
+  padding: 0 8px 0 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+
+.jv-step {
+  appearance: none;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--line-0);
+  background: none;
+  color: var(--fg-2);
+  cursor: pointer;
+}
+
+.jv-step::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 4.25 6 7.75l3.5-3.5'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+.jv-prev::before {
+  transform: rotate(180deg);
+}
+
+.jv-step:hover {
+  background: var(--bg-hover);
+  color: var(--fg-0);
+}
+
+.jv-step:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: -1px;
+}
+
+.jv-close:focus-visible,
+.jv-actions .btn:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.jv-progress {
+  flex: none;
+  height: 2px;
+  background: var(--line-0);
+}
+
+.jv-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--fg-2);
+}
+
+.jv-error {
+  margin: 16px;
+  padding: 14px 16px;
+  border: 1px dashed var(--err);
+  border-radius: var(--r-2);
+  font-size: var(--fs-md);
+  color: var(--err);
+}
+
+.jv-error[hidden],
+.jv-progress[hidden] {
+  display: none;
+}
+
+.jv-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.jv-scroll:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: -1px;
+}
+
+.jv-space {
+  position: relative;
+  min-width: 100%;
+}
+
+.jv-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 20px;
+  white-space: pre;
+  color: var(--fg-1);
+  will-change: transform;
+}
+
+.jv-lines > div {
+  height: 20px;
+}
+
+.jv-ln {
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  width: calc(var(--jv-digits, 4) * 1ch + 28px);
+  margin-right: 12px;
+  padding-right: 12px;
+  border-right: 1px solid var(--line-0);
+  background: var(--bg-1);
+  color: var(--fg-3);
+  text-align: right;
+  user-select: none;
+}
+
+.jv .k {
+  color: var(--fg-0);
+}
+
+.jv .s {
+  color: var(--jv-str);
+}
+
+.jv .n {
+  color: var(--jv-num);
+}
+
+.jv .b {
+  color: var(--jv-lit);
+}
+
+.jv .p,
+.jv-cut {
+  color: var(--fg-3);
+}
+
+.jv mark {
+  border-radius: 2px;
+  background: light-dark(rgba(240, 170, 0, 0.3), rgba(255, 196, 64, 0.22));
+  color: inherit;
+}
+
+.jv mark.cur {
+  background: light-dark(#f0aa00, #e8b13c);
+  color: #141416;
+}
+
+.jv mark.cur > span {
+  color: inherit;
+}
+
 .lost {
   min-height: 50dvh;
   padding-top: 48px;
@@ -749,6 +1037,17 @@
 
   .dl .col-pretty {
     display: none;
+  }
+
+  .jv {
+    width: 100vw;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .jv-find {
+    flex-basis: 100%;
   }
 
   .pager {

@@ -9,7 +9,7 @@ const SCRIPT = `
   const base = root.dataset.base;
   const GAME_NAMES = { poe2: "Path of Exile 2", poe1: "Path of Exile 1" };
   const params = new URLSearchParams(location.search);
-  const state = { index: null, status: null, game: params.get("game"), version: params.get("version"), query: "" };
+  const state = { index: null, status: null, game: params.get("game"), version: params.get("version"), file: params.get("file"), query: "" };
   const cache = new Map();
 
   const el = (tag, props = {}, ...children) => {
@@ -30,6 +30,14 @@ const SCRIPT = `
   const count = (n) => new Intl.NumberFormat().format(n);
   const date = (iso) => new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
   const url = (path) => base + "/" + state.game + "/" + state.version + "/" + path.split("/").map(encodeURIComponent).join("/");
+  const pageUrl = () => {
+    const query = new URLSearchParams({ game: state.game, version: state.version });
+    if (state.file) query.set("file", state.file);
+    return location.pathname + "?" + query + location.hash;
+  };
+  const viewable = (f) => f.path.endsWith(".json");
+  const viewerReady = new Promise((resolve) =>
+    document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", resolve, { once: true }) : resolve());
 
   const breakable = (path) =>
     path.split("/").flatMap((part, i, all) => (i < all.length - 1 ? [part + "/", el("wbr")] : [part]));
@@ -55,16 +63,62 @@ const SCRIPT = `
     });
   }
 
+  function download(path, bytes) {
+    const name = path.split("/").pop();
+    return el("a", { class: "dl-get", href: url(path) + "?download", title: "Download " + name, "aria-label": "Download " + name + ", " + size(bytes), text: size(bytes) });
+  }
+
+  function view(f) {
+    window.jsonViewer.open({
+      src: url(f.path),
+      title: f.path,
+      meta: (GAME_NAMES[state.game] || state.game) + " " + state.version + (f.records == null ? "" : " \\u00b7 " + count(f.records) + " records"),
+      bytes: f.bytes,
+      links: [{ text: "Download .json (" + size(f.bytes) + ")", href: url(f.path) + "?download" }]
+        .concat(f.min ? [{ text: "Download .min.json (" + size(f.min.bytes) + ")", href: url(f.min.path) + "?download" }] : []),
+      onclose: () => {
+        if (!state.file) return;
+        state.file = null;
+        if (history.state && history.state.viewer) history.back();
+        else history.replaceState(null, "", pageUrl());
+      }
+    });
+  }
+
+  function viewOnClick(e, f) {
+    if (!window.jsonViewer || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    state.file = f.path;
+    history.pushState({ viewer: true }, "", pageUrl());
+    view(f);
+  }
+
+  async function viewFromUrl() {
+    const manifest = await manifestFor(state.game, state.version);
+    await viewerReady;
+    const f = manifest.files.find((x) => x.path === state.file || (x.min && x.min.path === state.file));
+    if (f && viewable(f) && window.jsonViewer) return view(f);
+    state.file = null;
+    history.replaceState(null, "", pageUrl());
+  }
+
+  window.addEventListener("popstate", () => {
+    state.file = new URLSearchParams(location.search).get("file");
+    if (state.file) viewFromUrl().catch(() => {});
+    else if (window.jsonViewer) window.jsonViewer.close();
+  });
+
   function rows(files, paired) {
     return files.map((f) => {
       const last = f.min || f;
+      const json = viewable(f);
       return el("tr", {},
         el("td", {},
-          el("a", { class: "dl-file", href: url(f.path) }, breakable(f.path)),
+          el("a", { class: "dl-file", href: url(f.path), title: json ? "View " + f.path : null, onclick: json ? (e) => viewOnClick(e, f) : null }, breakable(f.path)),
           f.description ? el("span", { class: "dl-desc", text: f.description }) : null),
         paired ? el("td", { class: "num", text: f.records == null ? "" : count(f.records) }) : null,
-        paired ? el("td", { class: "num col-pretty" }, f.min ? el("a", { href: url(f.path), text: size(f.bytes) }) : null) : null,
-        el("td", { class: "num" }, el("a", { href: url(last.path), text: size(last.bytes) })));
+        paired ? el("td", { class: "num col-pretty" }, f.min ? download(f.path, f.bytes) : null) : null,
+        el("td", { class: "num" }, download(last.path, last.bytes)));
     });
   }
 
@@ -116,8 +170,7 @@ const SCRIPT = `
     if (!entry.versions.some((v) => v.gameVersion === state.version)) state.version = entry.latest;
     const version = entry.versions.find((v) => v.gameVersion === state.version);
 
-    const query = new URLSearchParams({ game: state.game, version: state.version });
-    history.replaceState(null, "", location.pathname + "?" + query + location.hash);
+    history.replaceState(null, "", pageUrl());
 
     const filesBox = el("div", { class: "dl-files" }, el("p", { class: "dl-status", text: "Loading the file list\\u2026" }));
     const search = el("input", {
@@ -158,6 +211,7 @@ const SCRIPT = `
       actions.append(...(manifest.trees || []).map((t) =>
         el("a", { class: "btn", href: url(t.archive.path), text: "PoB tree " + t.version + " (" + size(t.archive.bytes) + " zip)" })));
       renderFiles(manifest, filesBox);
+      if (state.file) viewFromUrl().catch(() => {});
     } catch {
       filesBox.replaceChildren(el("p", { class: "dl-status error", role: "status", text: "The file list could not be loaded. Try again, or open manifest.json directly." }));
     }
@@ -179,6 +233,7 @@ const SCRIPT = `
 
 export function downloadsBrowser(dataOrigin = DATA_ORIGIN): string {
   return (
+    `<script src="/json-viewer.js" defer></script>\n` +
     `<div id="dl" class="dl" data-base="${dataOrigin}">` +
     `<noscript><p class="dl-status">The file browser needs JavaScript. Every patch is listed at ` +
     `<a href="${dataOrigin}/index.json">${dataOrigin.replace("https://", "")}/index.json</a>.</p></noscript>` +

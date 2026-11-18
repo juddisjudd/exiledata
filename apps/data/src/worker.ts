@@ -51,7 +51,22 @@ async function readIndex(env: Env, now: number): Promise<DownloadIndex | undefin
   return index;
 }
 
-async function serve(request: Request, env: Env, key: string, patch?: string): Promise<Response> {
+function attachment(name: string): string {
+  const ascii = name.replace(/[^\x20-\x7e]|["\\]/g, "_");
+  const encoded = encodeURIComponent(name).replace(
+    /['()*]/g,
+    (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+  );
+  return `attachment; filename="${ascii}"; filename*=UTF-8''${encoded}`;
+}
+
+async function serve(
+  request: Request,
+  env: Env,
+  key: string,
+  patch?: string,
+  download = false
+): Promise<Response> {
   const object = await env.DATA.get(key, { onlyIf: request.headers, range: request.headers });
   if (!object) return notFound();
 
@@ -62,6 +77,7 @@ async function serve(request: Request, env: Env, key: string, patch?: string): P
   headers.set("x-content-type-options", "nosniff");
   if (!headers.has("cache-control")) headers.set("cache-control", "public, max-age=300");
   if (patch) headers.set("x-exiledata-patch", patch);
+  if (download) headers.set("content-disposition", attachment(key.slice(key.lastIndexOf("/") + 1)));
 
   // A conditional request whose precondition held comes back without a body.
   if (!("body" in object) || !object.body) return new Response(null, { status: 304, headers });
@@ -102,6 +118,7 @@ export async function handle(request: Request, env: Env, now = Date.now()): Prom
   }
   if (segments.some((s) => s === "." || s === ".." || s.includes("\\"))) return notFound();
 
+  const download = url.searchParams.has("download");
   if (segments.length === 0) return redirect(DOCS_PAGE);
   if (
     segments.length === 1 &&
@@ -109,7 +126,7 @@ export async function handle(request: Request, env: Env, now = Date.now()): Prom
       segments[0] === "status.json" ||
       segments[0] === "current.json")
   ) {
-    return serve(request, env, `${PREFIX}/${segments[0]}`);
+    return serve(request, env, `${PREFIX}/${segments[0]}`, undefined, download);
   }
 
   const [game, patch, ...rest] = segments;
@@ -130,7 +147,7 @@ export async function handle(request: Request, env: Env, now = Date.now()): Prom
   }
 
   if (!PATCH.test(patch)) return notFound();
-  return serve(request, env, `${PREFIX}/${game}/${patch}/${rest.join("/")}`, patch);
+  return serve(request, env, `${PREFIX}/${game}/${patch}/${rest.join("/")}`, patch, download);
 }
 
 export default {

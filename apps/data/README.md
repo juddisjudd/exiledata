@@ -9,15 +9,16 @@ people browse is https://docs.exiledata.dev/downloads.
 It reads only objects under `downloads/` in the bucket. The private datasets the API reads from
 the same bucket stay unreachable, and a test checks that path tricks cannot reach them.
 
-| Address                        | Response                                              |
-| ------------------------------ | ----------------------------------------------------- |
-| `/`                            | Redirect to the Downloads page in the docs            |
-| `/index.json`                  | Every published patch, per game                       |
-| `/status.json`                 | A game whose newest patch could not be published yet  |
-| `/current.json`                | Each game's current patch, as its patch server says   |
-| `/{game}/{patch}/{file}`       | The file, cached for a year as immutable              |
-| `/{game}/latest/{file}`        | 302 to the same file in the newest patch              |
-| `/{game}/`, `/{game}/{patch}/` | Redirect to the Downloads page at that game and patch |
+| Address                           | Response                                              |
+| --------------------------------- | ----------------------------------------------------- |
+| `/`                               | Redirect to the Downloads page in the docs            |
+| `/index.json`                     | Every published patch, per game                       |
+| `/status.json`                    | A game whose newest patch could not be published yet  |
+| `/current.json`                   | Each game's current patch, as its patch server says   |
+| `/{game}/{patch}/{file}`          | The file, cached for a year as immutable              |
+| `/{game}/{patch}/{file}?download` | The same file, sent as an attachment                  |
+| `/{game}/latest/{file}`           | 302 to the same file in the newest patch              |
+| `/{game}/`, `/{game}/{patch}/`    | Redirect to the Downloads page at that game and patch |
 
 Every response allows any origin. File responses support `Range`, `If-None-Match` and `HEAD`,
 and carry the patch in `x-exiledata-patch`. Whole-file GETs are kept in the Cloudflare edge

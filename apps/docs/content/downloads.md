@@ -17,6 +17,7 @@ To follow the newest patch, write `latest` instead of the patch. `latest` redire
 | What                     | Address                                                                              |
 | ------------------------ | ------------------------------------------------------------------------------------ |
 | Every published patch    | [`https://data.exiledata.dev/index.json`](https://data.exiledata.dev/index.json)     |
+| One file, as a download  | `https://data.exiledata.dev/{game}/{patch}/{file}?download`                          |
 | One patch's file list    | `https://data.exiledata.dev/{game}/{patch}/manifest.json`                            |
 | One patch's JSON, zipped | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}.zip`                       |
 | One PoB tree, zipped     | `https://data.exiledata.dev/{game}/{patch}/{game}-{patch}-pob-tree-{tree}.zip`       |

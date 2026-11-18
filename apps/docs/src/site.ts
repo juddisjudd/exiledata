@@ -15,6 +15,7 @@ export const PATHS = {
   content: path.join(docsDir, "content"),
   docsCss: path.join(docsDir, "public", "docs.css"),
   fileMapJs: path.join(docsDir, "public", "file-map.js"),
+  jsonViewerJs: path.join(docsDir, "public", "json-viewer.js"),
   tooltip: path.join(docsDir, "public", "tooltip"),
   fileMapData: path.join(docsDir, "data", "file-map.json"),
   landing: path.join(docsDir, "..", "web", "public", "index.html"),
@@ -316,6 +317,7 @@ export async function buildSite(outDir = PATHS.out): Promise<string[]> {
   await copyFile(PATHS.themeJs, path.join(outDir, "theme.js"));
   await copyFile(PATHS.docsCss, path.join(outDir, "docs.css"));
   await copyFile(PATHS.fileMapJs, path.join(outDir, "file-map.js"));
+  await copyFile(PATHS.jsonViewerJs, path.join(outDir, "json-viewer.js"));
   await cp(PATHS.tooltip, path.join(outDir, "tooltip"), { recursive: true });
   for (const font of await readdir(PATHS.fonts)) {
     await copyFile(path.join(PATHS.fonts, font), path.join(outDir, "assets", "fonts", font));

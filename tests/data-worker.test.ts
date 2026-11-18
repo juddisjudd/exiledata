@@ -98,12 +98,27 @@ describe("data.exiledata.dev worker", () => {
     expect(await res.json()).toEqual([1, 2]);
   });
 
+  it("sends a file as an attachment when asked to download it", async () => {
+    const plain = await get("/poe2/4.5.5.3/mods.min.json");
+    expect(plain.headers.get("content-disposition")).toBeNull();
+
+    const res = await get("/poe2/4.5.5.3/base_items/Active%20Skill%20Gem.json?download");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-disposition")).toBe(
+      `attachment; filename="Active Skill Gem.json"; filename*=UTF-8''Active%20Skill%20Gem.json`
+    );
+    expect(await res.json()).toEqual([1, 2]);
+  });
+
   it("redirects latest to the newest patch, keeping the file path", async () => {
     const res = await get("/poe2/latest/base_items/Active%20Skill%20Gem.json");
 
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe("/poe2/4.5.5.3/base_items/Active%20Skill%20Gem.json");
     expect(res.headers.get("cache-control")).toBe("public, max-age=60");
+
+    const download = await get("/poe2/latest/mods.min.json?download");
+    expect(download.headers.get("location")).toBe("/poe2/4.5.5.3/mods.min.json?download");
   });
 
   it("404s latest for a game with nothing published", async () => {

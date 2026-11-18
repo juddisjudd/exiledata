@@ -49,6 +49,7 @@ describe("docs site", () => {
       "assets/fonts/geist-latin-wght-normal.woff2",
       "assets/fonts/geist-mono-latin-wght-normal.woff2",
       "file-map.js",
+      "json-viewer.js",
       "tooltip/renderer.js",
       "tooltip/fontin-smallcaps.ttf",
       "tooltip/poe1/header-magic-left.png",
@@ -107,6 +108,7 @@ describe("docs site", () => {
       /<noscript>[\s\S]*https:\/\/data\.exiledata\.dev\/index\.json[\s\S]*<\/noscript>/
     );
     expect(html).not.toContain("downloads-browser");
+    expect(html).toContain(`<script src="/json-viewer.js" defer></script>`);
     expect(() => new Function(script!)).not.toThrow();
   });
 

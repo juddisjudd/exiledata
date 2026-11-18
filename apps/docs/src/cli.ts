@@ -58,6 +58,7 @@ async function dev(): Promise<void> {
     PATHS.baseCss,
     PATHS.openapi,
     PATHS.fileMapJs,
+    PATHS.jsonViewerJs,
     PATHS.fileMapData
   ]) {
     watch(file, rebuild);
