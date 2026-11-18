@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-17T23:56:49.166Z",
+  "generatedAt": "2026-11-18T00:31:23.962Z",
   "games": {
     "poe2": {
       "game": "poe2",
-      "patch": "0.5.5.9",
+      "patch": "0.5.5.10",
       "nodes": {
         "active_skill_types": {
           "id": "active_skill_types",
@@ -219,7 +219,7 @@
           "shape": "object",
           "sample": "Any",
           "count": 2794,
-          "bytes": 5200152
+          "bytes": 5200172
         },
         "skill_gems": {
           "id": "skill_gems",
@@ -234,8 +234,8 @@
           "description": "Skill definitions with per-level stats, costs and cast times.",
           "shape": "object",
           "sample": "ABTTKaruiCaptainBoss2KitavaBloodSiphon",
-          "count": 8350,
-          "bytes": 17015571
+          "count": 8351,
+          "bytes": 17016212
         },
         "stat_value_handlers": {
           "id": "stat_value_handlers",
@@ -324,7 +324,7 @@
           "shape": "array",
           "sample": "Metadata/Items/Currency/CurrencyWeaponQuality",
           "count": 5075,
-          "bytes": 4471888
+          "bytes": 4482038
         },
         "passive_skill_trees/": {
           "id": "passive_skill_trees/",
@@ -735,8 +735,8 @@
           "to": "active_skill_types",
           "field": "active_skill.types[], support_gem.allowed_types[], support_gem.added_types[]",
           "kind": "key",
-          "hit": 36668,
-          "total": 36668,
+          "hit": 36671,
+          "total": 36671,
           "miss": []
         },
         {
@@ -753,8 +753,8 @@
           "to": "stat_translations/",
           "field": "stat_sets[].translation_file",
           "kind": "key",
-          "hit": 8777,
-          "total": 8777,
+          "hit": 8778,
+          "total": 8778,
           "miss": []
         },
         {
@@ -982,8 +982,8 @@
           "to": "skills",
           "field": "granted_effects[]",
           "kind": "key",
-          "hit": 16972,
-          "total": 16972,
+          "hit": 16973,
+          "total": 16973,
           "miss": []
         },
         {
@@ -2126,7 +2126,7 @@
           "shape": "object",
           "sample": "Strength1",
           "count": 41324,
-          "bytes": 24153243
+          "bytes": 24153358
         },
         "mods_by_base": {
           "id": "mods_by_base",
@@ -2173,8 +2173,8 @@
           "description": "Rules that turn stat values into displayed numbers.",
           "shape": "object",
           "sample": "tq_noop",
-          "count": 74,
-          "bytes": 205261
+          "count": 84,
+          "bytes": 207913
         },
         "stats": {
           "id": "stats",
@@ -2591,13 +2591,9 @@
           "to": "stat_value_handlers",
           "field": "English[].index_handlers",
           "kind": "key",
-          "hit": 7254,
+          "hit": 7312,
           "total": 7312,
-          "miss": [
-            "alternate_tree_version_name",
-            "alternate_tree_version_keystone",
-            "passive_jewel_radius"
-          ]
+          "miss": []
         },
         {
           "from": "stat_translations/",
