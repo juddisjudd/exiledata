@@ -2,6 +2,17 @@
 
 Changes to the API, the record format and the published datasets, newest first.
 
+## 2026-11-18
+
+### Breaking changes
+
+- **Only the two newest patches of each game are kept.** When a new patch is published, the oldest one is removed from the API and the downloads, and requests for it return `404`. See [Pinning](./datasets.md#pinning).
+
+### Datasets
+
+- Removed `poe1` `3.29.3.3`, `3.29.3.4`, `3.29.3.5`, `3.29.3.6`, `3.30.0.1`, `3.30.0.1.2`, `3.30.0.1.3` and `3.30.0.1.4`.
+- Removed `poe2` `4.5.5.3`, `4.5.5.4`, `0.5.5.4`, `0.5.5.4.2`, `0.5.5.5`, `0.5.5.7` and `0.5.5.8`.
+
 ## 2026-10-05
 
 ### Breaking changes

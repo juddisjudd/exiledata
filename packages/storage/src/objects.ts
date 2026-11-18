@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { AwsClient } from "aws4fetch";
 import type { DatasetStorageConfig } from "./factory.js";
@@ -12,6 +12,10 @@ export interface PutOptions {
 export interface ObjectStorage {
   put(key: string, body: Uint8Array | string, options: PutOptions): Promise<void>;
   get(key: string): Promise<Uint8Array | undefined>;
+  /** Every key under a folder, such as `downloads/poe2`. Order is not guaranteed. */
+  list(folder: string): Promise<string[]>;
+  /** Resolves without error if the key does not exist. */
+  delete(key: string): Promise<void>;
 }
 
 function assertKey(key: string): void {
@@ -40,7 +44,41 @@ export class LocalObjectStorage implements ObjectStorage {
       throw error;
     }
   }
+
+  async list(folder: string): Promise<string[]> {
+    assertKey(folder);
+    try {
+      const entries = await readdir(path.join(this.rootDir, ...folder.split("/")), {
+        recursive: true,
+        withFileTypes: true
+      });
+      return entries
+        .filter((entry) => entry.isFile())
+        .map((entry) =>
+          path
+            .relative(this.rootDir, path.join(entry.parentPath, entry.name))
+            .split(path.sep)
+            .join("/")
+        );
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+      throw error;
+    }
+  }
+
+  async delete(key: string): Promise<void> {
+    assertKey(key);
+    await rm(path.join(this.rootDir, ...key.split("/")), { force: true });
+  }
 }
+
+const unescapeXml = (text: string) =>
+  text
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&");
 
 export class R2ObjectStorage implements ObjectStorage {
   private readonly client: AwsClient;
@@ -79,6 +117,34 @@ export class R2ObjectStorage implements ObjectStorage {
       throw new Error(`Failed to fetch "${key}": ${response.status} ${response.statusText}`);
     }
     return new Uint8Array(await response.arrayBuffer());
+  }
+
+  async list(folder: string): Promise<string[]> {
+    assertKey(folder);
+    const keys: string[] = [];
+    let continuationToken: string | undefined;
+    do {
+      const params = new URLSearchParams({ "list-type": "2", prefix: `${folder}/` });
+      if (continuationToken) params.set("continuation-token", continuationToken);
+      const response = await this.client.fetch(`${this.endpoint}?${params}`);
+      if (!response.ok) {
+        throw new Error(`Failed to list "${folder}": ${response.status} ${response.statusText}`);
+      }
+      const xml = await response.text();
+      for (const [, key = ""] of xml.matchAll(/<Key>([^<]*)<\/Key>/g)) keys.push(unescapeXml(key));
+      continuationToken = xml.includes("<IsTruncated>true</IsTruncated>")
+        ? /<NextContinuationToken>([^<]*)<\/NextContinuationToken>/.exec(xml)?.[1]
+        : undefined;
+    } while (continuationToken);
+    return keys;
+  }
+
+  async delete(key: string): Promise<void> {
+    assertKey(key);
+    const response = await this.client.fetch(this.url(key), { method: "DELETE" });
+    if (!response.ok && response.status !== 404) {
+      throw new Error(`Failed to delete "${key}": ${response.status} ${response.statusText}`);
+    }
   }
 }
 

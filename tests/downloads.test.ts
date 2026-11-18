@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { unzipSync } from "fflate";
 import { buildRelease, mergeIndex, type DownloadIndex } from "../packages/cli/src/release.js";
-import { contentType, publishDownloads } from "../packages/cli/src/downloads.js";
+import { contentType, prunePatches, publishDownloads } from "../packages/cli/src/downloads.js";
 import { LocalDatasetStorage } from "../packages/storage/src/local.js";
 import { LocalObjectStorage, type ObjectStorage } from "../packages/storage/src/objects.js";
 import { SCHEMA_VERSION } from "../packages/schema/src/common/version.js";
@@ -320,7 +320,9 @@ describe("publishDownloads", () => {
         headers.set(key, `${options.contentType} | ${options.cacheControl}`);
         return store.put(key, body);
       },
-      get: (key) => store.get(key)
+      get: (key) => store.get(key),
+      list: (folder) => store.list(folder),
+      delete: (key) => store.delete(key)
     };
     await publishDownloads({
       game: "poe2",
@@ -398,5 +400,114 @@ describe("publishDownloads", () => {
     });
 
     expect(await store.get("downloads/index.json")).toBeUndefined();
+  });
+});
+
+describe("prunePatches", () => {
+  let root: string;
+  let store: LocalObjectStorage;
+  let datasets: LocalDatasetStorage;
+  const quiet = () => {};
+  const entry = (gameVersion: string) => ({
+    gameVersion,
+    generatedAt: "2026-11-01T00:00:00.000Z",
+    files: 1,
+    bytes: 1,
+    archive: { path: `${gameVersion}.zip`, bytes: 1, sha256: "" }
+  });
+  const put = (key: string) => store.put(key, "x", { contentType: "text/plain" });
+  const dataset = (game: "poe1" | "poe2", gameVersion: string) => {
+    const metadata = {
+      game,
+      gameVersion,
+      generatedAt: "2026-11-01T00:00:00.000Z",
+      schemaVersion: SCHEMA_VERSION,
+      sources: []
+    };
+    return datasets.put(metadata, JSON.stringify({ metadata, entities: [] }));
+  };
+  const index = async () =>
+    JSON.parse(Buffer.from((await store.get("downloads/index.json"))!).toString()) as DownloadIndex;
+
+  beforeEach(async () => {
+    root = await mkdtemp(path.join(tmpdir(), "exiledata-prune-"));
+    store = new LocalObjectStorage(root);
+    datasets = new LocalDatasetStorage(root);
+    const published: DownloadIndex = {
+      updatedAt: "2026-11-01T00:00:00.000Z",
+      games: {
+        poe1: { latest: "3.30.0.1", versions: ["3.30.0.1", "3.29.3.6", "3.29.3.5"].map(entry) },
+        poe2: {
+          latest: "0.5.5.10",
+          versions: ["0.5.5.10", "0.5.5.9", "0.5.5.8", "0.5.5.7", "4.5.5.4"].map(entry)
+        }
+      }
+    };
+    await store.put("downloads/index.json", JSON.stringify(published), {
+      contentType: "application/json"
+    });
+    for (const v of ["0.5.5.10", "0.5.5.9", "0.5.5.8"]) {
+      await put(`downloads/poe2/${v}/manifest.json`);
+      await put(`downloads/poe2/${v}/pob_tree/0_5/tree.lua`);
+      await dataset("poe2", v);
+    }
+    for (const v of ["0.5.5.11", "0.5.5.10", "0.5.5.9", "0.5.5.8", "4.5.5.4"]) {
+      await put(`refit/poe2/${v}/tables.zip`);
+    }
+    await put("downloads/poe2/notes.json");
+    await put("downloads/poe1/3.29.3.5/manifest.json");
+    await dataset("poe1", "3.29.3.5");
+  });
+
+  afterEach(async () => {
+    await rm(root, { recursive: true, force: true });
+  });
+
+  it("keeps the two newest published patches and removes every older one everywhere", async () => {
+    const removed = await prunePatches({ games: ["poe2"], store, datasets, log: quiet });
+
+    expect(removed).toEqual({ poe2: ["0.5.5.8", "0.5.5.7", "4.5.5.4"] });
+    expect((await index()).games.poe2!.versions.map((v) => v.gameVersion)).toEqual([
+      "0.5.5.10",
+      "0.5.5.9"
+    ]);
+    expect((await index()).games.poe2!.latest).toBe("0.5.5.10");
+    expect((await store.list("downloads/poe2")).sort()).toEqual([
+      "downloads/poe2/0.5.5.10/manifest.json",
+      "downloads/poe2/0.5.5.10/pob_tree/0_5/tree.lua",
+      "downloads/poe2/0.5.5.9/manifest.json",
+      "downloads/poe2/0.5.5.9/pob_tree/0_5/tree.lua",
+      "downloads/poe2/notes.json"
+    ]);
+    expect((await store.list("refit/poe2")).sort()).toEqual([
+      "refit/poe2/0.5.5.10/tables.zip",
+      "refit/poe2/0.5.5.11/tables.zip",
+      "refit/poe2/0.5.5.9/tables.zip"
+    ]);
+    expect((await datasets.list("poe2")).map((d) => d.gameVersion).sort()).toEqual([
+      "0.5.5.10",
+      "0.5.5.9"
+    ]);
+    expect((await index()).games.poe1!.versions).toHaveLength(3);
+    expect(await store.get("downloads/poe1/3.29.3.5/manifest.json")).toBeDefined();
+  });
+
+  it("only reports what it would remove on a dry run, and keeps as many as asked", async () => {
+    const removed = await prunePatches({
+      games: ["poe1", "poe2"],
+      store,
+      datasets,
+      keep: 1,
+      dryRun: true,
+      log: quiet
+    });
+
+    expect(removed).toEqual({
+      poe1: ["3.29.3.6", "3.29.3.5"],
+      poe2: ["0.5.5.9", "0.5.5.8", "0.5.5.7", "4.5.5.4"]
+    });
+    expect((await index()).games.poe2!.versions).toHaveLength(5);
+    expect(await store.list("refit/poe2")).toHaveLength(5);
+    expect(await datasets.list("poe1")).toHaveLength(1);
   });
 });

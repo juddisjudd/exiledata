@@ -2,7 +2,7 @@
 import { Command } from "commander";
 import { ingest } from "./ingest.js";
 import { deleteDataset, listDatasets } from "./datasets.js";
-import { listDownloads, publishDownloads } from "./downloads.js";
+import { listDownloads, pruneDownloads, publishDownloads } from "./downloads.js";
 import { parseGames } from "./games.js";
 import { patchVersion } from "./patch.js";
 import { publishCurrentPatch } from "./current.js";
@@ -60,6 +60,14 @@ downloads
   .command("list")
   .description("List published download patches")
   .action(() => listDownloads());
+
+downloads
+  .command("prune")
+  .description("Remove every patch older than each game's newest published ones")
+  .option("--game <game>", "poe1 or poe2 (default: both)")
+  .option("--keep <count>", "published patches to keep per game", "2")
+  .option("--yes", "remove them; without it, only list them")
+  .action(pruneDownloads);
 
 program
   .command("patch")

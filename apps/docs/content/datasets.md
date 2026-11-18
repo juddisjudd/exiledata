@@ -46,7 +46,7 @@ Either way, `meta.gameVersion` in the response names the patch that answered. St
 
 Path of Exile 2 patches used `4.x` numbers until October 2026. Grinding Gear Games then renumbered them to `0.x`, and the patch after `4.5.5.4` is `0.5.5.4`. Path of Exile 1 still uses `3.x`.
 
-The old `4.x` patches stay published, so a request pinned to one keeps working. ExileData sorts them before every `0.x` patch, so the newest patch still answers when you leave out `version`. If you sort patch numbers yourself, do the same: for `poe2`, a `4.x` patch is older than any `0.x` or `1.x` patch.
+ExileData sorts a `4.x` patch before every `0.x` patch. If you sort patch numbers yourself, do the same: for `poe2`, a `4.x` patch is older than any `0.x` or `1.x` patch.
 
 ## Pinning
 
@@ -56,11 +56,13 @@ Reading the latest patch is convenient, but the data changes as soon as a new pa
 2. Send that value as `?version=` from then on.
 3. Move to a newer patch when you are ready, after checking the [changelog](./changelog.md).
 
+ExileData keeps the two newest patches of each game. A pinned patch is removed when the second patch after it is published, and requests for it then return `404 unknown_game_version`.
+
 ## Rebuilds
 
 A patch can be rebuilt, for example to fix how a field is read from the game files. A rebuild replaces the dataset for that patch and changes its `generatedAt`, and records can change even though the patch number stays the same.
 
-During the preview, older patches can also be removed. The changelog lists every rebuild and removal.
+The changelog lists every rebuild.
 
 ## Schema version
 

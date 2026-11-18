@@ -12,6 +12,8 @@ https://data.exiledata.dev/{game}/{patch}/{file}
 
 For example, [`https://data.exiledata.dev/poe2/0.5.5.4/mods.min.json`](https://data.exiledata.dev/poe2/0.5.5.4/mods.min.json). A file at a patch address never changes, so you can cache it for good.
 
+Only the two newest patches of each game are kept. When a new patch is published, the oldest one is removed and its addresses return 404, so download any patch you want to keep.
+
 To follow the newest patch, write `latest` instead of the patch. `latest` redirects to the patch address, and every file response carries an `x-exiledata-patch` header, so you always know which patch you got.
 
 | What                     | Address                                                                              |

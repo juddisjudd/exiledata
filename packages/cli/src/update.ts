@@ -10,7 +10,13 @@ import {
   type ObjectStorage
 } from "@exiledata/storage";
 import type { Dataset, Game } from "@exiledata/schema";
-import { DOWNLOADS_PREFIX, publishDownloads, readJson } from "./downloads.js";
+import {
+  DOWNLOADS_PREFIX,
+  prunePatches,
+  publishDownloads,
+  readJson,
+  TABLES_PREFIX
+} from "./downloads.js";
 import { parseGames } from "./games.js";
 import { ingest } from "./ingest.js";
 import { patchVersion } from "./patch.js";
@@ -46,8 +52,6 @@ const run: Spawn = (command, args, env) =>
 
 const tail = (text: string, lines = 20) => text.trimEnd().split("\n").slice(-lines).join("\n");
 
-/** Kept to re-fit the next patch against, since GGG's CDN drops a patch once the next ships. */
-export const TABLES_PREFIX = "refit";
 const tablesKey = (game: Game, patch: string, file: string) =>
   `${TABLES_PREFIX}/${game}/${patch}/${file}`;
 
@@ -324,6 +328,12 @@ export async function update(options: UpdateOptions = {}): Promise<Game[]> {
         await saveTables();
       } catch (error) {
         log(`${game}: published, but the tables were not saved: ${(error as Error).message}`);
+      }
+      if (!options.dryRun) {
+        await prunePatches({ games: [game], store, datasets, log, now: now() }).catch(
+          (error: Error) =>
+            log(`${game}: published, but older patches were not removed: ${error.message}`)
+        );
       }
     } catch (error) {
       log(`${game}: update failed: ${(error as Error).message}`);

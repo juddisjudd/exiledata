@@ -324,6 +324,35 @@ describe("update", () => {
     });
   });
 
+  it("removes the patches older than the two newest once the new one is published", async () => {
+    const entry = (gameVersion: string) => ({
+      gameVersion,
+      generatedAt: "2026-09-18T12:00:00.000Z",
+      files: 1,
+      bytes: 1,
+      archive: { path: `${gameVersion}.zip`, bytes: 1, sha256: "" }
+    });
+    const published: DownloadIndex = {
+      updatedAt: "2026-09-18T12:00:00.000Z",
+      games: { poe2: { latest: "4.5.5.3", versions: ["4.5.5.3", "4.5.5.2"].map(entry) } }
+    };
+    await put("downloads/index.json", JSON.stringify(published));
+    for (const v of ["4.5.5.3", "4.5.5.2"]) {
+      await put(`downloads/poe2/${v}/manifest.json`, "{}");
+      await saved("poe2", v);
+    }
+
+    await run();
+
+    const index = (await json<DownloadIndex>("downloads/index.json"))!;
+    expect(index.games.poe2!.versions.map((v) => v.gameVersion)).toEqual(["4.5.6.0", "4.5.5.3"]);
+    expect(await store.get("downloads/poe2/4.5.5.2/manifest.json")).toBeUndefined();
+    expect(await store.get("refit/poe2/4.5.5.2/tables.json")).toBeUndefined();
+    expect(await store.get("downloads/poe2/4.5.5.3/manifest.json")).toBeDefined();
+    expect(await store.get("refit/poe2/4.5.5.3/tables.json")).toBeDefined();
+    expect(lines).toContain("poe2: keeping 4.5.6.0, 4.5.5.3; removing 4.5.5.2");
+  });
+
   it("saves the tables of a published patch that has none saved yet", async () => {
     expect(await run({ games: undefined, check: true })).toEqual(["poe1", "poe2"]);
     expect(lines[0]).toBe("poe1: patch 3.29.3.3, published 3.29.3.3, tables not saved");

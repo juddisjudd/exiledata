@@ -202,6 +202,7 @@ pnpm exiledata patch --publish                # also publish current.json to dat
 pnpm exiledata update --check                 # which games are behind the published downloads
 pnpm exiledata update                         # export, ingest and publish every game that is behind
 pnpm exiledata update poe2 --force --dry-run  # rebuild one game without writing to storage
+pnpm exiledata downloads prune                # list the patches older than the two newest
 ```
 
 `update` asks GGG's patch servers for each game's current patch and compares it with the latest
@@ -221,6 +222,11 @@ wrong bytes. `update` then re-fits those tables against the previous patch with 
 `refit`, and publishes only if every column was placed. GGG's CDN drops a patch once the next one
 ships, so after each publish `update` saves the patch's tables under `refit/{game}/{patch}/` in
 the same bucket. That prefix is private too.
+
+After each publish, `update` keeps each game's two newest published patches and removes every older
+one: its entry in `downloads/index.json`, its downloads, its dataset and its saved tables. The
+index is written first, so it never lists a patch whose files are gone. `downloads prune` does the
+same by hand, and removes nothing until you add `--yes`.
 
 A patch that still cannot be published goes into `downloads/status.json`, and the Downloads page
 shows it as a notice. The next run tries again. Usually it succeeds once dat-schema catches up.
